@@ -22,8 +22,10 @@ Author: Senior Process Mining Engineer
 Date: 2024
 """
 
+from __future__ import annotations
+
 from collections import Counter
-from typing import FrozenSet
+from typing import FrozenSet, Tuple
 import random
 import pandas as pd
 from causal_net import CausalNet
@@ -393,3 +395,97 @@ def compute_simplicity(causal_net: CausalNet) -> float:
     simplicity_score = 1.0 / (1.0 + total_arc_count)
     
     return simplicity_score
+
+
+def evaluate_individual(
+    causal_net: CausalNet,
+    df: pd.DataFrame,
+    w_fitness: float,
+    w_simplicity: float
+) -> Tuple[float, float, float]:
+    """
+    Evaluate a CausalNet individual using weighted combination of fitness and simplicity.
+    
+    Computes both replay fitness and simplicity scores for a candidate process model,
+    then combines them using user-specified weights to produce an overall evaluation
+    score. This function is the primary evaluation mechanism used in the evolutionary
+    process discovery algorithm to rank and select individuals for the next generation.
+    
+    The multi-objective evaluation balances:
+    - Fitness: How well the model can replay observed traces (accuracy)
+    - Simplicity: How structurally simple the model is (parsimony)
+    
+    Args:
+        causal_net: CausalNet instance representing the process model to evaluate.
+            Contains input_bindings and output_bindings for each activity.
+        df: Pandas DataFrame representing the event log with required columns:
+            - "case:concept:name": Case identifier for grouping events
+            - "concept:name": Activity name for each event
+        w_fitness: Weight for the replay fitness component in [0.0, 1.0].
+            Higher values prioritize accurate trace replay over simplicity.
+        w_simplicity: Weight for the simplicity component in [0.0, 1.0].
+            Higher values prioritize simpler models over perfect replay.
+            Should satisfy: w_fitness + w_simplicity = 1.0
+    
+    Returns:
+        Tuple[float, float, float]: Three-element tuple containing:
+            - overall_score: Weighted combination of fitness and simplicity
+            - fitness_score: Raw replay fitness score in [0.0, 1.0]
+            - simplicity_score: Raw simplicity score in [0.0, 1.0]
+            
+            The overall_score is computed as:
+            overall_score = (w_fitness * fitness_score) + (w_simplicity * simplicity_score)
+    
+    Raises:
+        ValueError: If weights do not sum to 1.0 (within floating-point tolerance),
+            if weights are outside valid range [0.0, 1.0], or if required
+            DataFrame columns are missing.
+    
+    Note:
+        Weight validation uses a small epsilon tolerance (1e-6) to account for
+        floating-point arithmetic imprecision. Users should ensure weights
+        sum to approximately 1.0.
+        
+        Common weight configurations:
+        - w_fitness=0.7, w_simplicity=0.3: Prioritize fitness (default behavior)
+        - w_fitness=0.5, w_simplicity=0.5: Balanced multi-objective optimization
+        - w_fitness=0.3, w_simplicity=0.7: Prioritize simplicity (minimal models)
+    
+    Example:
+        >>> import pandas as pd
+        >>> from causal_net import CausalNet
+        >>> df = pd.DataFrame({
+        ...     'case:concept:name': [1, 1, 2, 2],
+        ...     'concept:name': ['A', 'B', 'A', 'B']
+        ... })
+        >>> net = CausalNet(['A', 'B'])
+        >>> net.output_bindings['A'].append(frozenset(['B']))
+        >>> overall, fitness, simplicity = evaluate_individual(net, df, 0.7, 0.3)
+        >>> 0.0 <= overall <= 1.0
+        True
+        >>> abs((fitness * 0.7 + simplicity * 0.3) - overall) < 1e-9
+        True
+    """
+    # Validate weights are in valid range [0.0, 1.0]
+    if not (0.0 <= w_fitness <= 1.0):
+        raise ValueError(f"w_fitness must be in range [0.0, 1.0], got {w_fitness}")
+    
+    if not (0.0 <= w_simplicity <= 1.0):
+        raise ValueError(f"w_simplicity must be in range [0.0, 1.0], got {w_simplicity}")
+    
+    # Validate weights sum to 1.0 (with floating-point tolerance)
+    weight_sum = w_fitness + w_simplicity
+    if abs(weight_sum - 1.0) > 1e-6:
+        raise ValueError(
+            f"Weights must sum to 1.0, got {weight_sum}. "
+            f"w_fitness={w_fitness}, w_simplicity={w_simplicity}"
+        )
+    
+    # Compute individual metric scores
+    fitness_score = compute_replay_fitness(causal_net, df)
+    simplicity_score = compute_simplicity(causal_net)
+    
+    # Compute weighted overall score
+    overall_score = (w_fitness * fitness_score) + (w_simplicity * simplicity_score)
+    
+    return overall_score, fitness_score, simplicity_score

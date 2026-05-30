@@ -8,10 +8,20 @@ algorithm for BPI Challenge 2017 dataset analysis.
 Available Operators:
     - mutate: Performs random mutations on a CausalNet's binding structures
       to introduce variation in the evolutionary population.
+    
+    - crossover: Combines binding structures from two parent CausalNet instances
+      to create a child. For each activity, input and output bindings are 
+      independently inherited from either parent with equal probability.
+    
+    - tournament_selection: Selects an individual from a population using 
+      tournament selection. Randomly samples a subset of individuals and 
+      returns the one with the highest fitness score.
 
 Author: Senior Process Mining Engineer
 Date: 2024
 """
+
+from __future__ import annotations
 
 import random
 from typing import Set, Tuple, List, FrozenSet
@@ -127,6 +137,172 @@ def mutate(
     return mutated_net
 
 
+def crossover(
+    parent_a: CausalNet,
+    parent_b: CausalNet,
+    activities: List[str]
+) -> CausalNet:
+    """
+    Perform crossover between two parent CausalNet instances to create a child.
+    
+    Combines binding structures from two parents by independently selecting
+    input and output bindings for each activity from either parent with equal
+    probability (50/50). This operator enables recombination of successful
+    structural patterns from different individuals in the population.
+    
+    For each activity in the activities list:
+    1. A random draw determines whether input bindings come from parent_a or
+       parent_b (equal probability)
+    2. An independent random draw determines whether output bindings come from
+       parent_a or parent_b (equal probability)
+    3. Selected binding lists are shallow copied to ensure child mutations
+       do not affect parent structures
+    
+    Args:
+        parent_a: First parent CausalNet instance. Not modified by this function.
+        parent_b: Second parent CausalNet instance. Not modified by this function.
+        activities: List of activity names to include in the child CausalNet.
+            Typically matches the activities from both parents.
+    
+    Returns:
+        CausalNet: A new child CausalNet instance with binding structures
+            inherited from both parents. Parent instances remain unmodified.
+    
+    Raises:
+        ValueError: If activities list is empty.
+    
+    Note:
+        - Input and output binding inheritance decisions are made independently
+          for each activity, allowing fine-grained recombination.
+        - Shallow copies of binding lists are created (new list objects containing
+          the same frozenset references), ensuring child mutations don't affect
+          parents while avoiding unnecessary deep copying of immutable frozensets.
+        - Both parents should have the same activities for meaningful crossover,
+          though this function accepts any activities list.
+    
+    Example:
+        >>> from causal_net import CausalNet
+        >>> parent_a = CausalNet(['A', 'B', 'C'])
+        >>> parent_b = CausalNet(['A', 'B', 'C'])
+        >>> parent_a.input_bindings['B'].append(frozenset(['A']))
+        >>> parent_b.output_bindings['A'].append(frozenset(['B']))
+        >>> child = crossover(parent_a, parent_b, ['A', 'B', 'C'])
+        >>> child is not parent_a and child is not parent_b
+        True
+        >>> len(child.activities)
+        3
+    """
+    # Validate activities list is not empty
+    if not activities:
+        raise ValueError("Activities list cannot be empty")
+    
+    # Create new CausalNet instance for the child
+    child = CausalNet(activities.copy())
+    
+    # For each activity, independently inherit input and output bindings
+    for activity in activities:
+        # Independent random draw for input bindings (50/50 chance)
+        if random.random() < 0.5:
+            # Inherit input bindings from parent_a (shallow copy)
+            child.input_bindings[activity] = parent_a.input_bindings.get(activity, []).copy()
+        else:
+            # Inherit input bindings from parent_b (shallow copy)
+            child.input_bindings[activity] = parent_b.input_bindings.get(activity, []).copy()
+        
+        # Independent random draw for output bindings (50/50 chance)
+        if random.random() < 0.5:
+            # Inherit output bindings from parent_a (shallow copy)
+            child.output_bindings[activity] = parent_a.output_bindings.get(activity, []).copy()
+        else:
+            # Inherit output bindings from parent_b (shallow copy)
+            child.output_bindings[activity] = parent_b.output_bindings.get(activity, []).copy()
+    
+    return child
+
+
+def tournament_selection(
+    population_with_scores: List[Tuple[CausalNet, float]],
+    tournament_size: int
+) -> CausalNet:
+    """
+    Select an individual from a population using tournament selection.
+    
+    Randomly samples a subset of individuals from the population and returns
+    the one with the highest fitness score. This selection method provides
+    selective pressure while maintaining diversity in the evolutionary population.
+    
+    Tournament selection works by:
+    1. Randomly sampling tournament_size individuals from the population
+    2. Comparing their scores
+    3. Returning the individual with the highest score
+    
+    This method balances exploration and exploitation: larger tournaments
+    increase selection pressure (favoring high-scoring individuals), while
+    smaller tournaments maintain more diversity.
+    
+    Args:
+        population_with_scores: List of (CausalNet, score) tuples representing
+            the current population. Each tuple contains a CausalNet instance
+            and its corresponding fitness score (float).
+        tournament_size: Number of individuals to sample for the tournament.
+            Must be at least 1. If greater than population length, silently
+            clamped to len(population_with_scores).
+    
+    Returns:
+        CausalNet: The CausalNet instance with the highest score among the
+            sampled tournament participants.
+    
+    Raises:
+        ValueError: If population_with_scores is empty or if tournament_size
+            is less than 1.
+    
+    Note:
+        - Sampling is done without replacement, so all tournament participants
+          are distinct individuals.
+        - If multiple individuals have the same highest score, one is chosen
+          arbitrarily (typically the first encountered during max evaluation).
+        - Tournament size controls selection pressure:
+          - Small tournaments (e.g., 2-3): More diversity, weaker pressure
+          - Large tournaments: Stronger pressure toward high-scoring individuals
+    
+    Example:
+        >>> from causal_net import CausalNet
+        >>> pop = [
+        ...     (CausalNet(['A', 'B']), 0.6),
+        ...     (CausalNet(['A', 'B']), 0.8),
+        ...     (CausalNet(['A', 'B']), 0.5)
+        ... ]
+        >>> winner = tournament_selection(pop, tournament_size=2)
+        >>> winner is not None
+        True
+    """
+    # Validate population is not empty
+    if not population_with_scores:
+        raise ValueError("Population cannot be empty")
+    
+    # Validate tournament_size is at least 1
+    if tournament_size < 1:
+        raise ValueError(
+            f"tournament_size must be at least 1, got {tournament_size}"
+        )
+    
+    # Clamp tournament_size to population length if necessary
+    # This prevents ValueError from random.sample when k > n
+    effective_tournament_size = min(tournament_size, len(population_with_scores))
+    
+    # Randomly sample tournament_size individuals without replacement
+    tournament_participants = random.sample(
+        population_with_scores,
+        effective_tournament_size
+    )
+    
+    # Find and return the individual with the highest score
+    # Each tuple is (CausalNet, score), so we use key=lambda x: x[1]
+    winner, __ = max(tournament_participants, key=lambda x: x[1])
+    
+    return winner
+
+
 def _extract_valid_activities(
     directly_follows_pairs: Set[Tuple[str, str]],
     activities: List[str]
@@ -159,12 +335,15 @@ def _extract_valid_activities(
         >>> succs['A']
         {'B', 'C'}
     """
+    # Convert activities list to set for O(1) membership checks
+    activities_set = set(activities)
+    
     predecessors: dict = {activity: set() for activity in activities}
     successors: dict = {activity: set() for activity in activities}
     
     for pred, succ in directly_follows_pairs:
         # Only consider activities that are in our activity list
-        if pred in activities and succ in activities:
+        if pred in activities_set and succ in activities_set:
             successors[pred].add(succ)
             predecessors[succ].add(pred)
     
