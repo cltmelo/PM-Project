@@ -1,0 +1,58 @@
+# ==============================================================================
+# 1. PROCESS MINING DATASETS (REQUISITO DA DISCIPLINA)
+# ==============================================================================
+# Os datasets (BPI Challenges) são massivos e não devem subir para o Git.
+# O framework deve rodar baixando o arquivo localmente.
+# BPI Challenge 2017_1_all/
+# BPI Challenge 2017_1_all.zip
+# *.xes
+# *.xes.gz
+# *.xml
+# *.csv
+
+# ==============================================================================
+# 2. EXPERIMENT OUTPUTS (PRODUÇÃO DOS ALGORITMOS)
+# ==============================================================================
+# IMPORTANTE: Pelas regras do Term Paper, os resultados crus dos experimentos 
+# DEVEM ser enviados para avaliação no Moodle. No Git do grupo, vocês podem ignorar 
+# os arquivos pesados de imagem gerados em lote, mas RECOMENDA-SE rastrear os modelos 
+# finais (.pnml) e os scores (.json) para fins de reprodutibilidade dos run scripts.
+output/*_view.png
+output/*.png
+output/*.pdf
+
+# Descomente a linha abaixo apenas se o grupo optar por gerar TODOS os outputs 
+# de forma puramente local sem versionar nenhum artefato de score:
+# output/
+
+# ==============================================================================
+# 3. PYTHON & PYTHON INTERNALS (GENETIC MINER & OUTROS ALGORITMOS)
+# ==============================================================================
+# Arquivos de bytecode compilados pela execução dos scripts (ex: causal_net, operators)
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Virtual Environments (Ambientes Virtuais locais)
+.venv/
+venv/
+env/
+miniconda3/
+.conda/
+.env
+
+# ==============================================================================
+# 4. PERSONAL NOTES & TEMPORARY FILES
+# ==============================================================================
+# Rascunhos locais e arquivos temporários de desenvolvimento (ex: mynotes.txt)
+mynotes.txt
+*_copy.py
+.DS_Store
+Thumbs.db
+
+# ==============================================================================
+# 5. IDE CONFIGURATIONS
+# ==============================================================================
+# Configurações locais do VS Code dos membros do grupo
+.vscode/
+.idea/

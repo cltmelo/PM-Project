@@ -94,10 +94,9 @@ if __name__ == "__main__":
         print(f"  Fitness score:   {fitness:.6f}")
         print(f"  Simplicity score: {simplicity:.6f}")
         
-        # (5) Save results to output directory
+        # (5) Save results to output directory (INSIDE GeneticMiner folder)
         output_dir = os.path.join(
             os.path.dirname(os.path.abspath(__file__)),
-            '..',
             'output'
         )
         
