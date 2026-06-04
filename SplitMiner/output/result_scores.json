@@ -1,10 +1,12 @@
 {
-  "overall_score": 0.900385,
+  "overall_score": 0.874111,
   "fitness_score": 0.787651,
   "precision_score": 1.0,
   "simplicity_score": 0.905138,
-  "generalization_score": 0.997027,
+  "generalization_score": 0.821864,
   "f_score": 0.893826,
+  "cfc": 25.0,
+  "structuredness": 0.935728,
   "num_activities": 23,
   "num_edges": 48,
   "model_stats": {

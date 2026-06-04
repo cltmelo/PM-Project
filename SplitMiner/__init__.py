@@ -32,6 +32,8 @@ from .metrics import (
     calculate_replay_fitness,
     calculate_precision_petri_net,  # FIX Line 33: Renamed from calculate_precision
     calculate_simplicity,
+    calculate_cfc,
+    calculate_structuredness,
     calculate_generalization,
     evaluate_model,
     save_metrics
@@ -73,6 +75,8 @@ __all__ = [
     'calculate_replay_fitness',
     'calculate_precision_petri_net',  # FIX Line 74: Renamed from calculate_precision
     'calculate_simplicity',
+    'calculate_cfc',
+    'calculate_structuredness',
     'calculate_generalization',
     'evaluate_model',
     'save_metrics'

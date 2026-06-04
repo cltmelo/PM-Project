@@ -256,7 +256,9 @@ def main():
         dfg_filtered,          # Filtered DFG
         start_activities,      # Start activities
         end_activities,        # End activities
-        pnml_file              # FIX: Pass PNML path for conformance checking
+        pnml_file,             # Pass PNML path for conformance checking
+        split_gateways,        # For CFC calculation
+        join_gateways          # For structuredness calculation
     )
     eval_time = time.time() - start_time
 
@@ -271,6 +273,8 @@ def main():
     print(f"  Simplicity:        {metrics['simplicity_score']:.4f}")
     print(f"  Generalization:    {metrics['generalization_score']:.4f}")
     print(f"  F-Score:           {metrics['f_score']:.4f}")
+    print(f"  CFC:               {metrics['cfc']}")
+    print(f"  Structuredness:    {metrics['structuredness']:.4f}")
     print(f"\n  Activities:        {metrics['num_activities']}")
     print(f"  Edges:             {metrics['num_edges']}")
     print(f"\n✓ Metrics saved to: {metrics_file}")

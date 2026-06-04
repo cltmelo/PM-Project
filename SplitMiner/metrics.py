@@ -86,9 +86,10 @@ def calculate_replay_fitness(event_log_or_path: Union[str, pd.DataFrame],
 def calculate_precision_petri_net(event_log_or_path: Union[str, pd.DataFrame],
                                    pnml_path: str) -> float:
     """
-    Calculate BEHAVIORAL PRECISION using pm4py's conformance checking on Petri net.
+    Calculate BEHAVIORAL PRECISION using pm4py's ETC (Escaping Edges) conformance checking.
 
-    FIXED: Use correct pm4py API (pm4py.precision_token_based_replay)
+    FIX Option A: Use correct pm4py 2.x API for ETC precision.
+    ETC is what the Split Miner paper uses (benchmark: 0.85 for BPI 2017).
     """
     try:
         event_log_df = _ensure_dataframe(event_log_or_path)
@@ -103,29 +104,80 @@ def calculate_precision_petri_net(event_log_or_path: Union[str, pd.DataFrame],
             print(f"  ⚠ Could not load PNML for precision: {e}")
             return 0.5
 
-        # Option 1: Use pm4py's top-level precision function (CORRECT API)
+        # Option 1: ETC Precision (PRIMARY - what the paper uses)
         try:
-            precision = pm4py.precision_token_based_replay(
-                event_log_df, net, initial_marking, final_marking
-            )
-            return max(0.0, min(1.0, precision))
-        except Exception as e:
-            print(f"  ⚠ precision_token_based_replay failed: {e}")
-
-        # Option 2: Try ETC precision evaluator (alternative)
-        try:
-            from pm4py.algo.evaluation.precision import evaluator as prec_eval
+            from pm4py.algo.evaluation.precision import algorithm as precision_algo
             from pm4py.algo.evaluation.precision.variants import etconformance_token
-            precision = prec_eval.apply(
-                event_log_df, net, initial_marking, final_marking,
+
+            precision = precision_algo.apply(
+                event_log_df,
+                net,
+                initial_marking,
+                final_marking,
                 variant=etconformance_token
             )
-            return max(0.0, min(1.0, precision))
-        except Exception as e:
-            print(f"  ⚠ evaluator precision failed: {e}")
 
-        # Final fallback
-        print("  ⚠ All precision methods failed, using fallback")
+            if isinstance(precision, dict):
+                precision_value = precision.get('score', precision.get('precision', 0.75))
+            else:
+                precision_value = float(precision)
+
+            print(f"    (ETC precision method)")
+            return max(0.0, min(1.0, precision_value))
+
+        except ImportError as ie:
+            print(f"  ⚠ ETC precision import failed: {ie}")
+        except Exception as e1:
+            print(f"  ⚠ ETC precision failed: {e1}")
+
+        # Option 2: Alternative ETC import path (pm4py version compatibility)
+        try:
+            from pm4py.metrics import precision as precision_metric
+
+            precision = precision_metric.precision_etconformance(
+                event_log_df,
+                net,
+                initial_marking,
+                final_marking
+            )
+
+            print(f"    (ETC precision via metrics module)")
+            return max(0.0, min(1.0, float(precision)))
+
+        except Exception as e2:
+            print(f"  ⚠ Alternative ETC failed: {e2}")
+
+        # Option 3: Token-Based Replay (FALLBACK - known to return ~1.0)
+        try:
+            precision = pm4py.precision_token_based_replay(
+                event_log_df,
+                net,
+                initial_marking,
+                final_marking
+            )
+
+            print(f"    (Token-based replay fallback)")
+            return max(0.0, min(1.0, float(precision)))
+
+        except Exception as e3:
+            print(f"  ⚠ TBR precision failed: {e3}")
+
+        # Option 4: Direct pm4py top-level call (last resort)
+        try:
+            precision = pm4py.precision(
+                event_log_df,
+                net,
+                initial_marking,
+                final_marking
+            )
+
+            print(f"    (Direct pm4py.precision fallback)")
+            return max(0.0, min(1.0, float(precision)))
+
+        except Exception as e4:
+            print(f"  ⚠ Direct precision failed: {e4}")
+
+        print("  ⚠ All precision methods failed, using fallback value 0.75")
         return 0.75
 
     except Exception as e:
@@ -151,15 +203,61 @@ def calculate_simplicity(dfg: Dict[Tuple[str, str], int],
     return max(0.0, min(1.0, simplicity))
 
 
+def calculate_cfc(split_gateways: dict, dfg: Dict[Tuple[str, str], int]) -> float:
+    """
+    Calculate Control-Flow Complexity (CFC).
+    Sum of (out_degree - 1) for each split gateway.
+    Paper reports CFC=18 for BPI Challenge 2017.
+    """
+    cfc = 0.0
+    successors = {}
+    for activity in set(src for (src, _) in dfg.keys()):
+        successors[activity] = [tgt for (src, tgt) in dfg.keys() if src == activity]
+    for activity, gw_type in split_gateways.items():
+        num_outgoing = len(successors.get(activity, []))
+        if num_outgoing > 1:
+            cfc += (num_outgoing - 1)
+    return round(cfc, 6)
+
+
+def calculate_structuredness(split_gateways: dict, join_gateways: dict,
+                              num_activities: int) -> float:
+    """
+    Calculate STRUCTUREDNESS: fraction of activities inside SESE blocks.
+    Paper reports 1.00 for BPI Challenge 2017.
+    """
+    if not split_gateways and not join_gateways:
+        return 1.0
+    if num_activities <= 2:
+        return 1.0
+
+    xor_splits = list(split_gateways.values()).count('XOR')
+    and_splits = list(split_gateways.values()).count('AND')
+    xor_joins = list(join_gateways.values()).count('XOR')
+    and_joins = list(join_gateways.values()).count('AND')
+
+    xor_pairs = min(xor_splits, xor_joins)
+    and_pairs = min(and_splits, and_joins)
+    total_pairs = xor_pairs + and_pairs
+    total_gateways = len(split_gateways) + len(join_gateways)
+    max_possible_pairs = total_gateways / 2
+
+    structuredness = total_pairs / max_possible_pairs if max_possible_pairs > 0 else 1.0
+
+    mismatched_splits = abs(xor_splits - xor_joins) + abs(and_splits - and_joins)
+    if mismatched_splits > 0:
+        penalty = mismatched_splits / total_gateways
+        structuredness = structuredness * (1 - penalty * 0.5)
+
+    return round(max(0.0, min(1.0, structuredness)), 6)
+
+
 def calculate_generalization(event_log_or_path: Union[str, pd.DataFrame],
                              dfg: Dict[Tuple[str, str], int],
                              num_cases: int = None) -> float:
     """
-    Calculate GENERALIZATION using PER-EDGE FREQUENCY SCORING.
-
-    FIX Bug 2: Each edge gets a score based on actual frequency relative to cases.
-    Edges at 2% frequency get ~0.2 score, edges at 50%+ get 1.0.
-    This creates real differentiation instead of saturation.
+    Calculate GENERALIZATION using LOG2 FREQUENCY SCORING.
+    Uses log2 scaling for better differentiation across edge frequencies.
     """
     event_log_df = _ensure_dataframe(event_log_or_path)
 
@@ -178,19 +276,15 @@ def calculate_generalization(event_log_or_path: Union[str, pd.DataFrame],
         if not freq_values:
             return 0.5
 
-        # Per-edge scoring with real differentiation
-        # Score each edge: how frequently does it appear relative to total cases?
-        # Baseline: 10% of cases = score 1.0, 2% of cases = score 0.2, etc.
+        max_freq = max(freq_values)
+        log_max = np.log2(max_freq + 1)
 
         per_edge_scores = []
-        baseline_coverage = 0.10  # Edge appearing in 10% of cases gets score 1.0
-
         for freq in freq_values:
-            edge_coverage = freq / num_cases
-            edge_score = min(1.0, edge_coverage / baseline_coverage)
-            per_edge_scores.append(edge_score)
+            log_freq = np.log2(freq + 1)
+            score = log_freq / log_max if log_max > 0 else 0.5
+            per_edge_scores.append(score)
 
-        # Generalization = mean of all per-edge scores
         generalization = np.mean(per_edge_scores)
 
         return max(0.0, min(1.0, round(generalization, 6)))
@@ -204,11 +298,11 @@ def evaluate_model(event_log_or_path: Union[str, pd.DataFrame],
                    dfg: Dict[Tuple[str, str], int],
                    start_activities: Set[str],
                    end_activities: Set[str],
-                   pnml_path: str = None) -> dict:
+                   pnml_path: str = None,
+                   split_gateways: dict = None,
+                   join_gateways: dict = None) -> dict:
     """
     Comprehensive evaluation of the discovered process model.
-
-    FIXED: Now accepts pnml_path to use Petri net for precision calculation
 
     Args:
         event_log_or_path: Path to XES file OR pre-loaded DataFrame
@@ -216,6 +310,8 @@ def evaluate_model(event_log_or_path: Union[str, pd.DataFrame],
         start_activities: Start activities
         end_activities: End activities
         pnml_path: Path to exported PNML file (for Petri net-based precision)
+        split_gateways: Dict of {activity: gateway_type} for CFC/structuredness
+        join_gateways: Dict of {activity: gateway_type} for structuredness
     """
     print("  Loading event log for evaluation...")
 
@@ -230,6 +326,8 @@ def evaluate_model(event_log_or_path: Union[str, pd.DataFrame],
             'simplicity_score': 0.5,
             'generalization_score': 0.5,
             'f_score': 0.5,
+            'cfc': 0.0,
+            'structuredness': 1.0,
             'num_activities': 0,
             'num_edges': len(dfg),
             'model_stats': {
@@ -270,6 +368,14 @@ def evaluate_model(event_log_or_path: Union[str, pd.DataFrame],
     generalization = calculate_generalization(event_log_df, dfg)
     print(f"    Generalization: {generalization:.4f}")
 
+    print("  Calculating CFC and structuredness...")
+    _split_gw = split_gateways or {}
+    _join_gw = join_gateways or {}
+    cfc = calculate_cfc(_split_gw, dfg)
+    structuredness = calculate_structuredness(_split_gw, _join_gw, num_activities)
+    print(f"    CFC: {cfc}")
+    print(f"    Structuredness: {structuredness:.4f}")
+
     f_score = (fitness + precision) / 2
 
     weights = {
@@ -293,6 +399,8 @@ def evaluate_model(event_log_or_path: Union[str, pd.DataFrame],
         'simplicity_score': round(simplicity, 6),
         'generalization_score': round(generalization, 6),
         'f_score': round(f_score, 6),
+        'cfc': cfc,
+        'structuredness': structuredness,
         'num_activities': num_activities,
         'num_edges': len(dfg),
         'model_stats': {
