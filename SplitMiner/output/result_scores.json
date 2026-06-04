@@ -1,0 +1,48 @@
+{
+  "overall_score": 0.900385,
+  "fitness_score": 0.787651,
+  "precision_score": 1.0,
+  "simplicity_score": 0.905138,
+  "generalization_score": 0.997027,
+  "f_score": 0.893826,
+  "num_activities": 23,
+  "num_edges": 48,
+  "model_stats": {
+    "start_activities": [
+      "A_Create Application",
+      "O_Sent (online only)",
+      "W_Personal Loan collection",
+      "W_Shortened completion "
+    ],
+    "end_activities": [
+      "O_Sent (online only)",
+      "W_Personal Loan collection",
+      "W_Shortened completion "
+    ],
+    "activities": [
+      "A_Accepted",
+      "A_Cancelled",
+      "A_Complete",
+      "A_Concept",
+      "A_Create Application",
+      "A_Denied",
+      "A_Incomplete",
+      "A_Pending",
+      "A_Submitted",
+      "A_Validating",
+      "O_Accepted",
+      "O_Cancelled",
+      "O_Create Offer",
+      "O_Created",
+      "O_Refused",
+      "O_Returned",
+      "O_Sent (mail and online)",
+      "W_Assess potential fraud",
+      "W_Call after offers",
+      "W_Call incomplete files",
+      "W_Complete application",
+      "W_Handle leads",
+      "W_Validate application"
+    ]
+  }
+}

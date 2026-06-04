@@ -1,8 +1,8 @@
 """
 main.py - Entry point for SplitMiner algorithm
 Orchestrates the complete process discovery pipeline
+OPTIMIZED: Reuses DataFrame across steps, exports multiple formats, generates visualization
 """
-
 import os
 import sys
 import time
@@ -12,17 +12,16 @@ from typing import Dict, Set, Tuple
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from SplitMiner.dfg_builder import (
-    build_dfg,
+    build_dfg_fast,  # Use optimized version
     filter_dfg,
     get_start_activities,
     get_end_activities
 )
-from SplitMiner.concurrency import detect_concurrency
+from SplitMiner.concurrency import detect_concurrency_fast
 from SplitMiner.gateway_discovery import discover_all_gateways
 from SplitMiner.loop_discovery import detect_back_edges, get_loop_structures
 from SplitMiner.bpmn_exporter import export_model
 from SplitMiner.metrics import evaluate_model, save_metrics
-
 
 # =============================================================================
 # CONFIGURATION
@@ -38,10 +37,9 @@ EVENT_LOG_PATH = os.path.join(
 OUTPUT_DIR = os.path.join(PROJECT_ROOT, "SplitMiner", "output")
 
 # Algorithm parameters
-FILTER_THRESHOLD_TYPE = 'frequency'  # 'frequency' or 'relative'
-FILTER_THRESHOLD_VALUE = 0.02        # Filter threshold (2% of max frequency)
-MIN_CONCURRENCY_SUPPORT = 0.01       # Minimum support for concurrency detection
-EXPORT_FORMAT = 'bpmn'               # 'bpmn' or 'pnml'
+FILTER_THRESHOLD_TYPE = 'frequency'
+FILTER_THRESHOLD_VALUE = 0.02
+MIN_CONCURRENCY_SUPPORT = 0.01
 
 
 def main():
@@ -49,7 +47,7 @@ def main():
     Main execution function for SplitMiner algorithm.
     """
     print("=" * 70)
-    print("SPLIT MINER - Process Discovery Algorithm")
+    print("SPLIT MINER - Process Discovery Algorithm (OPTIMIZED)")
     print("Based on: Augusto et al. (2017)")
     print("=" * 70)
 
@@ -67,18 +65,19 @@ def main():
     os.makedirs(OUTPUT_DIR, exist_ok=True)
 
     # ==========================================================================
-    # STEP 1: Build Directly-Follows Graph
+    # STEP 1: Build Directly-Follows Graph (OPTIMIZED)
     # ==========================================================================
     print("\n" + "-" * 70)
-    print("STEP 1: Building Directly-Follows Graph (DFG)")
+    print("STEP 1: Building Directly-Follows Graph (DFG) - VECTORIZED")
     print("-" * 70)
 
     start_time = time.time()
-    dfg_raw, activity_freq = build_dfg(EVENT_LOG_PATH)
+    dfg_raw, activity_freq, event_log_df = build_dfg_fast(EVENT_LOG_PATH)
     build_time = time.time() - start_time
 
     print(f"✓ Built raw DFG with {len(dfg_raw)} edges")
     print(f"✓ Found {len(activity_freq)} unique activities")
+    print(f"✓ Loaded {len(event_log_df)} events in {len(event_log_df['case:concept:name'].unique())} cases")
     print(f"  Time: {build_time:.2f}s")
 
     # ==========================================================================
@@ -103,16 +102,17 @@ def main():
     print(f"  Time: {filter_time:.2f}s")
 
     # ==========================================================================
-    # STEP 3: Discover Concurrency Relations
+    # STEP 3: Discover Concurrency Relations (OPTIMIZED)
     # ==========================================================================
     print("\n" + "-" * 70)
-    print("STEP 3: Discovering Concurrency Relations")
+    print("STEP 3: Discovering Concurrency Relations - VECTORIZED")
     print("-" * 70)
 
     start_time = time.time()
-    concurrent_pairs = detect_concurrency(
-        EVENT_LOG_PATH,
-        dfg_filtered,
+    # PASS DataFrame directly (no reload!)
+    concurrent_pairs = detect_concurrency_fast(
+        event_log_df=event_log_df,  # Reuse loaded DataFrame
+        dfg=dfg_filtered,
         min_support=MIN_CONCURRENCY_SUPPORT
     )
     concurrency_time = time.time() - start_time
@@ -164,10 +164,10 @@ def main():
     print(f"  Time: {loop_time:.2f}s")
 
     # ==========================================================================
-    # STEP 6: Export Process Model
+    # STEP 6: Export Process Model (BOTH BPMN and PNML)
     # ==========================================================================
     print("\n" + "-" * 70)
-    print("STEP 6: Exporting Process Model")
+    print("STEP 6: Exporting Process Model (BPMN + PNML)")
     print("-" * 70)
 
     start_time = time.time()
@@ -176,34 +176,87 @@ def main():
     start_activities = get_start_activities(dfg_filtered, activity_freq)
     end_activities = get_end_activities(dfg_filtered, activity_freq)
 
-    output_file = export_model(
+    print(f"  Start activities: {sorted(list(start_activities))}")
+    print(f"  End activities: {sorted(list(end_activities))}")
+
+    # Export BPMN
+    bpmn_file = export_model(
         dfg=dfg_filtered,
         split_gateways=split_gateways,
         join_gateways=join_gateways,
         concurrent_pairs=concurrent_pairs,
         loop_info=loop_info,
         output_dir=OUTPUT_DIR,
-        format=EXPORT_FORMAT
+        format='bpmn',
+        start_activities=start_activities,
+        end_activities=end_activities
     )
-    export_time = time.time() - start_time
+    print(f"✓ BPMN exported to: {bpmn_file}")
 
-    print(f"✓ Model exported to: {output_file}")
-    print(f"  Format: {EXPORT_FORMAT.upper()}")
+    # Export PNML (with start/end activities for proper Petri net)
+    pnml_file = export_model(
+        dfg=dfg_filtered,
+        split_gateways=split_gateways,
+        join_gateways=join_gateways,
+        concurrent_pairs=concurrent_pairs,
+        loop_info=loop_info,
+        output_dir=OUTPUT_DIR,
+        format='pnml',
+        start_activities=start_activities,
+        end_activities=end_activities
+    )
+    print(f"✓ PNML exported to: {pnml_file}")
+
+    export_time = time.time() - start_time
     print(f"  Time: {export_time:.2f}s")
 
     # ==========================================================================
-    # STEP 7: Evaluate Model Quality
+    # STEP 7: Generate Visualization (PNG)
     # ==========================================================================
     print("\n" + "-" * 70)
-    print("STEP 7: Evaluating Model Quality")
+    print("STEP 7: Generating Process Model Visualization")
     print("-" * 70)
 
     start_time = time.time()
+
+    try:
+        import pm4py
+        from pm4py.visualization.petri_net import visualizer
+
+        # Read the PNML file
+        net, initial_marking, final_marking = pm4py.read_pnml(pnml_file)
+
+        # Generate visualization
+        fig = visualizer.apply(net, initial_marking, final_marking)
+
+        # Save as PNG
+        view_file = os.path.join(OUTPUT_DIR, 'result_split_miner_view.png')
+        visualizer.save(fig, view_file)
+
+        print(f"✓ Visualization saved to: {view_file}")
+    except Exception as e:
+        print(f"⚠ Visualization failed: {str(e)}")
+        print("  (You can still view the BPMN/PNML files in external tools)")
+        view_file = None
+
+    viz_time = time.time() - start_time
+    print(f"  Time: {viz_time:.2f}s")
+
+    # ==========================================================================
+    # STEP 8: Evaluate Model Quality
+    # ==========================================================================
+    print("\n" + "-" * 70)
+    print("STEP 8: Evaluating Model Quality")
+    print("-" * 70)
+
+    start_time = time.time()
+    # PASS DataFrame directly (no reload!)
     metrics = evaluate_model(
-        EVENT_LOG_PATH,
-        dfg_filtered,
-        start_activities,
-        end_activities
+        event_log_df,          # Reuse loaded DataFrame
+        dfg_filtered,          # Filtered DFG
+        start_activities,      # Start activities
+        end_activities,        # End activities
+        pnml_file              # FIX: Pass PNML path for conformance checking
     )
     eval_time = time.time() - start_time
 
@@ -226,14 +279,17 @@ def main():
     # ==========================================================================
     # SUMMARY
     # ==========================================================================
-    total_time = build_time + filter_time + concurrency_time + gateway_time + loop_time + export_time + eval_time
+    total_time = build_time + filter_time + concurrency_time + gateway_time + loop_time + export_time + viz_time + eval_time
 
     print("\n" + "=" * 70)
     print("EXECUTION COMPLETE")
     print("=" * 70)
-    print(f"⏱ Total Time: {total_time:.2f}s")
+    print(f"⏱ Total Time: {total_time:.2f}s ({total_time/60:.2f} minutes)")
     print(f"📁 Output Files:")
-    print(f"   - Model: {output_file}")
+    print(f"   - BPMN Model: {bpmn_file}")
+    print(f"   - PNML Model: {pnml_file}")
+    if view_file:
+        print(f"   - Visualization: {view_file}")
     print(f"   - Metrics: {metrics_file}")
     print("=" * 70)
 

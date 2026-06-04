@@ -1,0 +1,173 @@
+<?xml version="1.0" ?>
+<ns0:definitions xmlns:ns0="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:typeLanguage="http://www.w3.org/2001/XMLSchema" xsi:expressionLanguage="http://www.w3.org/1999/XPath" targetNamespace="http://splitminer/process">
+  <ns0:process id="SplitMinerProcess" isExecutable="false">
+    <ns0:task id="task_A_Accepted" name="A_Accepted"/>
+    <ns0:task id="task_A_Cancelled" name="A_Cancelled"/>
+    <ns0:task id="task_A_Complete" name="A_Complete"/>
+    <ns0:task id="task_A_Concept" name="A_Concept"/>
+    <ns0:task id="task_A_Create Application" name="A_Create Application"/>
+    <ns0:task id="task_A_Denied" name="A_Denied"/>
+    <ns0:task id="task_A_Incomplete" name="A_Incomplete"/>
+    <ns0:task id="task_A_Pending" name="A_Pending"/>
+    <ns0:task id="task_A_Submitted" name="A_Submitted"/>
+    <ns0:task id="task_A_Validating" name="A_Validating"/>
+    <ns0:task id="task_O_Accepted" name="O_Accepted"/>
+    <ns0:task id="task_O_Cancelled" name="O_Cancelled"/>
+    <ns0:task id="task_O_Create Offer" name="O_Create Offer"/>
+    <ns0:task id="task_O_Created" name="O_Created"/>
+    <ns0:task id="task_O_Refused" name="O_Refused"/>
+    <ns0:task id="task_O_Returned" name="O_Returned"/>
+    <ns0:task id="task_O_Sent (mail and online)" name="O_Sent (mail and online)"/>
+    <ns0:task id="task_W_Assess potential fraud" name="W_Assess potential fraud"/>
+    <ns0:task id="task_W_Call after offers" name="W_Call after offers"/>
+    <ns0:task id="task_W_Call incomplete files" name="W_Call incomplete files"/>
+    <ns0:task id="task_W_Complete application" name="W_Complete application"/>
+    <ns0:task id="task_W_Handle leads" name="W_Handle leads"/>
+    <ns0:task id="task_W_Validate application" name="W_Validate application"/>
+    <ns0:exclusiveGateway id="gateway_split_0" name="XOR_split_A_Concept"/>
+    <ns0:exclusiveGateway id="gateway_split_1" name="XOR_split_A_Create Application"/>
+    <ns0:exclusiveGateway id="gateway_split_2" name="XOR_split_A_Pending"/>
+    <ns0:exclusiveGateway id="gateway_split_3" name="XOR_split_A_Validating"/>
+    <ns0:parallelGateway id="gateway_split_4" name="AND_split_O_Cancelled"/>
+    <ns0:exclusiveGateway id="gateway_split_5" name="XOR_split_O_Created"/>
+    <ns0:exclusiveGateway id="gateway_split_6" name="XOR_split_O_Sent (mail and online)"/>
+    <ns0:exclusiveGateway id="gateway_split_7" name="XOR_split_W_Call after offers"/>
+    <ns0:exclusiveGateway id="gateway_split_8" name="XOR_split_W_Call incomplete files"/>
+    <ns0:exclusiveGateway id="gateway_split_9" name="XOR_split_W_Complete application"/>
+    <ns0:exclusiveGateway id="gateway_split_10" name="XOR_split_W_Handle leads"/>
+    <ns0:exclusiveGateway id="gateway_split_11" name="XOR_split_W_Validate application"/>
+    <ns0:exclusiveGateway id="gateway_join_12" name="XOR_join_O_Create Offer"/>
+    <ns0:exclusiveGateway id="gateway_join_13" name="XOR_join_O_Cancelled"/>
+    <ns0:exclusiveGateway id="gateway_join_14" name="XOR_join_W_Call after offers"/>
+    <ns0:parallelGateway id="gateway_join_15" name="AND_join_A_Accepted"/>
+    <ns0:exclusiveGateway id="gateway_join_16" name="XOR_join_W_Complete application"/>
+    <ns0:exclusiveGateway id="gateway_join_17" name="XOR_join_A_Concept"/>
+    <ns0:exclusiveGateway id="gateway_join_18" name="XOR_join_W_Call incomplete files"/>
+    <ns0:exclusiveGateway id="gateway_join_19" name="XOR_join_W_Validate application"/>
+    <ns0:exclusiveGateway id="gateway_join_20" name="XOR_join_W_Handle leads"/>
+    <ns0:exclusiveGateway id="gateway_join_21" name="XOR_join_O_Sent (mail and online)"/>
+    <ns0:exclusiveGateway id="gateway_join_22" name="XOR_join_O_Accepted"/>
+    <ns0:sequenceFlow id="flow_0" sourceRef="task_W_Validate application" targetRef="gateway_split_11" name="W_Validate application → GW_split"/>
+    <ns0:sequenceFlow id="flow_1" sourceRef="gateway_split_11" targetRef="gateway_join_19" name="GW → join_W_Validate application"/>
+    <ns0:sequenceFlow id="flow_2" sourceRef="gateway_join_19" targetRef="task_W_Validate application" name="join_W_Validate application → W_Validate application"/>
+    <ns0:sequenceFlow id="flow_3" sourceRef="task_W_Call after offers" targetRef="gateway_split_7" name="W_Call after offers → GW_split"/>
+    <ns0:sequenceFlow id="flow_4" sourceRef="gateway_split_7" targetRef="gateway_join_14" name="GW → join_W_Call after offers"/>
+    <ns0:sequenceFlow id="flow_5" sourceRef="gateway_join_14" targetRef="task_W_Call after offers" name="join_W_Call after offers → W_Call after offers"/>
+    <ns0:sequenceFlow id="flow_6" sourceRef="task_W_Call incomplete files" targetRef="gateway_split_8" name="W_Call incomplete files → GW_split"/>
+    <ns0:sequenceFlow id="flow_7" sourceRef="gateway_split_8" targetRef="gateway_join_18" name="GW → join_W_Call incomplete files"/>
+    <ns0:sequenceFlow id="flow_8" sourceRef="gateway_join_18" targetRef="task_W_Call incomplete files" name="join_W_Call incomplete files → W_Call incomplete files"/>
+    <ns0:sequenceFlow id="flow_9" sourceRef="task_W_Complete application" targetRef="gateway_split_9" name="W_Complete application → GW_split"/>
+    <ns0:sequenceFlow id="flow_10" sourceRef="gateway_split_9" targetRef="gateway_join_16" name="GW → join_W_Complete application"/>
+    <ns0:sequenceFlow id="flow_11" sourceRef="gateway_join_16" targetRef="task_W_Complete application" name="join_W_Complete application → W_Complete application"/>
+    <ns0:sequenceFlow id="flow_12" sourceRef="task_O_Create Offer" targetRef="task_O_Created" name="O_Create Offer → O_Created"/>
+    <ns0:sequenceFlow id="flow_13" sourceRef="task_W_Validate application" targetRef="gateway_split_11" name="W_Validate application → GW_split"/>
+    <ns0:sequenceFlow id="flow_14" sourceRef="gateway_split_11" targetRef="task_A_Validating" name="W_Validate application → A_Validating"/>
+    <ns0:sequenceFlow id="flow_15" sourceRef="task_O_Created" targetRef="gateway_split_5" name="O_Created → GW_split"/>
+    <ns0:sequenceFlow id="flow_16" sourceRef="gateway_split_5" targetRef="gateway_join_21" name="GW → join_O_Sent (mail and online)"/>
+    <ns0:sequenceFlow id="flow_17" sourceRef="gateway_join_21" targetRef="task_O_Sent (mail and online)" name="join_O_Sent (mail and online) → O_Sent (mail and online)"/>
+    <ns0:sequenceFlow id="flow_18" sourceRef="task_W_Call after offers" targetRef="gateway_split_7" name="W_Call after offers → GW_split"/>
+    <ns0:sequenceFlow id="flow_19" sourceRef="gateway_split_7" targetRef="task_A_Complete" name="W_Call after offers → A_Complete"/>
+    <ns0:sequenceFlow id="flow_20" sourceRef="task_W_Complete application" targetRef="gateway_split_9" name="W_Complete application → GW_split"/>
+    <ns0:sequenceFlow id="flow_21" sourceRef="gateway_split_9" targetRef="gateway_join_14" name="GW → join_W_Call after offers"/>
+    <ns0:sequenceFlow id="flow_22" sourceRef="gateway_join_14" targetRef="task_W_Call after offers" name="join_W_Call after offers → W_Call after offers"/>
+    <ns0:sequenceFlow id="flow_23" sourceRef="task_O_Sent (mail and online)" targetRef="gateway_split_6" name="O_Sent (mail and online) → GW_split"/>
+    <ns0:sequenceFlow id="flow_24" sourceRef="gateway_split_6" targetRef="gateway_join_16" name="GW → join_W_Complete application"/>
+    <ns0:sequenceFlow id="flow_25" sourceRef="gateway_join_16" targetRef="task_W_Complete application" name="join_W_Complete application → W_Complete application"/>
+    <ns0:sequenceFlow id="flow_26" sourceRef="task_A_Complete" targetRef="gateway_join_14" name="GW → join_W_Call after offers"/>
+    <ns0:sequenceFlow id="flow_27" sourceRef="gateway_join_14" targetRef="task_W_Call after offers" name="join_W_Call after offers → W_Call after offers"/>
+    <ns0:sequenceFlow id="flow_28" sourceRef="task_A_Accepted" targetRef="gateway_join_12" name="GW → join_O_Create Offer"/>
+    <ns0:sequenceFlow id="flow_29" sourceRef="gateway_join_12" targetRef="task_O_Create Offer" name="join_O_Create Offer → O_Create Offer"/>
+    <ns0:sequenceFlow id="flow_30" sourceRef="task_W_Complete application" targetRef="gateway_split_9" name="W_Complete application → GW_split"/>
+    <ns0:sequenceFlow id="flow_31" sourceRef="gateway_split_9" targetRef="gateway_join_17" name="GW → join_A_Concept"/>
+    <ns0:sequenceFlow id="flow_32" sourceRef="gateway_join_17" targetRef="task_A_Concept" name="join_A_Concept → A_Concept"/>
+    <ns0:sequenceFlow id="flow_33" sourceRef="task_W_Handle leads" targetRef="gateway_split_10" name="W_Handle leads → GW_split"/>
+    <ns0:sequenceFlow id="flow_34" sourceRef="gateway_split_10" targetRef="gateway_join_20" name="GW → join_W_Handle leads"/>
+    <ns0:sequenceFlow id="flow_35" sourceRef="gateway_join_20" targetRef="task_W_Handle leads" name="join_W_Handle leads → W_Handle leads"/>
+    <ns0:sequenceFlow id="flow_36" sourceRef="task_W_Call incomplete files" targetRef="gateway_split_8" name="W_Call incomplete files → GW_split"/>
+    <ns0:sequenceFlow id="flow_37" sourceRef="gateway_split_8" targetRef="task_A_Incomplete" name="W_Call incomplete files → A_Incomplete"/>
+    <ns0:sequenceFlow id="flow_38" sourceRef="task_W_Validate application" targetRef="gateway_split_11" name="W_Validate application → GW_split"/>
+    <ns0:sequenceFlow id="flow_39" sourceRef="gateway_split_11" targetRef="gateway_join_18" name="GW → join_W_Call incomplete files"/>
+    <ns0:sequenceFlow id="flow_40" sourceRef="gateway_join_18" targetRef="task_W_Call incomplete files" name="join_W_Call incomplete files → W_Call incomplete files"/>
+    <ns0:sequenceFlow id="flow_41" sourceRef="task_A_Incomplete" targetRef="gateway_join_18" name="GW → join_W_Call incomplete files"/>
+    <ns0:sequenceFlow id="flow_42" sourceRef="gateway_join_18" targetRef="task_W_Call incomplete files" name="join_W_Call incomplete files → W_Call incomplete files"/>
+    <ns0:sequenceFlow id="flow_43" sourceRef="task_A_Concept" targetRef="gateway_split_0" name="A_Concept → GW_split"/>
+    <ns0:sequenceFlow id="flow_44" sourceRef="gateway_split_0" targetRef="gateway_join_16" name="GW → join_W_Complete application"/>
+    <ns0:sequenceFlow id="flow_45" sourceRef="gateway_join_16" targetRef="task_W_Complete application" name="join_W_Complete application → W_Complete application"/>
+    <ns0:sequenceFlow id="flow_46" sourceRef="task_W_Complete application" targetRef="gateway_split_9" name="W_Complete application → GW_split"/>
+    <ns0:sequenceFlow id="flow_47" sourceRef="gateway_split_9" targetRef="gateway_join_15" name="GW → join_A_Accepted"/>
+    <ns0:sequenceFlow id="flow_48" sourceRef="gateway_join_15" targetRef="task_A_Accepted" name="join_A_Accepted → A_Accepted"/>
+    <ns0:sequenceFlow id="flow_49" sourceRef="task_W_Call after offers" targetRef="gateway_split_7" name="W_Call after offers → GW_split"/>
+    <ns0:sequenceFlow id="flow_50" sourceRef="gateway_split_7" targetRef="gateway_join_19" name="GW → join_W_Validate application"/>
+    <ns0:sequenceFlow id="flow_51" sourceRef="gateway_join_19" targetRef="task_W_Validate application" name="join_W_Validate application → W_Validate application"/>
+    <ns0:sequenceFlow id="flow_52" sourceRef="task_O_Returned" targetRef="gateway_join_19" name="GW → join_W_Validate application"/>
+    <ns0:sequenceFlow id="flow_53" sourceRef="gateway_join_19" targetRef="task_W_Validate application" name="join_W_Validate application → W_Validate application"/>
+    <ns0:sequenceFlow id="flow_54" sourceRef="task_A_Validating" targetRef="gateway_split_3" name="A_Validating → GW_split"/>
+    <ns0:sequenceFlow id="flow_55" sourceRef="gateway_split_3" targetRef="task_O_Returned" name="A_Validating → O_Returned"/>
+    <ns0:sequenceFlow id="flow_56" sourceRef="task_A_Create Application" targetRef="gateway_split_1" name="A_Create Application → GW_split"/>
+    <ns0:sequenceFlow id="flow_57" sourceRef="gateway_split_1" targetRef="task_A_Submitted" name="A_Create Application → A_Submitted"/>
+    <ns0:sequenceFlow id="flow_58" sourceRef="task_A_Submitted" targetRef="gateway_join_20" name="GW → join_W_Handle leads"/>
+    <ns0:sequenceFlow id="flow_59" sourceRef="gateway_join_20" targetRef="task_W_Handle leads" name="join_W_Handle leads → W_Handle leads"/>
+    <ns0:sequenceFlow id="flow_60" sourceRef="task_W_Handle leads" targetRef="gateway_split_10" name="W_Handle leads → GW_split"/>
+    <ns0:sequenceFlow id="flow_61" sourceRef="gateway_split_10" targetRef="gateway_join_16" name="GW → join_W_Complete application"/>
+    <ns0:sequenceFlow id="flow_62" sourceRef="gateway_join_16" targetRef="task_W_Complete application" name="join_W_Complete application → W_Complete application"/>
+    <ns0:sequenceFlow id="flow_63" sourceRef="task_A_Validating" targetRef="gateway_split_3" name="A_Validating → GW_split"/>
+    <ns0:sequenceFlow id="flow_64" sourceRef="gateway_split_3" targetRef="gateway_join_19" name="GW → join_W_Validate application"/>
+    <ns0:sequenceFlow id="flow_65" sourceRef="gateway_join_19" targetRef="task_W_Validate application" name="join_W_Validate application → W_Validate application"/>
+    <ns0:sequenceFlow id="flow_66" sourceRef="task_O_Accepted" targetRef="task_A_Pending" name="O_Accepted → A_Pending"/>
+    <ns0:sequenceFlow id="flow_67" sourceRef="task_W_Call incomplete files" targetRef="gateway_split_8" name="W_Call incomplete files → GW_split"/>
+    <ns0:sequenceFlow id="flow_68" sourceRef="gateway_split_8" targetRef="gateway_join_19" name="GW → join_W_Validate application"/>
+    <ns0:sequenceFlow id="flow_69" sourceRef="gateway_join_19" targetRef="task_W_Validate application" name="join_W_Validate application → W_Validate application"/>
+    <ns0:sequenceFlow id="flow_70" sourceRef="task_A_Pending" targetRef="gateway_split_2" name="A_Pending → GW_split"/>
+    <ns0:sequenceFlow id="flow_71" sourceRef="gateway_split_2" targetRef="gateway_join_19" name="GW → join_W_Validate application"/>
+    <ns0:sequenceFlow id="flow_72" sourceRef="gateway_join_19" targetRef="task_W_Validate application" name="join_W_Validate application → W_Validate application"/>
+    <ns0:sequenceFlow id="flow_73" sourceRef="task_W_Validate application" targetRef="gateway_split_11" name="W_Validate application → GW_split"/>
+    <ns0:sequenceFlow id="flow_74" sourceRef="gateway_split_11" targetRef="gateway_join_22" name="GW → join_O_Accepted"/>
+    <ns0:sequenceFlow id="flow_75" sourceRef="gateway_join_22" targetRef="task_O_Accepted" name="join_O_Accepted → O_Accepted"/>
+    <ns0:sequenceFlow id="flow_76" sourceRef="task_A_Cancelled" targetRef="gateway_join_13" name="GW → join_O_Cancelled"/>
+    <ns0:sequenceFlow id="flow_77" sourceRef="gateway_join_13" targetRef="task_O_Cancelled" name="join_O_Cancelled → O_Cancelled"/>
+    <ns0:sequenceFlow id="flow_78" sourceRef="task_O_Cancelled" targetRef="gateway_split_4" name="O_Cancelled → GW_split"/>
+    <ns0:sequenceFlow id="flow_79" sourceRef="gateway_split_4" targetRef="gateway_join_14" name="GW → join_W_Call after offers"/>
+    <ns0:sequenceFlow id="flow_80" sourceRef="gateway_join_14" targetRef="task_W_Call after offers" name="join_W_Call after offers → W_Call after offers"/>
+    <ns0:sequenceFlow id="flow_81" sourceRef="task_A_Concept" targetRef="gateway_split_0" name="A_Concept → GW_split"/>
+    <ns0:sequenceFlow id="flow_82" sourceRef="gateway_split_0" targetRef="gateway_join_15" name="GW → join_A_Accepted"/>
+    <ns0:sequenceFlow id="flow_83" sourceRef="gateway_join_15" targetRef="task_A_Accepted" name="join_A_Accepted → A_Accepted"/>
+    <ns0:sequenceFlow id="flow_84" sourceRef="task_W_Call after offers" targetRef="gateway_split_7" name="W_Call after offers → GW_split"/>
+    <ns0:sequenceFlow id="flow_85" sourceRef="gateway_split_7" targetRef="task_A_Cancelled" name="W_Call after offers → A_Cancelled"/>
+    <ns0:sequenceFlow id="flow_86" sourceRef="task_A_Create Application" targetRef="gateway_split_1" name="A_Create Application → GW_split"/>
+    <ns0:sequenceFlow id="flow_87" sourceRef="gateway_split_1" targetRef="gateway_join_16" name="GW → join_W_Complete application"/>
+    <ns0:sequenceFlow id="flow_88" sourceRef="gateway_join_16" targetRef="task_W_Complete application" name="join_W_Complete application → W_Complete application"/>
+    <ns0:sequenceFlow id="flow_89" sourceRef="task_A_Pending" targetRef="gateway_split_2" name="A_Pending → GW_split"/>
+    <ns0:sequenceFlow id="flow_90" sourceRef="gateway_split_2" targetRef="gateway_join_18" name="GW → join_W_Call incomplete files"/>
+    <ns0:sequenceFlow id="flow_91" sourceRef="gateway_join_18" targetRef="task_W_Call incomplete files" name="join_W_Call incomplete files → W_Call incomplete files"/>
+    <ns0:sequenceFlow id="flow_92" sourceRef="task_W_Call incomplete files" targetRef="gateway_split_8" name="W_Call incomplete files → GW_split"/>
+    <ns0:sequenceFlow id="flow_93" sourceRef="gateway_split_8" targetRef="gateway_join_22" name="GW → join_O_Accepted"/>
+    <ns0:sequenceFlow id="flow_94" sourceRef="gateway_join_22" targetRef="task_O_Accepted" name="join_O_Accepted → O_Accepted"/>
+    <ns0:sequenceFlow id="flow_95" sourceRef="task_O_Cancelled" targetRef="gateway_split_4" name="O_Cancelled → GW_split"/>
+    <ns0:sequenceFlow id="flow_96" sourceRef="gateway_split_4" targetRef="gateway_join_13" name="GW → join_O_Cancelled"/>
+    <ns0:sequenceFlow id="flow_97" sourceRef="gateway_join_13" targetRef="task_O_Cancelled" name="join_O_Cancelled → O_Cancelled"/>
+    <ns0:sequenceFlow id="flow_98" sourceRef="task_W_Call after offers" targetRef="gateway_split_7" name="W_Call after offers → GW_split"/>
+    <ns0:sequenceFlow id="flow_99" sourceRef="gateway_split_7" targetRef="gateway_join_12" name="GW → join_O_Create Offer"/>
+    <ns0:sequenceFlow id="flow_100" sourceRef="gateway_join_12" targetRef="task_O_Create Offer" name="join_O_Create Offer → O_Create Offer"/>
+    <ns0:sequenceFlow id="flow_101" sourceRef="task_O_Created" targetRef="gateway_split_5" name="O_Created → GW_split"/>
+    <ns0:sequenceFlow id="flow_102" sourceRef="gateway_split_5" targetRef="gateway_join_12" name="GW → join_O_Create Offer"/>
+    <ns0:sequenceFlow id="flow_103" sourceRef="gateway_join_12" targetRef="task_O_Create Offer" name="join_O_Create Offer → O_Create Offer"/>
+    <ns0:sequenceFlow id="flow_104" sourceRef="task_A_Denied" targetRef="task_O_Refused" name="A_Denied → O_Refused"/>
+    <ns0:sequenceFlow id="flow_105" sourceRef="task_O_Sent (mail and online)" targetRef="gateway_split_6" name="O_Sent (mail and online) → GW_split"/>
+    <ns0:sequenceFlow id="flow_106" sourceRef="gateway_split_6" targetRef="gateway_join_14" name="GW → join_W_Call after offers"/>
+    <ns0:sequenceFlow id="flow_107" sourceRef="gateway_join_14" targetRef="task_W_Call after offers" name="join_W_Call after offers → W_Call after offers"/>
+    <ns0:sequenceFlow id="flow_108" sourceRef="task_A_Create Application" targetRef="gateway_split_1" name="A_Create Application → GW_split"/>
+    <ns0:sequenceFlow id="flow_109" sourceRef="gateway_split_1" targetRef="gateway_join_17" name="GW → join_A_Concept"/>
+    <ns0:sequenceFlow id="flow_110" sourceRef="gateway_join_17" targetRef="task_A_Concept" name="join_A_Concept → A_Concept"/>
+    <ns0:sequenceFlow id="flow_111" sourceRef="task_O_Refused" targetRef="gateway_join_19" name="GW → join_W_Validate application"/>
+    <ns0:sequenceFlow id="flow_112" sourceRef="gateway_join_19" targetRef="task_W_Validate application" name="join_W_Validate application → W_Validate application"/>
+    <ns0:sequenceFlow id="flow_113" sourceRef="task_W_Validate application" targetRef="gateway_split_11" name="W_Validate application → GW_split"/>
+    <ns0:sequenceFlow id="flow_114" sourceRef="gateway_split_11" targetRef="task_A_Denied" name="W_Validate application → A_Denied"/>
+    <ns0:sequenceFlow id="flow_115" sourceRef="task_O_Sent (mail and online)" targetRef="gateway_split_6" name="O_Sent (mail and online) → GW_split"/>
+    <ns0:sequenceFlow id="flow_116" sourceRef="gateway_split_6" targetRef="gateway_join_21" name="GW → join_O_Sent (mail and online)"/>
+    <ns0:sequenceFlow id="flow_117" sourceRef="gateway_join_21" targetRef="task_O_Sent (mail and online)" name="join_O_Sent (mail and online) → O_Sent (mail and online)"/>
+    <ns0:sequenceFlow id="flow_118" sourceRef="task_W_Validate application" targetRef="gateway_split_11" name="W_Validate application → GW_split"/>
+    <ns0:sequenceFlow id="flow_119" sourceRef="gateway_split_11" targetRef="gateway_join_13" name="GW → join_O_Cancelled"/>
+    <ns0:sequenceFlow id="flow_120" sourceRef="gateway_join_13" targetRef="task_O_Cancelled" name="join_O_Cancelled → O_Cancelled"/>
+    <ns0:sequenceFlow id="flow_121" sourceRef="task_W_Assess potential fraud" targetRef="task_W_Assess potential fraud" name="W_Assess potential fraud → W_Assess potential fraud"/>
+  </ns0:process>
+</ns0:definitions>
