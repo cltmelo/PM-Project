@@ -11,6 +11,8 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
 from pathlib import Path
+import sys
+import json
 
 # Set up plotting style
 plt.style.use('default')
@@ -18,7 +20,27 @@ sns.set_palette("husl")
 
 # Path to event data
 DATA_DIR = Path(__file__).parent.parent / "BPI Challenge 2017_1_all"
-XES_FILE = DATA_DIR / "BPI Challenge 2017.xes"
+# use the compressed XES if present
+XES_FILE = DATA_DIR / "BPI Challenge 2017.xes.gz"
+
+# Output directory inside ERNESTO folder
+OUTPUT_DIR = Path(__file__).parent / "output"
+
+class Tee:
+    """Simple tee to write stdout/stderr to both console and a file."""
+    def __init__(self, *files):
+        self.files = files
+
+    def write(self, data):
+        for f in self.files:
+            f.write(data)
+
+    def flush(self):
+        for f in self.files:
+            try:
+                f.flush()
+            except Exception:
+                pass
 
 
 def load_event_log():
@@ -93,7 +115,7 @@ def visualize_loan_goals(df):
     plt.ylabel('Number of Applications')
     plt.xticks(rotation=45, ha='right')
     plt.tight_layout()
-    plt.savefig('framework/loan_goals_distribution.png', dpi=300, bbox_inches='tight')
+    plt.savefig(str(OUTPUT_DIR / 'loan_goals_distribution.png'), dpi=300, bbox_inches='tight')
     plt.show()
 
 
@@ -111,7 +133,7 @@ def visualize_processing_times(df):
                 label=f'Mean: {case_durations["duration_days"].mean():.1f} days')
     plt.legend()
     plt.tight_layout()
-    plt.savefig('framework/processing_times_distribution.png', dpi=300, bbox_inches='tight')
+    plt.savefig(str(OUTPUT_DIR / 'processing_times_distribution.png'), dpi=300, bbox_inches='tight')
     plt.show()
 
 
@@ -134,7 +156,7 @@ def visualize_acceptance_by_goal(df):
     plt.xticks(rotation=45, ha='right')
     plt.ylim(0, 1)
     plt.tight_layout()
-    plt.savefig('framework/acceptance_by_goal.png', dpi=300, bbox_inches='tight')
+    plt.savefig(str(OUTPUT_DIR / 'acceptance_by_goal.png'), dpi=300, bbox_inches='tight')
     plt.show()
 
 
@@ -153,7 +175,7 @@ def visualize_requested_amounts(df):
                 label=f'Mean: €{amounts.mean():,.0f}')
     plt.legend()
     plt.tight_layout()
-    plt.savefig('framework/requested_amounts_distribution.png', dpi=300, bbox_inches='tight')
+    plt.savefig(str(OUTPUT_DIR / 'requested_amounts_distribution.png'), dpi=300, bbox_inches='tight')
     plt.show()
 
 
@@ -171,7 +193,7 @@ def visualize_applications_over_time(df):
     plt.xticks(rotation=45, ha='right')
     plt.grid(True, alpha=0.3)
     plt.tight_layout()
-    plt.savefig('framework/applications_over_time.png', dpi=300, bbox_inches='tight')
+    plt.savefig(str(OUTPUT_DIR / 'applications_over_time.png'), dpi=300, bbox_inches='tight')
     plt.show()
 
 
@@ -191,7 +213,7 @@ def visualize_credit_score_vs_acceptance(df):
     plt.ylabel('Credit Score')
     plt.xticks([0, 1], ['Rejected', 'Accepted'])
     plt.tight_layout()
-    plt.savefig('framework/credit_score_vs_acceptance.png', dpi=300, bbox_inches='tight')
+    plt.savefig(str(OUTPUT_DIR / 'credit_score_vs_acceptance.png'), dpi=300, bbox_inches='tight')
     plt.show()
 
 
@@ -254,7 +276,7 @@ def create_comprehensive_dashboard(df):
     axes[1,2].set_xticklabels(['Rejected', 'Accepted'])
 
     plt.tight_layout()
-    plt.savefig('framework/comprehensive_dashboard.png', dpi=300, bbox_inches='tight')
+    plt.savefig(str(OUTPUT_DIR / 'comprehensive_dashboard.png'), dpi=300, bbox_inches='tight')
     plt.show()
 
 
@@ -273,6 +295,13 @@ def analyze_bottlenecks(df):
 
 def main():
     try:
+        # Ensure output directory exists and start logging
+        OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
+        log_path = OUTPUT_DIR / 'run_output.txt'
+        log_f = open(log_path, 'w', encoding='utf-8')
+        sys.stdout = Tee(sys.__stdout__, log_f)
+        sys.stderr = Tee(sys.__stderr__, log_f)
+
         # Load the event log (returns DataFrame)
         df = load_event_log()
 
@@ -301,8 +330,38 @@ def main():
         create_comprehensive_dashboard(df)
 
         print("\n✓ Analysis complete!")
-        print("✓ All visualizations saved to framework/ directory")
+        print(f"✓ All visualizations saved to {OUTPUT_DIR}/ directory")
         print("\nYou can now work with the 'df' DataFrame for further analysis")
+
+        # Write a JSON summary of key results
+        try:
+            case_durations = df.groupby('case:concept:name')['time:timestamp'].agg(['min', 'max'])
+            case_durations['duration_days'] = (case_durations['max'] - case_durations['min']).dt.days
+            avg_processing = float(case_durations['duration_days'].mean())
+        except Exception:
+            avg_processing = None
+
+        try:
+            accepted = df.groupby('case:concept:name')['Accepted'].last()
+            acceptance_rate = float(accepted.value_counts(normalize=True).get(True, 0))
+        except Exception:
+            acceptance_rate = None
+
+        summary = {
+            'shape': list(df.shape),
+            'num_events': int(len(df)),
+            'num_cases': int(df['case:concept:name'].nunique()) if 'case:concept:name' in df.columns else None,
+            'avg_processing_days': avg_processing,
+            'acceptance_rate': acceptance_rate
+        }
+
+        with open(OUTPUT_DIR / 'run_output.json', 'w', encoding='utf-8') as jf:
+            json.dump(summary, jf, indent=2)
+
+        # restore stdout/stderr and close log file so the file is flushed properly
+        sys.stdout = sys.__stdout__
+        sys.stderr = sys.__stderr__
+        log_f.close()
 
     except FileNotFoundError:
         print(f"Error: Could not find event log at {XES_FILE}")

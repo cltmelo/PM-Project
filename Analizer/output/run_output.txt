@@ -1,0 +1,127 @@
+Loading event log from: /Users/ernestou/Desktop/HOF/Process_Mining/PROJECT/PM-Project/BPI Challenge 2017_1_all/BPI Challenge 2017.xes.gz
+/opt/anaconda3/envs/process-mining/lib/python3.11/site-packages/pm4py/utils.py:1027: UserWarning: Install the optional requirement `r4pm` to import/export files faster. `rustxes` remains supported as a fallback.
+  warnings.warn(
+parsing log, completed traces ::   0%|          | 0/31509 [00:00<?, ?it/s]parsing log, completed traces ::   0%|          | 1/31509 [00:00<2:00:50,  4.35it/s]parsing log, completed traces ::   1%|          | 161/31509 [00:00<00:50, 614.67it/s]parsing log, completed traces ::   1%|1         | 383/31509 [00:00<00:26, 1179.78it/s]parsing log, completed traces ::   2%|1         | 543/31509 [00:00<00:23, 1319.64it/s]parsing log, completed traces ::   2%|2         | 772/31509 [00:00<00:18, 1633.53it/s]parsing log, completed traces ::   3%|3         | 954/31509 [00:00<00:18, 1636.95it/s]parsing log, completed traces ::   4%|3         | 1179/31509 [00:00<00:16, 1820.91it/s]parsing log, completed traces ::   4%|4         | 1371/31509 [00:00<00:17, 1755.46it/s]parsing log, completed traces ::   5%|5         | 1584/31509 [00:01<00:16, 1861.48it/s]parsing log, completed traces ::   6%|5         | 1784/31509 [00:01<00:17, 1734.66it/s]parsing log, completed traces ::   6%|6         | 1997/31509 [00:01<00:16, 1842.72it/s]parsing log, completed traces ::   7%|7         | 2214/31509 [00:01<00:15, 1933.44it/s]parsing log, completed traces ::   8%|7         | 2412/31509 [00:01<00:17, 1705.82it/s]parsing log, completed traces ::   8%|8         | 2650/31509 [00:01<00:15, 1884.01it/s]parsing log, completed traces ::   9%|9         | 2886/31509 [00:01<00:14, 2013.71it/s]parsing log, completed traces ::  10%|9         | 3094/31509 [00:01<00:16, 1740.90it/s]parsing log, completed traces ::  11%|#         | 3322/31509 [00:02<00:15, 1878.24it/s]parsing log, completed traces ::  11%|#1        | 3542/31509 [00:02<00:16, 1657.64it/s]parsing log, completed traces ::  12%|#1        | 3780/31509 [00:02<00:15, 1833.65it/s]parsing log, completed traces ::  13%|#2        | 4008/31509 [00:02<00:14, 1947.87it/s]parsing log, completed traces ::  13%|#3        | 4225/31509 [00:02<00:16, 1626.11it/s]parsing log, completed traces ::  14%|#4        | 4446/31509 [00:02<00:15, 1762.26it/s]parsing log, completed traces ::  15%|#4        | 4677/31509 [00:02<00:14, 1900.64it/s]parsing log, completed traces ::  16%|#5        | 4910/31509 [00:02<00:13, 2011.88it/s]parsing log, completed traces ::  16%|#6        | 5122/31509 [00:03<00:16, 1636.55it/s]parsing log, completed traces ::  17%|#6        | 5348/31509 [00:03<00:14, 1785.32it/s]parsing log, completed traces ::  18%|#7        | 5576/31509 [00:03<00:13, 1909.30it/s]parsing log, completed traces ::  18%|#8        | 5799/31509 [00:03<00:12, 1993.59it/s]parsing log, completed traces ::  19%|#9        | 6009/31509 [00:03<00:15, 1600.51it/s]parsing log, completed traces ::  20%|#9        | 6238/31509 [00:03<00:14, 1761.72it/s]parsing log, completed traces ::  21%|##        | 6469/31509 [00:03<00:13, 1899.69it/s]parsing log, completed traces ::  21%|##1       | 6674/31509 [00:03<00:16, 1469.19it/s]parsing log, completed traces ::  22%|##1       | 6900/31509 [00:04<00:14, 1644.73it/s]parsing log, completed traces ::  23%|##2       | 7142/31509 [00:04<00:13, 1830.19it/s]parsing log, completed traces ::  23%|##3       | 7363/31509 [00:04<00:12, 1923.82it/s]parsing log, completed traces ::  24%|##4       | 7602/31509 [00:04<00:11, 2046.26it/s]parsing log, completed traces ::  25%|##4       | 7820/31509 [00:04<00:18, 1270.33it/s]parsing log, completed traces ::  25%|##5       | 8014/31509 [00:04<00:16, 1400.21it/s]parsing log, completed traces ::  26%|##6       | 8242/31509 [00:04<00:14, 1589.67it/s]parsing log, completed traces ::  27%|##6       | 8462/31509 [00:05<00:13, 1733.91it/s]parsing log, completed traces ::  27%|##7       | 8664/31509 [00:05<00:17, 1327.06it/s]parsing log, completed traces ::  28%|##8       | 8842/31509 [00:05<00:15, 1421.57it/s]parsing log, completed traces ::  29%|##8       | 9044/31509 [00:05<00:14, 1556.89it/s]parsing log, completed traces ::  29%|##9       | 9255/31509 [00:05<00:13, 1692.17it/s]parsing log, completed traces ::  30%|###       | 9475/31509 [00:05<00:12, 1820.47it/s]parsing log, completed traces ::  31%|###       | 9692/31509 [00:05<00:11, 1915.18it/s]parsing log, completed traces ::  31%|###1      | 9896/31509 [00:06<00:16, 1327.08it/s]parsing log, completed traces ::  32%|###2      | 10099/31509 [00:06<00:14, 1477.10it/s]parsing log, completed traces ::  33%|###2      | 10312/31509 [00:06<00:13, 1628.89it/s]parsing log, completed traces ::  33%|###3      | 10518/31509 [00:06<00:12, 1736.22it/s]parsing log, completed traces ::  34%|###4      | 10729/31509 [00:06<00:11, 1832.50it/s]parsing log, completed traces ::  35%|###4      | 10927/31509 [00:06<00:16, 1246.08it/s]parsing log, completed traces ::  35%|###5      | 11147/31509 [00:06<00:14, 1441.00it/s]parsing log, completed traces ::  36%|###6      | 11364/31509 [00:06<00:12, 1605.91it/s]parsing log, completed traces ::  37%|###6      | 11578/31509 [00:07<00:11, 1735.25it/s]parsing log, completed traces ::  37%|###7      | 11801/31509 [00:07<00:10, 1862.05it/s]parsing log, completed traces ::  38%|###8      | 12015/31509 [00:07<00:15, 1266.81it/s]parsing log, completed traces ::  39%|###8      | 12240/31509 [00:07<00:13, 1463.24it/s]parsing log, completed traces ::  40%|###9      | 12465/31509 [00:07<00:11, 1638.77it/s]parsing log, completed traces ::  40%|####      | 12687/31509 [00:07<00:10, 1779.20it/s]parsing log, completed traces ::  41%|####      | 12909/31509 [00:07<00:09, 1890.98it/s]parsing log, completed traces ::  42%|####1     | 13141/31509 [00:07<00:09, 2003.98it/s]parsing log, completed traces ::  42%|####2     | 13357/31509 [00:08<00:08, 2036.07it/s]parsing log, completed traces ::  43%|####3     | 13572/31509 [00:08<00:14, 1258.37it/s]parsing log, completed traces ::  44%|####3     | 13788/31509 [00:08<00:12, 1435.51it/s]parsing log, completed traces ::  44%|####4     | 14003/31509 [00:08<00:10, 1591.60it/s]parsing log, completed traces ::  45%|####5     | 14226/31509 [00:08<00:09, 1743.69it/s]parsing log, completed traces ::  46%|####5     | 14452/31509 [00:08<00:09, 1873.87it/s]parsing log, completed traces ::  47%|####6     | 14662/31509 [00:08<00:08, 1933.26it/s]parsing log, completed traces ::  47%|####7     | 14872/31509 [00:09<00:13, 1202.16it/s]parsing log, completed traces ::  48%|####7     | 15109/31509 [00:09<00:11, 1426.69it/s]parsing log, completed traces ::  49%|####8     | 15345/31509 [00:09<00:09, 1628.09it/s]parsing log, completed traces ::  49%|####9     | 15582/31509 [00:09<00:08, 1800.74it/s]parsing log, completed traces ::  50%|#####     | 15812/31509 [00:09<00:08, 1926.04it/s]parsing log, completed traces ::  51%|#####     | 16049/31509 [00:09<00:07, 2040.91it/s]parsing log, completed traces ::  52%|#####1    | 16288/31509 [00:09<00:07, 2136.25it/s]parsing log, completed traces ::  52%|#####2    | 16516/31509 [00:09<00:07, 2120.42it/s]parsing log, completed traces ::  53%|#####3    | 16738/31509 [00:10<00:13, 1058.67it/s]parsing log, completed traces ::  54%|#####3    | 16958/31509 [00:10<00:11, 1246.72it/s]parsing log, completed traces ::  55%|#####4    | 17196/31509 [00:10<00:09, 1462.29it/s]parsing log, completed traces ::  55%|#####5    | 17435/31509 [00:10<00:08, 1660.84it/s]parsing log, completed traces ::  56%|#####6    | 17662/31509 [00:10<00:07, 1801.10it/s]parsing log, completed traces ::  57%|#####6    | 17889/31509 [00:10<00:07, 1916.69it/s]parsing log, completed traces ::  58%|#####7    | 18124/31509 [00:10<00:06, 2028.33it/s]parsing log, completed traces ::  58%|#####8    | 18355/31509 [00:11<00:06, 2104.05it/s]parsing log, completed traces ::  59%|#####8    | 18581/31509 [00:11<00:11, 1161.58it/s]parsing log, completed traces ::  60%|#####9    | 18824/31509 [00:11<00:09, 1386.55it/s]parsing log, completed traces ::  60%|######    | 19058/31509 [00:11<00:07, 1579.56it/s]parsing log, completed traces ::  61%|######1   | 19265/31509 [00:11<00:07, 1671.58it/s]parsing log, completed traces ::  62%|######1   | 19502/31509 [00:11<00:06, 1838.27it/s]parsing log, completed traces ::  63%|######2   | 19735/31509 [00:11<00:06, 1960.82it/s]parsing log, completed traces ::  63%|######3   | 19956/31509 [00:12<00:05, 2027.10it/s]parsing log, completed traces ::  64%|######4   | 20176/31509 [00:12<00:05, 2071.85it/s]parsing log, completed traces ::  65%|######4   | 20396/31509 [00:12<00:09, 1121.36it/s]parsing log, completed traces ::  66%|######5   | 20641/31509 [00:12<00:08, 1356.13it/s]parsing log, completed traces ::  66%|######6   | 20882/31509 [00:12<00:06, 1567.59it/s]parsing log, completed traces ::  67%|######6   | 21106/31509 [00:12<00:06, 1716.82it/s]parsing log, completed traces ::  68%|######7   | 21341/31509 [00:12<00:05, 1869.78it/s]parsing log, completed traces ::  69%|######8   | 21588/31509 [00:13<00:04, 2020.43it/s]parsing log, completed traces ::  69%|######9   | 21830/31509 [00:13<00:04, 2125.89it/s]parsing log, completed traces ::  70%|#######   | 22083/31509 [00:13<00:04, 2233.84it/s]parsing log, completed traces ::  71%|#######   | 22329/31509 [00:13<00:03, 2297.12it/s]parsing log, completed traces ::  72%|#######1  | 22569/31509 [00:13<00:07, 1162.79it/s]parsing log, completed traces ::  72%|#######2  | 22755/31509 [00:13<00:06, 1280.18it/s]parsing log, completed traces ::  73%|#######2  | 22984/31509 [00:14<00:05, 1476.75it/s]parsing log, completed traces ::  74%|#######3  | 23213/31509 [00:14<00:05, 1653.23it/s]parsing log, completed traces ::  74%|#######4  | 23431/31509 [00:14<00:04, 1777.87it/s]parsing log, completed traces ::  75%|#######5  | 23661/31509 [00:14<00:04, 1909.86it/s]parsing log, completed traces ::  76%|#######5  | 23892/31509 [00:14<00:03, 2014.00it/s]parsing log, completed traces ::  77%|#######6  | 24122/31509 [00:14<00:03, 2092.40it/s]parsing log, completed traces ::  77%|#######7  | 24359/31509 [00:14<00:03, 2169.97it/s]parsing log, completed traces ::  78%|#######8  | 24589/31509 [00:14<00:03, 2205.63it/s]parsing log, completed traces ::  79%|#######8  | 24834/31509 [00:14<00:02, 2272.09it/s]parsing log, completed traces ::  80%|#######9  | 25067/31509 [00:15<00:06, 1004.51it/s]parsing log, completed traces ::  80%|########  | 25293/31509 [00:15<00:05, 1198.56it/s]parsing log, completed traces ::  81%|########1 | 25523/31509 [00:15<00:04, 1397.82it/s]parsing log, completed traces ::  82%|########1 | 25751/31509 [00:15<00:03, 1578.22it/s]parsing log, completed traces ::  82%|########2 | 25969/31509 [00:15<00:03, 1713.52it/s]parsing log, completed traces ::  83%|########3 | 26186/31509 [00:15<00:02, 1823.65it/s]parsing log, completed traces ::  84%|########3 | 26419/31509 [00:15<00:02, 1953.71it/s]parsing log, completed traces ::  85%|########4 | 26639/31509 [00:16<00:02, 2000.65it/s]parsing log, completed traces ::  85%|########5 | 26860/31509 [00:16<00:02, 2057.53it/s]parsing log, completed traces ::  86%|########5 | 27079/31509 [00:16<00:02, 2084.35it/s]parsing log, completed traces ::  87%|########6 | 27297/31509 [00:16<00:02, 2039.13it/s]parsing log, completed traces ::  87%|########7 | 27508/31509 [00:16<00:04, 930.75it/s] parsing log, completed traces ::  88%|########8 | 27748/31509 [00:17<00:03, 1157.78it/s]parsing log, completed traces ::  89%|########8 | 27975/31509 [00:17<00:02, 1358.09it/s]parsing log, completed traces ::  89%|########9 | 28199/31509 [00:17<00:02, 1537.89it/s]parsing log, completed traces ::  90%|######### | 28424/31509 [00:17<00:01, 1699.01it/s]parsing log, completed traces ::  91%|######### | 28657/31509 [00:17<00:01, 1852.19it/s]parsing log, completed traces ::  92%|#########1| 28875/31509 [00:17<00:01, 1894.35it/s]parsing log, completed traces ::  92%|#########2| 29088/31509 [00:17<00:01, 1942.32it/s]parsing log, completed traces ::  93%|#########3| 29309/31509 [00:17<00:01, 2014.85it/s]parsing log, completed traces ::  94%|#########3| 29523/31509 [00:17<00:00, 2014.64it/s]parsing log, completed traces ::  94%|#########4| 29746/31509 [00:17<00:00, 2072.86it/s]parsing log, completed traces ::  95%|#########5| 29960/31509 [00:18<00:01, 903.06it/s] parsing log, completed traces ::  96%|#########5| 30188/31509 [00:18<00:01, 1110.38it/s]parsing log, completed traces ::  97%|#########6| 30429/31509 [00:18<00:00, 1340.34it/s]parsing log, completed traces ::  97%|#########7| 30650/31509 [00:18<00:00, 1513.56it/s]parsing log, completed traces ::  98%|#########7| 30856/31509 [00:18<00:00, 1626.63it/s]parsing log, completed traces ::  99%|#########8| 31079/31509 [00:18<00:00, 1771.94it/s]parsing log, completed traces ::  99%|#########9| 31295/31509 [00:19<00:00, 1869.82it/s]parsing log, completed traces :: 100%|##########| 31509/31509 [00:19<00:00, 1642.82it/s]
+Loaded DataFrame with shape: (1202267, 19)
+
+=== Event Log Statistics ===
+DataFrame shape: (1202267, 19)
+Number of events: 1202267
+Number of unique cases: 31509
+
+Columns: ['Action', 'org:resource', 'concept:name', 'EventOrigin', 'EventID', 'lifecycle:transition', 'time:timestamp', 'case:LoanGoal', 'case:ApplicationType', 'case:concept:name', 'case:RequestedAmount', 'FirstWithdrawalAmount', 'NumberOfTerms', 'Accepted', 'MonthlyCost', 'Selected', 'CreditScore', 'OfferedAmount', 'OfferID']
+
+Data types:
+Action                                   str
+org:resource                             str
+concept:name                             str
+EventOrigin                              str
+EventID                                  str
+lifecycle:transition                     str
+time:timestamp           datetime64[us, UTC]
+case:LoanGoal                            str
+case:ApplicationType                     str
+case:concept:name                        str
+case:RequestedAmount                 float64
+FirstWithdrawalAmount                float64
+NumberOfTerms                        float64
+Accepted                              object
+MonthlyCost                          float64
+Selected                              object
+CreditScore                          float64
+OfferedAmount                        float64
+OfferID                                  str
+dtype: object
+
+First few events:
+        Action org:resource            concept:name  EventOrigin  ... Selected CreditScore OfferedAmount OfferID
+0      Created       User_1    A_Create Application  Application  ...      NaN         NaN           NaN     NaN
+1  statechange       User_1             A_Submitted  Application  ...      NaN         NaN           NaN     NaN
+2      Created       User_1          W_Handle leads     Workflow  ...      NaN         NaN           NaN     NaN
+3      Deleted       User_1          W_Handle leads     Workflow  ...      NaN         NaN           NaN     NaN
+4      Created       User_1  W_Complete application     Workflow  ...      NaN         NaN           NaN     NaN
+
+[5 rows x 19 columns]
+
+Case length distribution (first 10):
+case:concept:name
+Application_2037628374    180
+Application_1219772874    180
+Application_1359726788    159
+Application_1875888758    156
+Application_1387439149    154
+Application_1031629108    150
+Application_1681194502    149
+Application_2068346638    148
+Application_984284284     148
+Application_561182430     147
+Name: count, dtype: int64
+
+=== Loan Goal Analysis ===
+case:LoanGoal
+Car                       339798
+Home improvement          294389
+Existing loan takeover    227606
+Other, see explanation    110643
+Unknown                    85085
+Remaining debt home        43874
+Not speficied              41048
+Extra spending limit       22964
+Caravan / Camper           12967
+Motorcycle                  9983
+Boat                        7223
+Tax payments                5557
+Business goal               1090
+Debt restructuring            40
+Name: count, dtype: int64
+
+=== Processing Time Analysis ===
+Average processing time: 21.3 days
+
+=== Acceptance Rate Analysis ===
+Acceptance rate: 72.0%
+
+Top 5 busiest resources:
+org:resource
+User_1     148404
+User_3      26342
+User_5      22900
+User_87     22498
+User_30     21272
+Name: count, dtype: int64
+
+Most frequent activities:
+concept:name
+W_Validate application     209496
+W_Call after offers        191092
+W_Call incomplete files    168529
+W_Complete application     148900
+W_Handle leads              47264
+Name: count, dtype: int64
+
+=== Generating Visualizations ===
+Creating individual plots...
+/Users/ernestou/Desktop/HOF/Process_Mining/PROJECT/PM-Project/ERNESTO/events.py:185: UserWarning: Converting to PeriodArray/Index representation will drop timezone information.
+  df['month'] = df['time:timestamp'].dt.to_period('M')
+/Users/ernestou/Desktop/HOF/Process_Mining/PROJECT/PM-Project/ERNESTO/events.py:209: FutureWarning: 
+
+Passing `palette` without assigning `hue` is deprecated and will be removed in v0.14.0. Assign the `x` variable to `hue` and set `legend=False` for the same effect.
+
+  sns.boxplot(data=case_data, x='Accepted', y='CreditScore',
+Creating comprehensive dashboard...
+
+=== Generating Comprehensive Dashboard ===
+/Users/ernestou/Desktop/HOF/Process_Mining/PROJECT/PM-Project/ERNESTO/events.py:262: UserWarning: Converting to PeriodArray/Index representation will drop timezone information.
+  df['month'] = df['time:timestamp'].dt.to_period('M')
+/Users/ernestou/Desktop/HOF/Process_Mining/PROJECT/PM-Project/ERNESTO/events.py:273: FutureWarning: 
+
+Passing `palette` without assigning `hue` is deprecated and will be removed in v0.14.0. Assign the `x` variable to `hue` and set `legend=False` for the same effect.
+
+  sns.boxplot(data=case_data, x='Accepted', y='CreditScore', ax=axes[1,2],
+/Users/ernestou/Desktop/HOF/Process_Mining/PROJECT/PM-Project/ERNESTO/events.py:276: UserWarning: set_ticklabels() should only be used with a fixed number of ticks, i.e. after set_ticks() or using a FixedLocator.
+  axes[1,2].set_xticklabels(['Rejected', 'Accepted'])
+
+✓ Analysis complete!
+✓ All visualizations saved to /Users/ernestou/Desktop/HOF/Process_Mining/PROJECT/PM-Project/ERNESTO/output/ directory
+
+You can now work with the 'df' DataFrame for further analysis
