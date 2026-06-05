@@ -116,6 +116,13 @@ def run_pipeline(
         result.final_marking,
         os.path.join(output_dir, "alpha_miner.pnml")
     )
+    # Also export a standardized result PNML (for comparisons with GeneticMiner)
+    result_pnml_path = pnml_exporter.export(
+        result.net,
+        result.initial_marking,
+        result.final_marking,
+        os.path.join(output_dir, "result_petri_net.pnml"),
+    )
     
     # Export PNG
     png_exporter = PNGExporter()
@@ -133,7 +140,89 @@ def run_pipeline(
         metrics.to_dict(),
         os.path.join(output_dir, "alpha_miner_metrics.json")
     )
-    
+
+    # --- Create GeneticMiner-compatible result_scores.json ---
+    # Build activity list and input/output bindings from the Petri net
+    def _build_bindings_from_petri(net):
+        activities = []
+        input_bindings = {}
+        output_bindings = {}
+
+        # Collect visible transitions (label != None)
+        for t in net.transitions:
+            label = getattr(t, "label", None)
+            if label:
+                activities.append(label)
+                input_bindings[label] = []
+                output_bindings[label] = []
+
+        # Build place-level predecessor and successor label sets
+        place_predecessors = {}
+        place_successors = {}
+        for arc in net.arcs:
+            src_label = getattr(arc.source, "label", None)
+            tgt_label = getattr(arc.target, "label", None)
+
+            if arc.source.__class__.__name__ == "Place" and tgt_label is not None:
+                place_predecessors.setdefault(arc.source, set()).add(tgt_label)
+            if arc.target.__class__.__name__ == "Place" and src_label is not None:
+                place_successors.setdefault(arc.target, set()).add(src_label)
+
+        # Translate place semantics into input/output bindings
+        for place, preds in place_successors.items():
+            succs = place_predecessors.get(place, set())
+            if not preds or not succs:
+                continue
+
+            sorted_preds = sorted(preds)
+            sorted_succs = sorted(succs)
+
+            for succ_label in succs:
+                input_bindings[succ_label].append(sorted_preds)
+            for pred_label in preds:
+                output_bindings[pred_label].append(sorted_succs)
+
+        # Deduplicate bindings while preserving sorted order
+        for label in activities:
+            input_bindings[label] = [list(x) for x in sorted({tuple(binding) for binding in input_bindings[label]})]
+            output_bindings[label] = [list(x) for x in sorted({tuple(binding) for binding in output_bindings[label]})]
+
+        return sorted(activities), input_bindings, output_bindings
+
+    def _compute_simplicity(input_bindings, output_bindings):
+        total_arc_count = 0
+        for bindings in input_bindings.values():
+            for binding in bindings:
+                total_arc_count += len(binding)
+        for bindings in output_bindings.values():
+            for binding in bindings:
+                total_arc_count += len(binding)
+        return 1.0 / (1.0 + total_arc_count)
+
+    activities, input_bindings, output_bindings = _build_bindings_from_petri(result.net)
+
+    fitness_score = float(metrics.fitness) if metrics.fitness is not None else 0.0
+    simplicity_score = _compute_simplicity(input_bindings, output_bindings)
+
+    # Weighted overall score to match GeneticMiner evaluation weights
+    w_fitness = 0.7
+    w_simplicity = 0.3
+    overall_score = fitness_score * w_fitness + simplicity_score * w_simplicity
+
+    result_scores = {
+        "overall_score": overall_score,
+        "fitness_score": fitness_score,
+        "simplicity_score": simplicity_score,
+        "activities": activities,
+        "input_bindings": input_bindings,
+        "output_bindings": output_bindings,
+    }
+
+    result_scores_path = os.path.join(output_dir, "result_scores.json")
+    with open(result_scores_path, "w") as rf:
+        import json
+        json.dump(result_scores, rf, indent=2)
+
     # Export TXT
     txt_exporter = TXTExporter()
     txt_path = txt_exporter.export(
@@ -150,9 +239,9 @@ def run_pipeline(
     print("FINAL SUMMARY")
     print("=" * 70)
     
-    print_info("Fitness", f"{metrics.fitness:.4f}" if metrics.fitness else "N/A")
-    print_info("Precision", f"{metrics.precision:.4f}" if metrics.precision else "N/A")
-    print_info("F-Score", f"{metrics.f_score:.4f}" if metrics.f_score else "N/A")
+    print_info("Fitness", f"{metrics.fitness:.4f}" if metrics.fitness is not None else "N/A")
+    print_info("Precision", f"{metrics.precision:.4f}" if metrics.precision is not None else "N/A")
+    print_info("F-Score", f"{metrics.f_score:.4f}" if metrics.f_score is not None else "N/A")
     
     print(f"\n📁 Output directory: {output_dir}")
     print(f"⏰ End time: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
@@ -166,8 +255,10 @@ def run_pipeline(
         "output_dir": output_dir,
         "output_files": {
             "pnml": pnml_path,
+            "result_pnml": result_pnml_path,
             "png": png_path,
             "json": json_path,
+            "result_scores": result_scores_path,
             "txt": txt_path,
         },
     }
