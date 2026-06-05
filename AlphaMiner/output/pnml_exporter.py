@@ -6,8 +6,7 @@ import os
 from typing import Optional
 
 import pm4py
-from pm4py.objects.petri.net import PetriNet
-from pm4py.objects.petri.semantics import Marking
+from pm4py import PetriNet, Marking
 
 from ..utils.file_utils import ensure_dir
 from ..utils.logging_utils import print_header, print_success
@@ -61,7 +60,7 @@ class PNMLExporter:
         print(f"⏳ Exporting to: {output_path}")
         
         # Export using pm4py
-        pm4py.write_petri_net(net, output_path, initial_marking=initial_marking)
+        pm4py.write_pnml(net, initial_marking, final_marking, output_path)
         
         self._last_export_path = output_path
         print_success(f"PNML saved: {output_path}")

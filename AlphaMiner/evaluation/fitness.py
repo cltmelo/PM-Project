@@ -7,8 +7,7 @@ from typing import Optional
 import pandas as pd
 
 import pm4py
-from pm4py.objects.petri.net import PetriNet
-from pm4py.objects.petri.semantics import Marking
+from pm4py import PetriNet, Marking
 
 from ..utils.logging_utils import print_header, print_info, print_success, print_warning
 

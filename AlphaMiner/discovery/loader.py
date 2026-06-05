@@ -4,12 +4,10 @@ Event log loading functionality.
 Handles loading XES files and converting them to DataFrames.
 """
 
-import gzip
 from typing import Tuple
 import pandas as pd
 
 import pm4py
-from pm4py.objects.conversion.log import converter as log_converter
 
 from ..utils.file_utils import validate_file, get_file_size
 from ..utils.logging_utils import print_header, print_info, print_success
@@ -79,15 +77,11 @@ class EventLogLoader:
         
         print("\n⏳ Loading event log...")
         
-        # Load compressed XES file
-        with gzip.open(log_path, 'rb') as log_file:
-            event_log = pm4py.read_xes(log_file)
+        # Load compressed XES file (pm4py handles gzip automatically)
+        event_log = pm4py.read_xes(log_path)
         
         # Convert to DataFrame using pm4py's conversion function
-        self._dataframe = log_converter.apply(
-            event_log, 
-            variant=log_converter.Variants.TO_DATA_FRAME
-        )
+        self._dataframe = pm4py.convert_to_dataframe(event_log)
         
         # Calculate statistics
         self._calculate_statistics()

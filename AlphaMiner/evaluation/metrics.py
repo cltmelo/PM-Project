@@ -7,8 +7,8 @@ from typing import Optional, Dict, Any
 from datetime import datetime
 import pandas as pd
 
-from pm4py.objects.petri.net import PetriNet
-from pm4py.objects.petri.semantics import Marking
+import pm4py
+from pm4py import PetriNet, Marking
 
 from ..utils.logging_utils import print_header, print_stage, print_info, print_success
 from ..utils.metrics_utils import calculate_f_score

@@ -1,0 +1,30 @@
+======================================================================
+                ALPHA MINER - PROCESS DISCOVERY OUTPUT                
+======================================================================
+Timestamp: 2026-06-05 23:02:28
+
+EVENT LOG SUMMARY
+----------------------------------------
+Total cases: 31,509
+Total events: 1,202,267
+Unique activities: 26
+
+MODEL STRUCTURE
+----------------------------------------
+Places: 12
+Transitions: 26
+Arcs: 55
+
+QUALITY METRICS
+----------------------------------------
+Fitness: 0.3826
+Precision: 0.0904
+F-Score: 0.1462
+
+OUTPUT FILES
+----------------------------------------
+PNML: AlphaMiner/output/alpha_miner.pnml
+PNG: AlphaMiner/output/alpha_miner.png
+JSON: AlphaMiner/output/alpha_miner_metrics.json
+
+======================================================================

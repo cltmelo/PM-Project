@@ -8,7 +8,8 @@ from datetime import datetime
 
 import pandas as pd
 
-from pm4py.objects.petri.net import PetriNet
+import pm4py
+from pm4py import PetriNet
 
 from ..utils.file_utils import ensure_dir
 from ..utils.logging_utils import print_header, print_success

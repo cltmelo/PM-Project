@@ -1,0 +1,43 @@
+{
+  "algorithm": "Alpha Miner",
+  "timestamp": "2026-06-05T23:00:27.963790",
+  "event_log": {
+    "num_cases": 31509,
+    "num_events": 1202267,
+    "num_activities": 26
+  },
+  "model_structure": {
+    "num_places": 12,
+    "num_transitions": 26,
+    "num_arcs": 55,
+    "total_elements": 93
+  },
+  "quality_metrics": {
+    "fitness": {
+      "token_replay": 0.3826,
+      "description": "Token-based replay fitness (1.0 = perfect)"
+    },
+    "precision": {
+      "value": 0.0904,
+      "description": "ETD-based precision (1.0 = no extra behavior)"
+    },
+    "f_score": {
+      "value": 0.1462,
+      "description": "Harmonic mean of fitness and precision"
+    }
+  },
+  "fitness_details": {
+    "token_replay_fitness": 0.3826,
+    "percent_fit_traces": 0,
+    "average_trace_fitness": 0.4039,
+    "produced_tokens": 0,
+    "consumed_tokens": 0,
+    "missing_tokens": 0,
+    "remaining_tokens": 0
+  },
+  "precision_details": {
+    "precision": 0.0904,
+    "escaped_tokens": 0,
+    "not_escaped_tokens": 0
+  }
+}

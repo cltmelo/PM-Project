@@ -1,3 +1,5 @@
+# to run use: python -m AlphaMiner.main
+
 """
 Alpha Miner - Main Entry Point
 
@@ -10,32 +12,27 @@ Executes the complete Alpha Miner process discovery pipeline:
 
 Usage:
     python -m AlphaMiner.main
-    
-Or simply:
-    python AlphaMiner/main.py
 """
 
+import os
 import sys
 from datetime import datetime
 from pathlib import Path
 
-# Add parent directory to path for imports
-sys.path.insert(0, str(Path(__file__).parent.parent))
+from .config import CONFIG, get_config
+from .utils.file_utils import ensure_dir, validate_file
+from .utils.logging_utils import print_header, print_stage, print_info, print_success
 
-from config import CONFIG, get_config
-from utils.file_utils import ensure_dir, validate_file
-from utils.logging_utils import print_header, print_stage, print_info, print_success
+from .discovery.loader import EventLogLoader
+from .discovery.preprocessing import LogPreprocessor
+from .discovery.alpha_miner import AlphaMinerDiscoverer
 
-from discovery.loader import EventLogLoader
-from discovery.preprocessing import LogPreprocessor
-from discovery.alpha_miner import AlphaMinerDiscoverer
+from .evaluation.metrics import MetricsCollector
 
-from evaluation.metrics import MetricsCollector
-
-from output.pnml_exporter import PNMLExporter
-from output.png_exporter import PNGExporter
-from output.json_exporter import JSONExporter
-from output.txt_exporter import TXTExporter
+from .output.pnml_exporter import PNMLExporter
+from .output.png_exporter import PNGExporter
+from .output.json_exporter import JSONExporter
+from .output.txt_exporter import TXTExporter
 
 
 def run_pipeline(
@@ -125,6 +122,8 @@ def run_pipeline(
     png_path = png_exporter.export(
         result.net,
         os.path.join(output_dir, "alpha_miner.png"),
+        initial_marking=result.initial_marking,
+        final_marking=result.final_marking,
         dpi=config.png_dpi
     )
     
