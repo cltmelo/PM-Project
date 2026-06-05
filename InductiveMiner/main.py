@@ -6,8 +6,10 @@ from cut_detection import (
     detect_rule_d
 )
 from discovery import discover_process_tree, print_process_tree, MAX_RECURSION_DEPTH
-from petri_converter import export_tree_to_pnml
+from petri_converter import dict_to_pm4py_tree
+from metrics import collect_metrics, save_metrics
 
+import json
 import pm4py
 
 
@@ -65,9 +67,6 @@ print("\n" + "=" * 80)
 print("CONVERTING PROCESS TREE TO PETRI NET...")
 print("=" * 80)
 
-import pm4py
-from petri_converter import dict_to_pm4py_tree
-
 # Convert custom tree to pm4py ProcessTree
 pm4py_tree = dict_to_pm4py_tree(process_tree)
 
@@ -112,6 +111,23 @@ pm4py.save_vis_petri_net(net, initial_marking, final_marking, png_path)
 print(f"✓ PNG visualization exported: {png_path}")
 
 # -----------------------------------------------------------
+# Export 3: JSON Metrics
+# -----------------------------------------------------------
+
+from metrics import collect_metrics, save_metrics
+
+print("\n" + "=" * 80)
+print("EXPORTING METRICS TO JSON...")
+print("=" * 80)
+
+json_path = "output/result_scores.json"
+
+metrics_data = collect_metrics(df_sample, net, initial_marking, final_marking)
+save_metrics(metrics_data)
+
+print(f"\n✓ JSON metrics saved: {json_path}")
+
+# -----------------------------------------------------------
 # Summary
 # -----------------------------------------------------------
 print(f"\n" + "=" * 80)
@@ -125,6 +141,9 @@ print(f"     - Use: Import into ProM, Celonis, PM4Py")
 print(f"\n  2. {png_path}")
 print(f"     - Format: PNG Image")
 print(f"     - Use: Visual inspection, reports, presentations")
+print(f"\n  3. {json_path}")
+print(f"     - Format: JSON")
+print(f"     - Use: Quality metrics for evaluation")
 
 print("\n" + "=" * 80)
 print("PROCESS DISCOVERY COMPLETE")

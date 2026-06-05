@@ -1,0 +1,58 @@
+{
+  "overall_score": 0.5044420724704721,
+  "fitness_score": 0.5013649214359206,
+  "simplicity_score": 0.012987012987012988,
+  "activities": [
+    "A_Accepted",
+    "A_Cancelled",
+    "A_Complete",
+    "A_Concept",
+    "A_Create Application",
+    "A_Denied",
+    "A_Incomplete",
+    "A_Pending",
+    "A_Submitted",
+    "A_Validating",
+    "O_Accepted",
+    "O_Cancelled",
+    "O_Create Offer",
+    "O_Created",
+    "O_Refused",
+    "O_Returned",
+    "O_Sent (mail and online)",
+    "O_Sent (online only)",
+    "W_Assess potential fraud",
+    "W_Call after offers",
+    "W_Call incomplete files",
+    "W_Complete application",
+    "W_Handle leads",
+    "W_Personal Loan collection",
+    "W_Shortened completion ",
+    "W_Validate application"
+  ],
+  "algorithm": "inductive miner",
+  "timestamp": "2026-06-06T00:51:13.573935",
+  "event_log": {
+    "num_cases": 31509,
+    "num_events": 1202267,
+    "num_activities": 26
+  },
+  "model_structure": {
+    "num_places": 21,
+    "num_transitions": 38,
+    "num_arcs": 76
+  },
+  "quality_metrics": {
+    "fitness_details": {
+      "fitness": 0.5013649214359206,
+      "total_traces": 31509,
+      "total_activities": 1202267,
+      "total_missing_tokens": 1167476,
+      "total_remaining_tokens": 31509
+    },
+    "precision_details": {
+      "precision": 1.0
+    },
+    "f_score": 0.6678788271626995
+  }
+}
