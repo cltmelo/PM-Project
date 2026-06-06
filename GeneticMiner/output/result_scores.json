@@ -1,7 +1,7 @@
 {
-  "overall_score": 0.36922535751478314,
-  "fitness_score": 0.5262079887412696,
-  "simplicity_score": 0.002932551319648094,
+  "overall_score": 0.3901942973778548,
+  "fitness_score": 0.5549287304733475,
+  "simplicity_score": 0.005813953488372093,
   "activities": [
     "A_Accepted",
     "A_Cancelled",
@@ -38,27 +38,26 @@
         "W_Shortened completion "
       ],
       [
-        "A_Concept",
-        "W_Complete application"
+        "W_Complete application",
+        "W_Shortened completion "
       ],
       [
-        "W_Complete application"
+        "A_Concept",
+        "W_Complete application",
+        "W_Shortened completion "
+      ],
+      [
+        "A_Concept",
+        "W_Complete application",
+        "W_Shortened completion "
       ]
     ],
     "A_Cancelled": [
       [
-        "A_Complete",
         "A_Validating",
-        "O_Created",
-        "O_Returned",
-        "O_Sent (online only)",
+        "O_Cancelled",
         "W_Call after offers",
-        "W_Call incomplete files",
-        "W_Complete application"
-      ],
-      [
-        "W_Call incomplete files",
-        "W_Complete application"
+        "W_Call incomplete files"
       ]
     ],
     "A_Complete": [
@@ -68,7 +67,6 @@
     ],
     "A_Concept": [
       [
-        "A_Create Application",
         "W_Complete application"
       ],
       [
@@ -82,25 +80,17 @@
     "A_Create Application": [],
     "A_Denied": [
       [
-        "O_Returned",
-        "O_Sent (mail and online)"
+        "A_Complete",
+        "O_Sent (online only)",
+        "W_Assess potential fraud"
       ]
     ],
     "A_Incomplete": [
       [
         "W_Call incomplete files"
-      ],
-      [
-        "W_Call incomplete files"
-      ],
-      [
-        "W_Call incomplete files"
       ]
     ],
     "A_Pending": [
-      [
-        "O_Accepted"
-      ],
       [
         "O_Accepted"
       ],
@@ -132,184 +122,135 @@
         "O_Returned",
         "O_Sent (mail and online)",
         "O_Sent (online only)",
-        "W_Call after offers",
-        "W_Call incomplete files"
+        "W_Call incomplete files",
+        "W_Validate application"
       ]
     ],
     "O_Cancelled": [
       [
-        "A_Complete",
-        "O_Cancelled",
-        "O_Created",
-        "O_Returned",
-        "O_Sent (online only)",
-        "W_Call incomplete files",
-        "W_Complete application"
-      ],
-      [
         "A_Cancelled",
         "A_Complete",
-        "O_Cancelled",
         "O_Created",
-        "O_Returned",
-        "O_Sent (mail and online)",
-        "O_Sent (online only)",
-        "W_Call incomplete files",
-        "W_Complete application",
-        "W_Validate application"
-      ],
-      [
-        "A_Cancelled",
-        "O_Cancelled",
         "O_Sent (mail and online)",
         "W_Call after offers",
-        "W_Call incomplete files",
-        "W_Complete application"
-      ],
-      [
-        "A_Cancelled",
-        "O_Created",
-        "O_Sent (online only)",
         "W_Call incomplete files",
         "W_Complete application"
       ]
     ],
     "O_Create Offer": [
       [
-        "A_Accepted",
-        "A_Complete",
-        "O_Cancelled",
-        "O_Created",
-        "O_Returned",
-        "O_Sent (mail and online)",
-        "O_Sent (online only)",
-        "W_Call after offers",
-        "W_Call incomplete files",
-        "W_Complete application",
         "W_Shortened completion "
-      ],
-      [
-        "A_Incomplete"
-      ],
-      [
-        "W_Call after offers",
-        "W_Validate application"
       ]
     ],
     "O_Created": [
+      [
+        "O_Create Offer"
+      ],
       [
         "O_Create Offer"
       ]
     ],
     "O_Refused": [
       [
-        "A_Denied",
-        "O_Refused"
-      ],
-      [
-        "O_Refused"
-      ],
-      [
         "A_Denied"
       ]
     ],
     "O_Returned": [
       [
-        "O_Cancelled",
+        "A_Incomplete",
+        "A_Validating",
         "O_Returned",
         "O_Sent (mail and online)",
-        "W_Validate application"
+        "O_Sent (online only)"
       ]
     ],
     "O_Sent (mail and online)": [
       [
-        "O_Cancelled",
+        "O_Sent (mail and online)",
         "O_Sent (online only)",
+        "W_Call incomplete files",
+        "W_Complete application",
         "W_Shortened completion "
       ],
       [
-        "A_Complete",
-        "O_Cancelled",
-        "O_Sent (online only)",
-        "W_Call incomplete files",
-        "W_Shortened completion "
+        "O_Cancelled"
       ]
     ],
     "O_Sent (online only)": [
       [
-        "O_Sent (online only)",
-        "W_Validate application"
-      ],
-      [
-        "A_Complete",
-        "O_Cancelled",
-        "O_Sent (mail and online)",
-        "O_Sent (online only)",
-        "W_Call incomplete files",
-        "W_Validate application"
+        "O_Sent (online only)"
       ]
     ],
     "W_Assess potential fraud": [
       [
-        "W_Call incomplete files",
+        "W_Assess potential fraud",
         "W_Validate application"
+      ],
+      [
+        "W_Handle leads"
       ]
     ],
     "W_Call after offers": [
       [
-        "O_Created"
+        "A_Cancelled",
+        "A_Complete"
       ]
     ],
     "W_Call incomplete files": [
       [
-        "O_Cancelled",
-        "W_Call incomplete files"
+        "A_Cancelled",
+        "A_Denied",
+        "A_Incomplete",
+        "A_Pending",
+        "O_Created",
+        "O_Returned",
+        "O_Sent (mail and online)",
+        "W_Shortened completion ",
+        "W_Validate application"
       ]
     ],
     "W_Complete application": [
       [
-        "A_Cancelled",
-        "O_Refused",
-        "O_Sent (mail and online)",
-        "W_Assess potential fraud"
+        "O_Created"
       ]
     ],
     "W_Handle leads": [
       [
         "A_Submitted",
+        "W_Handle leads"
+      ],
+      [
+        "A_Submitted",
         "W_Assess potential fraud",
+        "W_Handle leads"
+      ],
+      [
         "W_Handle leads"
       ]
     ],
     "W_Personal Loan collection": [
       [
-        "W_Personal Loan collection"
-      ],
-      [
-        "W_Personal Loan collection",
+        "W_Call incomplete files",
         "W_Validate application"
       ],
       [
         "W_Call incomplete files",
+        "W_Personal Loan collection",
         "W_Validate application"
       ]
     ],
     "W_Shortened completion ": [
       [
         "A_Complete",
-        "W_Shortened completion "
+        "A_Incomplete",
+        "O_Cancelled",
+        "W_Call after offers"
       ]
     ],
     "W_Validate application": [
       [
-        "A_Validating"
-      ],
-      [
-        "A_Denied",
-        "A_Pending",
-        "O_Sent (mail and online)",
         "O_Sent (online only)",
-        "W_Shortened completion "
+        "W_Personal Loan collection"
       ]
     ]
   },
@@ -317,84 +258,55 @@
     "A_Accepted": [
       [
         "W_Shortened completion "
-      ],
-      [
-        "W_Complete application"
       ]
     ],
     "A_Cancelled": [
       [
         "O_Cancelled",
-        "W_Call after offers"
+        "W_Call incomplete files"
       ],
       [
-        "O_Cancelled",
-        "W_Call after offers",
-        "W_Call incomplete files",
-        "W_Complete application",
-        "W_Validate application"
-      ],
-      [
-        "O_Cancelled",
-        "W_Call after offers",
-        "W_Call incomplete files",
         "W_Complete application",
         "W_Validate application"
       ]
     ],
     "A_Complete": [
       [
-        "A_Denied",
         "O_Sent (mail and online)",
         "W_Call after offers"
+      ],
+      [
+        "O_Create Offer"
       ]
     ],
     "A_Concept": [
       [
-        "W_Complete application"
+        "W_Complete application",
+        "W_Shortened completion "
       ]
     ],
     "A_Create Application": [
       [
         "A_Concept",
         "W_Complete application"
-      ],
-      [
-        "W_Complete application"
       ]
     ],
     "A_Denied": [
       [
         "O_Refused",
-        "W_Validate application"
-      ],
-      [
+        "W_Call after offers",
+        "W_Call incomplete files",
         "W_Complete application"
       ]
     ],
     "A_Incomplete": [
       [
         "O_Accepted",
-        "O_Returned"
+        "O_Create Offer",
+        "W_Call incomplete files"
       ],
       [
         "A_Denied",
-        "O_Create Offer",
-        "W_Call incomplete files",
-        "W_Shortened completion "
-      ],
-      [
-        "A_Denied",
-        "O_Accepted",
-        "O_Create Offer",
-        "O_Returned",
-        "W_Call incomplete files",
-        "W_Shortened completion "
-      ],
-      [
-        "A_Denied",
-        "O_Accepted",
-        "O_Create Offer",
         "O_Returned",
         "W_Call incomplete files",
         "W_Shortened completion "
@@ -402,7 +314,8 @@
     ],
     "A_Pending": [
       [
-        "W_Call incomplete files"
+        "W_Call incomplete files",
+        "W_Validate application"
       ]
     ],
     "A_Submitted": [
@@ -412,25 +325,11 @@
     ],
     "A_Validating": [
       [
-        "O_Returned",
-        "W_Validate application"
-      ],
-      [
+        "A_Cancelled",
         "A_Denied",
-        "O_Accepted",
         "O_Create Offer",
         "O_Returned",
         "W_Validate application"
-      ],
-      [
-        "A_Denied",
-        "O_Accepted",
-        "W_Validate application"
-      ],
-      [
-        "A_Cancelled",
-        "O_Accepted",
-        "O_Returned"
       ]
     ],
     "O_Accepted": [
@@ -441,37 +340,17 @@
     "O_Cancelled": [
       [
         "A_Cancelled",
-        "O_Accepted",
-        "O_Returned",
-        "O_Sent (mail and online)",
-        "W_Call incomplete files",
-        "W_Shortened completion ",
-        "W_Validate application"
-      ],
-      [
         "A_Denied",
-        "O_Accepted",
-        "O_Cancelled",
-        "O_Create Offer",
-        "O_Sent (mail and online)",
-        "O_Sent (online only)",
-        "W_Call after offers",
-        "W_Call incomplete files",
-        "W_Shortened completion ",
-        "W_Validate application"
-      ],
-      [
-        "A_Denied",
-        "O_Cancelled",
-        "O_Create Offer",
-        "O_Returned",
-        "O_Sent (mail and online)",
-        "W_Call incomplete files",
-        "W_Complete application",
-        "W_Validate application"
+        "W_Call incomplete files"
       ]
     ],
     "O_Create Offer": [
+      [
+        "O_Created"
+      ],
+      [
+        "O_Created"
+      ],
       [
         "O_Created"
       ],
@@ -481,179 +360,75 @@
     ],
     "O_Created": [
       [
-        "O_Cancelled",
-        "O_Create Offer",
-        "O_Sent (mail and online)",
+        "A_Denied",
+        "W_Call after offers",
         "W_Call incomplete files",
-        "W_Shortened completion "
-      ],
-      [
-        "O_Sent (online only)",
-        "W_Call after offers"
+        "W_Validate application"
       ]
     ],
     "O_Refused": [
       [
         "O_Refused",
-        "W_Assess potential fraud",
         "W_Call after offers",
-        "W_Call incomplete files",
         "W_Complete application",
         "W_Validate application"
       ],
       [
-        "W_Call after offers"
-      ],
-      [
+        "W_Call after offers",
         "W_Call incomplete files"
       ]
     ],
     "O_Returned": [
       [
-        "A_Cancelled",
-        "W_Call after offers"
-      ],
-      [
-        "A_Cancelled"
-      ],
-      [
-        "O_Cancelled",
-        "W_Call after offers",
-        "W_Validate application"
-      ],
-      [
-        "A_Cancelled",
         "A_Denied",
-        "O_Accepted",
-        "O_Cancelled",
-        "O_Create Offer",
-        "O_Returned",
-        "W_Call after offers",
-        "W_Call incomplete files",
-        "W_Validate application"
+        "O_Returned"
       ]
     ],
     "O_Sent (mail and online)": [
       [
-        "A_Cancelled",
-        "A_Denied",
-        "O_Accepted",
-        "O_Cancelled",
-        "O_Create Offer",
-        "O_Returned",
-        "O_Sent (mail and online)",
-        "O_Sent (online only)",
-        "W_Call incomplete files",
-        "W_Complete application"
-      ],
-      [
-        "O_Create Offer",
-        "O_Returned",
-        "O_Sent (online only)",
-        "W_Call incomplete files",
-        "W_Complete application",
-        "W_Validate application"
+        "O_Create Offer"
       ]
     ],
     "O_Sent (online only)": [
       [
-        "A_Denied",
-        "O_Accepted",
-        "O_Cancelled",
-        "O_Create Offer",
-        "O_Returned",
-        "O_Sent (online only)",
-        "W_Call incomplete files",
-        "W_Complete application",
         "W_Validate application"
       ]
     ],
     "W_Assess potential fraud": [
       [
-        "A_Denied",
-        "W_Assess potential fraud",
-        "W_Call after offers",
-        "W_Handle leads",
-        "W_Validate application"
-      ],
-      [
         "W_Call after offers"
-      ],
-      [
-        "W_Handle leads"
       ]
     ],
     "W_Call after offers": [
       [
-        "A_Denied",
         "O_Accepted",
-        "O_Create Offer",
         "O_Sent (mail and online)",
-        "W_Call after offers"
+        "W_Call after offers",
+        "W_Shortened completion "
       ]
     ],
     "W_Call incomplete files": [
       [
         "A_Cancelled",
-        "A_Denied",
-        "A_Incomplete",
         "O_Accepted",
-        "O_Cancelled",
-        "O_Create Offer",
-        "O_Returned",
-        "O_Sent (mail and online)",
-        "O_Sent (online only)",
-        "W_Assess potential fraud",
-        "W_Call after offers",
-        "W_Personal Loan collection",
-        "W_Validate application"
-      ],
-      [
-        "O_Sent (mail and online)",
-        "W_Call incomplete files"
+        "O_Create Offer"
       ]
     ],
     "W_Complete application": [
       [
-        "A_Cancelled"
-      ],
-      [
-        "A_Accepted",
-        "A_Cancelled",
-        "A_Concept",
-        "O_Sent (mail and online)",
-        "W_Assess potential fraud"
-      ],
-      [
-        "A_Accepted",
-        "A_Concept",
-        "A_Denied",
-        "O_Cancelled",
-        "O_Create Offer",
-        "O_Sent (mail and online)",
-        "O_Sent (online only)",
-        "W_Call after offers",
-        "W_Complete application",
         "W_Shortened completion "
       ]
     ],
     "W_Handle leads": [
       [
-        "W_Assess potential fraud",
-        "W_Handle leads"
+        "W_Complete application"
       ],
       [
+        "W_Assess potential fraud",
         "W_Handle leads"
       ]
     ],
     "W_Personal Loan collection": [
-      [
-        "W_Personal Loan collection",
-        "W_Validate application"
-      ],
-      [
-        "W_Personal Loan collection"
-      ],
       [
         "W_Personal Loan collection",
         "W_Validate application"
@@ -662,15 +437,7 @@
     "W_Shortened completion ": [
       [
         "A_Accepted",
-        "O_Sent (mail and online)",
-        "W_Call incomplete files",
-        "W_Complete application",
-        "W_Shortened completion "
-      ],
-      [
         "O_Create Offer",
-        "O_Sent (mail and online)",
-        "W_Call after offers",
         "W_Call incomplete files",
         "W_Validate application"
       ]
@@ -678,10 +445,12 @@
     "W_Validate application": [
       [
         "A_Cancelled",
-        "A_Denied",
-        "O_Accepted",
+        "O_Create Offer",
+        "O_Returned",
         "W_Assess potential fraud",
-        "W_Shortened completion "
+        "W_Personal Loan collection",
+        "W_Shortened completion ",
+        "W_Validate application"
       ]
     ]
   }
