@@ -163,39 +163,35 @@ class MetricsCalculator:
         
         return result
     
-    def _create_dataframe(
-    self,
-    results: Dict[str, AlgorithmResult]
-    ) -> pd.DataFrame:
+    def _create_dataframe(self, results: Dict[str, AlgorithmResult]) -> pd.DataFrame:
         """Create a comparison DataFrame focused on quality metrics."""
         rows = []
-        
+
         for name, result in results.items():
             row = {"name": name}
-            
+
             # PRIMARY QUALITY METRICS
             if result.metrics:
                 row["fitness"] = result.metrics.fitness
                 row["precision"] = result.metrics.precision
                 row["simplicity"] = result.metrics.simplicity
-                row["generalization"] = result.metrics.generalization  # ADD THIS LINE
+                #row["generalization"] = result.metrics.generalization  # ADD THIS
                 row["overall_score"] = result.metrics.overall_score
                 row["f_score"] = result.metrics.f_score
                 row["num_cases"] = result.metrics.num_cases
                 row["num_events"] = result.metrics.num_events
                 row["num_activities"] = result.metrics.num_activities
-            
-            # MODEL STRUCTURE (optional, not primary)
+
+            # MODEL STRUCTURE (optional)
             if result.structure:
                 row["num_places"] = result.structure.num_places
                 row["num_transitions"] = result.structure.num_transitions
                 row["num_arcs"] = result.structure.num_arcs
                 row["complexity"] = result.structure.complexity
-            
+
             rows.append(row)
-        
+
         df = pd.DataFrame(rows)
-        self._normalize_shared_event_log_stats(df)
         return df
 
     def _normalize_shared_event_log_stats(self, df: pd.DataFrame) -> None:

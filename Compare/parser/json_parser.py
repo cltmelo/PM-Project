@@ -27,7 +27,7 @@ class AlgorithmMetrics:
     fitness: float = 0.0
     precision: float = 0.0
     simplicity: float = 0.0
-    generalization: float = 0.0  # ADD THIS LINE
+    #generalization: float = 0.0  # ADD THIS LINE
     overall_score: float = 0.0
     f_score: float = 0.0
     
@@ -205,7 +205,7 @@ class JSONMetricsParser:
         metrics.fitness = self._as_float(data.get("fitness_score", 0.0))
         metrics.precision = self._as_float(data.get("precision_score", 0.0))
         metrics.simplicity = self._as_float(data.get("simplicity_score", 0.0))
-        metrics.generalization = data.get("generalization_score", 0.0)  # ADD THIS LINE
+        #metrics.generalization = data.get("generalization_score", 0.0)  # ADD THIS LINE
         metrics.overall_score = self._as_float(data.get("overall_score", 0.0))
         metrics.f_score = self._as_float(data.get("f_score", 0.0))
         

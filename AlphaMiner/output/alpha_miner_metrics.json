@@ -1,6 +1,6 @@
 {
   "algorithm": "Alpha Miner",
-  "timestamp": "2026-06-06T18:04:30.095691",
+  "timestamp": "2026-06-06T22:43:11.770490",
   "event_log": {
     "num_cases": 31509,
     "num_events": 1202267,
@@ -20,6 +20,10 @@
     "precision": {
       "value": 0.0904,
       "description": "ETD-based precision (1.0 = no extra behavior)"
+    },
+    "generalization": {
+      "value": 0.0,
+      "description": "Generalization score (1.0 = best)"
     },
     "f_score": {
       "value": 0.1462,

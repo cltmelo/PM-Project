@@ -15,7 +15,7 @@ from ..utils.metrics_utils import calculate_f_score
 
 from .fitness import FitnessEvaluator, FitnessResult
 from .precision import PrecisionEvaluator, PrecisionResult
-
+from .generalization import GeneralizationEvaluator, GeneralizationResult  # ADD THIS
 
 @dataclass
 class ProcessMetrics:
@@ -41,6 +41,7 @@ class ProcessMetrics:
     # Quality metrics
     fitness: Optional[float] = None
     precision: Optional[float] = None
+    generalization: Optional[float] = None  # ADD THIS
     f_score: Optional[float] = None
     
     # Detailed results (for debugging)
@@ -72,6 +73,10 @@ class ProcessMetrics:
                     "value": self.precision,
                     "description": "ETD-based precision (1.0 = no extra behavior)",
                 },
+                "generalization": {  # ADD THIS
+                    "value": self.generalization,
+                    "description": "Generalization score (1.0 = best)",
+                },
                 "f_score": {
                     "value": self.f_score,
                     "description": "Harmonic mean of fitness and precision",
@@ -99,6 +104,7 @@ class MetricsCollector:
         """Initialize the metrics collector."""
         self._fitness_evaluator = FitnessEvaluator()
         self._precision_evaluator = PrecisionEvaluator()
+        self._generalization_evaluator = GeneralizationEvaluator()
         self._metrics: Optional[ProcessMetrics] = None
     
     @property
@@ -116,6 +122,7 @@ class MetricsCollector:
         final_marking: Marking,
         compute_fitness: bool = True,
         compute_precision: bool = True,
+        compute_generalization: bool = True,
     ) -> ProcessMetrics:
         """
         Collect all process metrics.
@@ -127,7 +134,7 @@ class MetricsCollector:
             final_marking: Final marking
             compute_fitness: Whether to compute fitness
             compute_precision: Whether to compute precision
-            
+            compute_generalization: Whether to compute generalization
         Returns:
             ProcessMetrics with all computed metrics
         """
@@ -158,6 +165,12 @@ class MetricsCollector:
             )
             self._metrics.precision = precision_result.precision
             self._metrics.precision_details = precision_result.to_dict()
+
+        # Compute generalization
+        generalization_result = self._generalization_evaluator.evaluate(
+            df, net, initial_marking, final_marking
+        )
+        self._metrics.generalization = generalization_result.generalization
         
         # Calculate F-score
         if self._metrics.fitness and self._metrics.precision:

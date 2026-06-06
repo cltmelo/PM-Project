@@ -89,7 +89,7 @@ class ComparisonTable:
             f"{'Fitness':>10} "
             f"{'Precision':>10} "
             f"{'Simplicity':>10} "
-            f"{'General.':>10} "  # ADD Generalization column
+            #f"{'General.':>10} "  # ADD Generalization column
             f"{'Overall':>10} "
             f"{'F-Score':>10}"
         )
@@ -103,16 +103,16 @@ class ComparisonTable:
                 f"{row.get('fitness', 0):>10.4f} "
                 f"{row.get('precision', 0):>10.4f} "
                 f"{row.get('simplicity', 0):>10.4f} "
-                f"{row.get('generalization', 0):>10.4f} "  # ADD THIS LINE
+                #f"{row.get('generalization', 0):>10.4f} "  # ADD THIS LINE
                 f"{row.get('overall_score', 0):>10.4f} "
                 f"{row.get('f_score', 0):>10.4f}"
             )
             lines.append(line)
         
         # Also add to best performers section:
-        if 'generalization' in df.columns and df['generalization'].max() > 0:
-            best_gen = df.loc[df['generalization'].idxmax()]
-            lines.append(f"  Best Generalization: {best_gen['name']} ({best_gen['generalization']:.4f})")
+        #if 'generalization' in df.columns and df['generalization'].max() > 0:
+        #    best_gen = df.loc[df['generalization'].idxmax()]
+        #    lines.append(f"  Best Generalization: {best_gen['name']} ({best_gen['generalization']:.4f})")
         
         lines.append("-" * 90)
         lines.append("")

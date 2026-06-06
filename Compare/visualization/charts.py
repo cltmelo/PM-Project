@@ -4,6 +4,7 @@ Chart visualization for algorithm comparison.
 Creates bar charts, radar charts, and other visualizations.
 """
 
+from importlib.resources import path
 import os
 import tempfile
 from typing import List, Optional, Tuple
@@ -44,8 +45,8 @@ class ComparisonCharts:
         charts.create_all(result, output_dir)
     """
     
-    COLORS = ['#1f77b4', '#ff7f0e', '#2ca02c', '#d62728', '#9467bd']
-    
+    COLORS = ['#1f77b4', '#ff7f0e', '#2ca02c', '#d62728', '#9467bd']#, '#ff5733']  # ADDED '#ff5733' for generalization    
+
     def __init__(self):
         """Initialize the comparison charts."""
         self._output_dir: str = ""
@@ -103,51 +104,68 @@ class ComparisonCharts:
         
         return saved_files
     
-    def _create_quality_bar_chart(
-    self,
-    df: pd.DataFrame,
-    dpi: int,
-    ) -> str:
-        """Create a bar chart comparing the 4 primary quality metrics."""
+    def _create_quality_bar_chart(self, df: pd.DataFrame, dpi: int) -> str:
+        """Create a bar chart with clear separation between algorithms."""
         if df is None or df.empty:
             return ""
         
-        fig, ax = plt.subplots(figsize=(12, 7))
+        fig, ax = plt.subplots(figsize=(12, 6))
         
-        # PRIMARY METRICS TO COMPARE
-        metrics = ['fitness', 'precision', 'simplicity', 'generalization', 'overall_score']  # ADD 'generalization'
-        available_metrics = [m for m in metrics if m in df.columns and df[m].sum() > 0]
+        # Metrics to compare
+        metrics = ['fitness', 'precision', 'simplicity', 'overall_score']
+        available = [m for m in metrics if m in df.columns and df[m].sum() > 0]
         
-        if not available_metrics:
+        if not available:
             return ""
         
-        x = np.arange(len(df))
-        width = 0.2
+        n = len(df)
+        bar_width = 0.15
+        group_width = bar_width * len(available)
         
-        # Colors for each metric
-        colors = ['#3498db', '#e74c3c', '#2ecc71', '#9b59b6']
+        # Colors
+        colors = ['#3498db', '#e74c3c', '#2ecc71', '#ff9800', '#9b59b6']
+        color_map = dict(zip(metrics, colors))
         
-        for i, metric in enumerate(available_metrics):
-            ax.bar(x + i * width, df[metric], width, 
-                label=metric.replace('_', ' ').title(),
-                color=colors[i % len(colors)])
+        # Grouped bars
+        for i, metric in enumerate(available):
+            positions = []
+            for j in range(n):
+                pos = j * (group_width + 0.1) + i * bar_width
+                positions.append(pos)
+                ax.bar(pos, df.iloc[j][metric], bar_width, 
+                    color=color_map[metric], edgecolor='white', linewidth=0.5)
+            
+            # X-axis labels (only for first metric)
+            if i == 0:
+                for j in range(n):
+                    pos = j * (group_width + 0.1) + i * bar_width + group_width / 2 - bar_width / 2
+                    ax.text(pos, -0.08, df.iloc[j]['name'], 
+                        ha='center', va='top', fontsize=9, rotation=45)
         
-        ax.set_xlabel('Algorithm', fontsize=12)
-        ax.set_ylabel('Score (0-1)', fontsize=12)
-        ax.set_title('Process Mining Algorithm Comparison\n(Fitness, Precision, Simplicity, Overall Score)', fontsize=14, fontweight='bold')
-        ax.set_xticks(x + width * (len(available_metrics) - 1) / 2)
-        ax.set_xticklabels(df['name'], rotation=45, ha='right', fontsize=10)
-        ax.legend(loc='upper right', fontsize=10)
-        ax.set_ylim(0, 1.15)
+        # Add vertical lines between groups
+        for j in range(1, n):
+            line_pos = j * (group_width + 0.1) - 0.05
+            ax.axvline(x=line_pos, color='#cccccc', linestyle='--', linewidth=1, alpha=0.5)
+        
+        ax.set_xlabel('')
+        ax.set_ylabel('Score (0-1)', fontsize=11)
+        ax.set_title('Process Mining Algorithm Comparison', fontsize=14, fontweight='bold')
+        
+        # Legend
+        handles = [plt.Rectangle((0, 0), 1, 1, color=color_map[m]) for m in available]
+        ax.legend(handles, [m.replace('_', ' ').title() for m in available],
+                loc='upper right', fontsize=9, ncol=len(available))
+        
+        ax.set_ylim(-0.1, 1.15)
         ax.grid(axis='y', alpha=0.3)
         ax.axhline(y=1.0, color='gray', linestyle='--', alpha=0.5)
+        ax.spines['top'].set_visible(False)
+        ax.spines['right'].set_visible(False)
         
         plt.tight_layout()
-        
         path = os.path.join(self._output_dir, "quality_comparison.png")
         plt.savefig(path, dpi=dpi, bbox_inches='tight')
         plt.close()
-        
         return path
     
     def _create_structure_bar_chart(
