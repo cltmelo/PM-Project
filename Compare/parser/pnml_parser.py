@@ -4,6 +4,7 @@ PNML (Petri Net Markup Language) parser.
 Parses PNML files to extract model structure metrics.
 """
 
+import os
 import xml.etree.ElementTree as ET
 from typing import Dict, List, Optional, Set
 from dataclasses import dataclass, field
@@ -100,13 +101,13 @@ class PNMLParser:
             name=self._get_net_name(root)
         )
         
-        # Find the page element (contains all net elements)
+        # Find the page element when present. Some exporters write places,
+        # transitions, and arcs directly under the net element.
         page = root.find(f".//{{{self.PNML_NS}}}page")
         if page is None:
             page = root.find(".//page")  # Try without namespace
         
-        if page is not None:
-            structure = self._parse_page(page, structure)
+        structure = self._parse_page(page or root, structure)
         
         self._structure = structure
         return structure
@@ -126,7 +127,7 @@ class PNMLParser:
         """Parse a page element to extract places and transitions."""
         
         # Parse places
-        for place in page.findall(f".//{{{self.PNML_NS}}}place"):
+        for place in self._iter_by_local_name(page, "place"):
             place_id = place.get("id", "")
             structure.places.add(place_id)
             
@@ -137,7 +138,7 @@ class PNMLParser:
                 structure.final_place = place_id
         
         # Parse transitions
-        for transition in page.findall(f".//{{{self.PNML_NS}}}transition"):
+        for transition in self._iter_by_local_name(page, "transition"):
             trans_id = transition.get("id", "")
             structure.transitions.add(trans_id)
             
@@ -146,7 +147,7 @@ class PNMLParser:
                 structure.num_silent_transitions += 1
         
         # Parse arcs
-        for arc in page.findall(f".//{{{self.PNML_NS}}}arc"):
+        for arc in self._iter_by_local_name(page, "arc"):
             structure.num_arcs += 1
         
         # Update counts
@@ -154,6 +155,16 @@ class PNMLParser:
         structure.num_transitions = len(structure.transitions)
         
         return structure
+
+    def _iter_by_local_name(self, element: ET.Element, local_name: str):
+        """Yield descendants with a tag name, ignoring XML namespaces."""
+        for child in element.iter():
+            if self._local_name(child.tag) == local_name:
+                yield child
+
+    def _local_name(self, tag: str) -> str:
+        """Return the local portion of an XML tag."""
+        return tag.rsplit("}", 1)[-1] if "}" in tag else tag
     
     def _is_initial_place(self, place: ET.Element) -> bool:
         """Check if a place is an initial place."""
@@ -165,14 +176,13 @@ class PNMLParser:
     
     def _is_silent_transition(self, transition: ET.Element) -> bool:
         """Check if a transition is a silent transition."""
-        name_elem = transition.find(f".//{{{self.PNML_NS}}}name/{{{self.PNML_NS}}}text")
-        if name_elem is None:
-            name_elem = transition.find(".//name/text")
+        name_elem = None
+        for child in transition.iter():
+            if self._local_name(child.tag) == "text":
+                name_elem = child
+                break
         
         if name_elem is not None:
             return name_elem.text in ("tau", "silent", "t")
         
         return False
-
-
-import os

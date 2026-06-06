@@ -42,11 +42,12 @@ class OutputDetector:
     """
     Detects algorithm outputs and their status.
     
-    Checks for presence of required output files:
+    Checks for presence of comparison-critical output files:
     - alpha_miner.pnml (or similar .pnml file)
-    - alpha_miner.png (or similar .png file)
     - alpha_miner_metrics.json (or similar .json file)
-    - run_output.txt (or similar .txt file)
+
+    PNG visualizations and text summaries are detected when present, but they
+    are not required for the comparison pipeline.
     
     Example:
         detector = OutputDetector()
@@ -55,9 +56,7 @@ class OutputDetector:
     
     REQUIRED_FILES = [
         "pnml",      # Petri net definition
-        "png",       # Visualization
         "json",      # Metrics
-        "txt",       # Text summary
     ]
     
     def __init__(self):
@@ -91,6 +90,9 @@ class OutputDetector:
             f"{config.module_name}.pnml",
             f"{config.type.value.lower()}.pnml",
             "result.pnml",
+            "result_petri_net.pnml",
+            "result_split_miner.pnml",
+            "petrinet_inductiveminer.pnml",
             "petri_net.pnml",
         ]
         
@@ -108,6 +110,9 @@ class OutputDetector:
             f"{config.module_name}.png",
             f"{config.type.value.lower()}.png",
             "result.png",
+            "result_petri_net_view.png",
+            "result_split_miner_view.png",
+            "petrinet_inductiveminer.png",
             "petri_net.png",
         ]
         result.png_path = self._find_file(output_dir, png_patterns)
@@ -188,20 +193,16 @@ class OutputDetector:
         
         if not output.pnml_path:
             missing.append("pnml")
-        if not output.png_path:
-            missing.append("png")
         if not output.json_path:
             missing.append("json")
-        if not output.txt_path:
-            missing.append("txt")
         
         return missing
     
     def _determine_status(self, output: AlgorithmOutput) -> OutputStatus:
         """Determine the output status."""
-        num_present = 4 - len(output.missing_files)
+        num_present = len(self.REQUIRED_FILES) - len(output.missing_files)
         
-        if num_present == 4:
+        if num_present == len(self.REQUIRED_FILES):
             return OutputStatus.COMPLETE
         elif num_present > 0:
             return OutputStatus.PARTIAL

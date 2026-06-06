@@ -42,7 +42,7 @@ class CompareConfig:
     algorithms: List[AlgorithmConfig] = field(default_factory=list)
     
     # Output settings
-    output_dir: str = "compare/output"
+    output_dir: str = "Compare/output"
     generate_charts: bool = True
     generate_report: bool = True
     
@@ -61,8 +61,8 @@ DEFAULT_ALGORITHMS = [
         name="Genetic Miner",
         type=AlgorithmType.GENETIC,
         module_name="genetic_miner",
-        output_dir="GeneticMiner/Output",
-        main_script="GeneticMiner/genetic_miner.py",
+        output_dir="GeneticMiner/output",
+        main_script="GeneticMiner/main.py",
         enabled=True,
     ),
     AlgorithmConfig(
@@ -77,16 +77,16 @@ DEFAULT_ALGORITHMS = [
         name="Inductive Miner",
         type=AlgorithmType.INDUCTIVE,
         module_name="inductive_miner",
-        output_dir="InductiveMiner/Output",
-        main_script="InductiveMiner/inductive_miner.py",
+        output_dir="InductiveMiner/output",
+        main_script="InductiveMiner/main.py",
         enabled=True,
     ),
     AlgorithmConfig(
         name="Split Miner",
         type=AlgorithmType.SPLIT,
         module_name="split_miner",
-        output_dir="SplitMiner/Output",
-        main_script="SplitMiner/split_miner.py",
+        output_dir="SplitMiner/output",
+        main_script="SplitMiner/main.py",
         enabled=True,
     ),
 ]

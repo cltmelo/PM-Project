@@ -151,40 +151,32 @@ class MetricsCalculator:
         return result
     
     def _create_dataframe(
-        self,
-        results: Dict[str, AlgorithmResult]
+    self,
+    results: Dict[str, AlgorithmResult]
     ) -> pd.DataFrame:
-        """Create a comparison DataFrame."""
+        """Create a comparison DataFrame focused on quality metrics."""
         rows = []
         
         for name, result in results.items():
             row = {"name": name}
             
-            # Add structure metrics
+            # PRIMARY QUALITY METRICS
+            if result.metrics:
+                row["fitness"] = result.metrics.fitness
+                row["precision"] = result.metrics.precision
+                row["simplicity"] = result.metrics.simplicity
+                row["overall_score"] = result.metrics.overall_score
+                row["f_score"] = result.metrics.f_score
+                row["num_cases"] = result.metrics.num_cases
+                row["num_events"] = result.metrics.num_events
+                row["num_activities"] = result.metrics.num_activities
+            
+            # MODEL STRUCTURE (optional, not primary)
             if result.structure:
                 row["num_places"] = result.structure.num_places
                 row["num_transitions"] = result.structure.num_transitions
                 row["num_arcs"] = result.structure.num_arcs
                 row["complexity"] = result.structure.complexity
-            else:
-                row["num_places"] = 0
-                row["num_transitions"] = 0
-                row["num_arcs"] = 0
-                row["complexity"] = 0.0
-            
-            # Add quality metrics
-            if result.metrics:
-                row["fitness"] = result.metrics.fitness
-                row["precision"] = result.metrics.precision
-                row["f_score"] = result.metrics.f_score
-                row["num_cases"] = result.metrics.num_cases
-                row["num_events"] = result.metrics.num_events
-            else:
-                row["fitness"] = 0.0
-                row["precision"] = 0.0
-                row["f_score"] = 0.0
-                row["num_cases"] = 0
-                row["num_events"] = 0
             
             rows.append(row)
         

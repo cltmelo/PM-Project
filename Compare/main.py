@@ -21,16 +21,16 @@ from pathlib import Path
 # Add parent directory to path
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
-from .config import get_enabled_algorithms, get_compare_config
-from .utils.file_utils import ensure_dir
-from .utils.logging_utils import print_header, print_info, print_success
+from Compare.config import get_enabled_algorithms, get_compare_config
+from Compare.utils.file_utils import ensure_dir
+from Compare.utils.logging_utils import print_header, print_info, print_success
 
-from .runner.detector import OutputDetector
-from .runner.executor import AlgorithmExecutor
-from .metrics.calculator import MetricsCalculator
-from .visualization.charts import ComparisonCharts
-from .visualization.table import ComparisonTable
-from .report.generator import ReportGenerator
+from Compare.runner.detector import OutputDetector
+from Compare.runner.executor import AlgorithmExecutor
+from Compare.metrics.calculator import MetricsCalculator
+from Compare.visualization.charts import ComparisonCharts
+from Compare.visualization.table import ComparisonTable
+from Compare.report.generator import ReportGenerator
 
 
 def run_comparison(
@@ -91,7 +91,10 @@ def run_comparison(
     # ==========================================================================
     if run_missing and not dry_run:
         executor = AlgorithmExecutor()
-        execution_results = executor.run_missing(outputs, base_dir, dry_run)
+        if force_rerun:
+            execution_results = executor.run_all(algorithms, base_dir, force=True, dry_run=dry_run)
+        else:
+            execution_results = executor.run_missing(outputs, base_dir, dry_run)
         
         # Re-detect outputs after execution
         if execution_results:

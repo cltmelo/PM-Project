@@ -73,20 +73,27 @@ class ComparisonTable:
         return saved_files
     
     def _create_text_table(self, df: pd.DataFrame) -> str:
-        """Create a formatted text table."""
+        """Create a formatted text table focused on quality metrics."""
         if df is None or df.empty:
             return ""
         
         lines = []
-        lines.append("=" * 100)
-        lines.append("PROCESS MINING ALGORITHM COMPARISON".center(100))
-        lines.append("=" * 100)
+        lines.append("=" * 90)
+        lines.append("PROCESS MINING ALGORITHM COMPARISON - QUALITY METRICS".center(90))
+        lines.append("=" * 90)
         lines.append("")
         
-        # Header
-        header = f"{'Algorithm':<20} {'Fitness':>10} {'Precision':>10} {'F-Score':>10} {'Places':>8} {'Trans.':>8} {'Arcs':>8}"
+        # Header - FOCUS ON QUALITY METRICS
+        header = (
+            f"{'Algorithm':<20} "
+            f"{'Fitness':>10} "
+            f"{'Precision':>10} "
+            f"{'Simplicity':>10} "
+            f"{'Overall':>10} "
+            f"{'F-Score':>10}"
+        )
         lines.append(header)
-        lines.append("-" * 100)
+        lines.append("-" * 90)
         
         # Data rows
         for _, row in df.iterrows():
@@ -94,14 +101,35 @@ class ComparisonTable:
                 f"{row['name']:<20} "
                 f"{row.get('fitness', 0):>10.4f} "
                 f"{row.get('precision', 0):>10.4f} "
-                f"{row.get('f_score', 0):>10.4f} "
-                f"{row.get('num_places', 0):>8} "
-                f"{row.get('num_transitions', 0):>8} "
-                f"{row.get('num_arcs', 0):>8}"
+                f"{row.get('simplicity', 0):>10.4f} "
+                f"{row.get('overall_score', 0):>10.4f} "
+                f"{row.get('f_score', 0):>10.4f}"
             )
             lines.append(line)
         
-        lines.append("-" * 100)
+        lines.append("-" * 90)
+        lines.append("")
+        
+        # Highlight best performers
+        lines.append("BEST PERFORMERS")
+        lines.append("-" * 40)
+        
+        if 'fitness' in df.columns and df['fitness'].max() > 0:
+            best_fit = df.loc[df['fitness'].idxmax()]
+            lines.append(f"  Best Fitness: {best_fit['name']} ({best_fit['fitness']:.4f})")
+        
+        if 'precision' in df.columns and df['precision'].max() > 0:
+            best_prec = df.loc[df['precision'].idxmax()]
+            lines.append(f"  Best Precision: {best_prec['name']} ({best_prec['precision']:.4f})")
+        
+        if 'simplicity' in df.columns and df['simplicity'].max() > 0:
+            best_simp = df.loc[df['simplicity'].idxmax()]
+            lines.append(f"  Best Simplicity: {best_simp['name']} ({best_simp['simplicity']:.4f})")
+        
+        if 'overall_score' in df.columns and df['overall_score'].max() > 0:
+            best_over = df.loc[df['overall_score'].idxmax()]
+            lines.append(f"  Best Overall: {best_over['name']} ({best_over['overall_score']:.4f})")
+        
         lines.append("")
         
         # Save to file

@@ -5,8 +5,12 @@ Creates bar charts, radar charts, and other visualizations.
 """
 
 import os
+import tempfile
 from typing import List, Optional, Tuple
 from pathlib import Path
+
+os.environ.setdefault("MPLCONFIGDIR", os.path.join(tempfile.gettempdir(), "pm_project_matplotlib"))
+os.environ.setdefault("XDG_CACHE_HOME", os.path.join(tempfile.gettempdir(), "pm_project_cache"))
 
 import matplotlib.pyplot as plt
 import matplotlib.patches as mpatches
@@ -100,38 +104,43 @@ class ComparisonCharts:
         return saved_files
     
     def _create_quality_bar_chart(
-        self,
-        df: pd.DataFrame,
-        dpi: int,
+    self,
+    df: pd.DataFrame,
+    dpi: int,
     ) -> str:
-        """Create a bar chart comparing quality metrics."""
+        """Create a bar chart comparing the 4 primary quality metrics."""
         if df is None or df.empty:
             return ""
         
-        fig, ax = plt.subplots(figsize=(12, 6))
+        fig, ax = plt.subplots(figsize=(12, 7))
         
-        metrics = ['fitness', 'precision', 'f_score']
+        # PRIMARY METRICS TO COMPARE
+        metrics = ['fitness', 'precision', 'simplicity', 'overall_score']
         available_metrics = [m for m in metrics if m in df.columns and df[m].sum() > 0]
         
         if not available_metrics:
             return ""
         
         x = np.arange(len(df))
-        width = 0.25
+        width = 0.2
+        
+        # Colors for each metric
+        colors = ['#3498db', '#e74c3c', '#2ecc71', '#9b59b6']
         
         for i, metric in enumerate(available_metrics):
             ax.bar(x + i * width, df[metric], width, 
-                  label=metric.replace('_', ' ').title(),
-                  color=self.COLORS[i % len(self.COLORS)])
+                label=metric.replace('_', ' ').title(),
+                color=colors[i % len(colors)])
         
-        ax.set_xlabel('Algorithm')
-        ax.set_ylabel('Score')
-        ax.set_title('Quality Metrics Comparison')
-        ax.set_xticks(x + width)
-        ax.set_xticklabels(df['name'], rotation=45, ha='right')
-        ax.legend()
-        ax.set_ylim(0, 1.1)
+        ax.set_xlabel('Algorithm', fontsize=12)
+        ax.set_ylabel('Score (0-1)', fontsize=12)
+        ax.set_title('Process Mining Algorithm Comparison\n(Fitness, Precision, Simplicity, Overall Score)', fontsize=14, fontweight='bold')
+        ax.set_xticks(x + width * (len(available_metrics) - 1) / 2)
+        ax.set_xticklabels(df['name'], rotation=45, ha='right', fontsize=10)
+        ax.legend(loc='upper right', fontsize=10)
+        ax.set_ylim(0, 1.15)
         ax.grid(axis='y', alpha=0.3)
+        ax.axhline(y=1.0, color='gray', linestyle='--', alpha=0.5)
         
         plt.tight_layout()
         
@@ -181,7 +190,7 @@ class ComparisonCharts:
             ax.set_xlabel('Algorithm')
             ax.set_ylabel('Arc-to-Element Ratio')
             ax.set_title('Model Complexity')
-            ax.set_xticklabels(df['name'], rotation=45, ha='right')
+            plt.setp(ax.get_xticklabels(), rotation=45, ha='right')
             ax.grid(axis='y', alpha=0.3)
         
         plt.tight_layout()
@@ -274,7 +283,7 @@ class ComparisonCharts:
             bars = ax1.bar(df['name'], df['fitness'], color=colors)
             ax1.set_title('Fitness')
             ax1.set_ylim(0, 1.1)
-            ax1.set_xticklabels(df['name'], rotation=45, ha='right')
+            plt.setp(ax1.get_xticklabels(), rotation=45, ha='right')
         
         # 2. Precision comparison
         ax2 = fig.add_subplot(gs[0, 1])
@@ -283,7 +292,7 @@ class ComparisonCharts:
             bars = ax2.bar(df['name'], df['precision'], color=colors)
             ax2.set_title('Precision')
             ax2.set_ylim(0, 1.1)
-            ax2.set_xticklabels(df['name'], rotation=45, ha='right')
+            plt.setp(ax2.get_xticklabels(), rotation=45, ha='right')
         
         # 3. F-Score comparison
         ax3 = fig.add_subplot(gs[0, 2])
@@ -292,7 +301,7 @@ class ComparisonCharts:
             bars = ax3.bar(df['name'], df['f_score'], color=colors)
             ax3.set_title('F-Score')
             ax3.set_ylim(0, 1.1)
-            ax3.set_xticklabels(df['name'], rotation=45, ha='right')
+            plt.setp(ax3.get_xticklabels(), rotation=45, ha='right')
         
         # 4. Model size (places)
         ax4 = fig.add_subplot(gs[1, 0])
@@ -300,7 +309,7 @@ class ComparisonCharts:
             colors = [self.COLORS[i] for i in range(len(df))]
             bars = ax4.bar(df['name'], df['num_places'], color=colors)
             ax4.set_title('Number of Places')
-            ax4.set_xticklabels(df['name'], rotation=45, ha='right')
+            plt.setp(ax4.get_xticklabels(), rotation=45, ha='right')
         
         # 5. Model size (arcs)
         ax5 = fig.add_subplot(gs[1, 1])
@@ -308,7 +317,7 @@ class ComparisonCharts:
             colors = [self.COLORS[i] for i in range(len(df))]
             bars = ax5.bar(df['name'], df['num_arcs'], color=colors)
             ax5.set_title('Number of Arcs')
-            ax5.set_xticklabels(df['name'], rotation=45, ha='right')
+            plt.setp(ax5.get_xticklabels(), rotation=45, ha='right')
         
         # 6. Summary table
         ax6 = fig.add_subplot(gs[1, 2])
