@@ -1,344 +1,137 @@
 """
 metrics.py - Evaluate fitness, precision, and simplicity of discovered process model
-Mirrors logic from GeneticMiner/metrics.py for consistent comparison
-FIXED: Use pm4py's actual conformance checking for precision/fitness instead of DFG-based estimates
+UPDATED: Alignment-based fitness (primary) with token-based replay fallback [1].
+Passes DataFrame directly throughout pipeline - no redundant file I/O [1].
+Includes CFC and Structuredness metrics using gateway information [1].
+FIXED:
+- Bug 1: Use log_fitness/average_trace_fitness (0-1 scale) instead of perc_fit_traces (0-100)
+- Bug 2: Add error logging for generalization failure and proper EventLog conversion
 """
 import json
-import pm4py
-from pm4py import read_xes
-from typing import Dict, Set, Tuple, List, Union, Optional
-from collections import defaultdict
+import os
+from typing import Dict, Set, Tuple, Union, Optional
 import pandas as pd
-import numpy as np
-
-
+import pm4py
+# =============================================================================
+# HELPER FUNCTIONS
+# =============================================================================
 def _ensure_dataframe(event_log_or_path: Union[str, pd.DataFrame]) -> pd.DataFrame:
-    """Helper function to ensure we have a DataFrame."""
+    """
+    Helper function to ensure we have a DataFrame.
+
+    Args:
+        event_log_or_path: Path to XES file OR pre-loaded DataFrame
+
+    Returns:
+        event_log_df: Event log as DataFrame
+    """
     if isinstance(event_log_or_path, str):
         try:
-            event_log_obj = read_xes(event_log_or_path)
+            event_log_obj = pm4py.read_xes(event_log_or_path)
             return pm4py.convert_to_dataframe(event_log_obj)
         except Exception as e:
             print(f"⚠ Warning: Could not load event log: {e}")
             return pd.DataFrame()
     else:
         return event_log_or_path
-
-
-def calculate_replay_fitness(event_log_or_path: Union[str, pd.DataFrame],
-                              dfg: Dict[Tuple[str, str], int],
-                              start_activities: Set[str],
-                              end_activities: Set[str]) -> float:
+def _run_alignments(event_log_df: pd.DataFrame,
+                    net,
+                    initial_marking,
+                    final_marking,
+                    timeout_seconds: int = 120) -> Optional[float]:
     """
-    Calculate replay fitness using FULLY VECTORIZED approach.
-    """
-    event_log_df = _ensure_dataframe(event_log_or_path)
+    Calculate alignment-based fitness using pm4py's alignment algorithm.
 
-    if event_log_df.empty or not dfg:
-        return 0.5
+    Wrapped in ThreadPoolExecutor with timeout to prevent pipeline freeze
+    on large logs like BPI 2017 (~31k cases) [1].
+
+    Args:
+        event_log_df: Pre-loaded DataFrame (must NOT reload from disk)
+        net: Petri net model
+        initial_marking: Initial marking of the net
+        final_marking: Final marking of the net
+        timeout_seconds: Maximum time to wait for alignment (default: 120s)
+
+    Returns:
+        fitness: Alignment-based fitness score (0-1), or None if failed/timed out
+    """
+    from pm4py.algo.evaluation.replay_fitness import algorithm as rf_algo
+    from pm4py.algo.evaluation.replay_fitness.variants import alignment_based as ab_variant
+    from SplitMiner.dfg_builder import add_source_sink_to_log
+    from concurrent.futures import ThreadPoolExecutor
+
+    def _compute_alignment():
+        """Inner function to run alignment computation."""
+        # Add synthetic start/end events to log for proper alignment
+        log_with_ss = add_source_sink_to_log(event_log_df)
+
+        # Run alignment-based replay
+        result = rf_algo.apply(
+            log_with_ss,
+            net,
+            initial_marking,
+            final_marking,
+            variant=ab_variant
+        )
+
+        # Extract fitness from result (already in 0-1 scale)
+        fitness = result.get('log_fitness', result.get('average_trace_fitness', None))
+
+        return float(fitness) if fitness is not None else None
 
     try:
-        edge_set = set(dfg.keys())
-
-        event_log_df = event_log_df.sort_values(
-            ['case:concept:name', 'time:timestamp']
-        ).copy()
-
-        event_log_df['next_activity'] = event_log_df.groupby('case:concept:name')['concept:name'].shift(-1)
-        event_log_df['next_case'] = event_log_df.groupby('case:concept:name')['case:concept:name'].shift(-1)
-
-        valid_trans = event_log_df[
-            (event_log_df['next_case'] == event_log_df['case:concept:name']) &
-            (event_log_df['next_activity'].notna())
-        ].copy()
-
-        edges_as_tuples = list(zip(valid_trans['concept:name'], valid_trans['next_activity']))
-        valid_trans['valid_edge'] = [e in edge_set for e in edges_as_tuples]
-
-        edge_validity = valid_trans.groupby('case:concept:name')['valid_edge'].agg(['sum', 'count'])
-        edge_validity['fitness'] = edge_validity['sum'] / edge_validity['count']
-
-        first_activities = event_log_df.groupby('case:concept:name')['concept:name'].first()
-        last_activities = event_log_df.groupby('case:concept:name')['concept:name'].last()
-
-        start_valid = first_activities.isin(start_activities).astype(float)
-        end_valid = last_activities.isin(end_activities).astype(float)
-
-        case_fitness = []
-        for case_id in edge_validity.index:
-            edge_fit = edge_validity.loc[case_id, 'fitness']
-            start_fit = start_valid.get(case_id, 0)
-            end_fit = end_valid.get(case_id, 0)
-            fit = (0.6 * edge_fit + 0.2 * start_fit + 0.2 * end_fit)
-            case_fitness.append(fit)
-
-        if not case_fitness:
-            return 0.5
-
-        overall_fitness = np.mean(case_fitness)
-        return max(0.0, min(1.0, overall_fitness))
-
-    except Exception as e:
-        print(f"⚠ Fitness calculation warning: {e}")
-        return 0.5
-
-
-def calculate_precision_petri_net(event_log_or_path: Union[str, pd.DataFrame],
-                                   pnml_path: str) -> float:
-    """
-    Calculate BEHAVIORAL PRECISION using pm4py's ETC (Escaping Edges) conformance checking.
-
-    FIX Option A: Use correct pm4py 2.x API for ETC precision.
-    ETC is what the Split Miner paper uses (benchmark: 0.85 for BPI 2017).
-    """
-    try:
-        event_log_df = _ensure_dataframe(event_log_or_path)
-
-        if event_log_df.empty:
-            return 0.5
-
-        # Load Petri net from PNML file
+        # Run alignment with timeout to prevent pipeline freeze [1]
+        executor = ThreadPoolExecutor(max_workers=1)
+        future = executor.submit(_compute_alignment)
         try:
-            net, initial_marking, final_marking = pm4py.read_pnml(pnml_path)
+            fitness_score = future.result(timeout=timeout_seconds)
+            executor.shutdown(wait=False)
+            print(f"✓ Alignment-based fitness computed in timeout window ({timeout_seconds}s)")
+            return fitness_score
+        except TimeoutError:
+            executor.shutdown(wait=False)
+            print(f"⚠ Alignment computation timed out after {timeout_seconds}s - falling back to token-based replay")
+            return None
         except Exception as e:
-            print(f"  ⚠ Could not load PNML for precision: {e}")
-            return 0.5
-
-        # Option 1: ETC Precision (PRIMARY - what the paper uses)
-        try:
-            from pm4py.algo.evaluation.precision import algorithm as precision_algo
-            from pm4py.algo.evaluation.precision.variants import etconformance_token
-
-            precision = precision_algo.apply(
-                event_log_df,
-                net,
-                initial_marking,
-                final_marking,
-                variant=etconformance_token
-            )
-
-            if isinstance(precision, dict):
-                precision_value = precision.get('score', precision.get('precision', 0.75))
-            else:
-                precision_value = float(precision)
-
-            print(f"    (ETC precision method)")
-            return max(0.0, min(1.0, precision_value))
-
-        except ImportError as ie:
-            print(f"  ⚠ ETC precision import failed: {ie}")
-        except Exception as e1:
-            print(f"  ⚠ ETC precision failed: {e1}")
-
-        # Option 2: Alternative ETC import path (pm4py version compatibility)
-        try:
-            from pm4py.metrics import precision as precision_metric
-
-            precision = precision_metric.precision_etconformance(
-                event_log_df,
-                net,
-                initial_marking,
-                final_marking
-            )
-
-            print(f"    (ETC precision via metrics module)")
-            return max(0.0, min(1.0, float(precision)))
-
-        except Exception as e2:
-            print(f"  ⚠ Alternative ETC failed: {e2}")
-
-        # Option 3: Token-Based Replay (FALLBACK - known to return ~1.0)
-        try:
-            precision = pm4py.precision_token_based_replay(
-                event_log_df,
-                net,
-                initial_marking,
-                final_marking
-            )
-
-            print(f"    (Token-based replay fallback)")
-            return max(0.0, min(1.0, float(precision)))
-
-        except Exception as e3:
-            print(f"  ⚠ TBR precision failed: {e3}")
-
-        # Option 4: Direct pm4py top-level call (last resort)
-        try:
-            precision = pm4py.precision(
-                event_log_df,
-                net,
-                initial_marking,
-                final_marking
-            )
-
-            print(f"    (Direct pm4py.precision fallback)")
-            return max(0.0, min(1.0, float(precision)))
-
-        except Exception as e4:
-            print(f"  ⚠ Direct precision failed: {e4}")
-
-        print("  ⚠ All precision methods failed, using fallback value 0.75")
-        return 0.75
+            executor.shutdown(wait=False)
+            print(f"⚠ Alignment-based fitness failed: {e}")
+            return None
 
     except Exception as e:
-        print(f"⚠ Precision calculation warning: {e}")
-        return 0.5
-
-
-def calculate_simplicity(dfg: Dict[Tuple[str, str], int],
-                         num_activities: int) -> float:
-    """Calculate structural simplicity."""
-    if num_activities <= 1:
-        return 1.0
-
-    num_edges = len(dfg)
-    max_edges = num_activities * (num_activities - 1)
-
-    if max_edges == 0:
-        return 1.0
-
-    complexity = num_edges / max_edges
-    simplicity = 1 - complexity
-
-    return max(0.0, min(1.0, simplicity))
-
-
-def calculate_cfc(split_gateways: dict, dfg: Dict[Tuple[str, str], int]) -> float:
-    """
-    Calculate Control-Flow Complexity (CFC).
-    Sum of (out_degree - 1) for each split gateway.
-    Paper reports CFC=18 for BPI Challenge 2017.
-    """
-    cfc = 0.0
-    successors = {}
-    for activity in set(src for (src, _) in dfg.keys()):
-        successors[activity] = [tgt for (src, tgt) in dfg.keys() if src == activity]
-    for activity, gw_type in split_gateways.items():
-        num_outgoing = len(successors.get(activity, []))
-        if num_outgoing > 1:
-            cfc += (num_outgoing - 1)
-    return round(cfc, 6)
-
-
-def calculate_structuredness(split_gateways: dict, join_gateways: dict,
-                              num_activities: int) -> float:
-    """
-    Calculate STRUCTUREDNESS: fraction of activities inside SESE blocks.
-    Paper reports 1.00 for BPI Challenge 2017.
-    """
-    if not split_gateways and not join_gateways:
-        return 1.0
-    if num_activities <= 2:
-        return 1.0
-
-    xor_splits = list(split_gateways.values()).count('XOR')
-    and_splits = list(split_gateways.values()).count('AND')
-    xor_joins = list(join_gateways.values()).count('XOR')
-    and_joins = list(join_gateways.values()).count('AND')
-
-    xor_pairs = min(xor_splits, xor_joins)
-    and_pairs = min(and_splits, and_joins)
-    total_pairs = xor_pairs + and_pairs
-    total_gateways = len(split_gateways) + len(join_gateways)
-    max_possible_pairs = total_gateways / 2
-
-    structuredness = total_pairs / max_possible_pairs if max_possible_pairs > 0 else 1.0
-
-    mismatched_splits = abs(xor_splits - xor_joins) + abs(and_splits - and_joins)
-    if mismatched_splits > 0:
-        penalty = mismatched_splits / total_gateways
-        structuredness = structuredness * (1 - penalty * 0.5)
-
-    return round(max(0.0, min(1.0, structuredness)), 6)
-
-
-def calculate_generalization(event_log_or_path: Union[str, pd.DataFrame],
-                             dfg: Dict[Tuple[str, str], int],
-                             num_cases: int = None) -> float:
-    """
-    Calculate GENERALIZATION using LOG2 FREQUENCY SCORING.
-    Uses log2 scaling for better differentiation across edge frequencies.
-    """
-    event_log_df = _ensure_dataframe(event_log_or_path)
-
-    if event_log_df.empty or not dfg:
-        return 0.5
-
-    try:
-        if num_cases is None:
-            num_cases = event_log_df['case:concept:name'].nunique()
-
-        if num_cases == 0 or not dfg:
-            return 0.5
-
-        freq_values = list(dfg.values())
-
-        if not freq_values:
-            return 0.5
-
-        max_freq = max(freq_values)
-        log_max = np.log2(max_freq + 1)
-
-        per_edge_scores = []
-        for freq in freq_values:
-            log_freq = np.log2(freq + 1)
-            score = log_freq / log_max if log_max > 0 else 0.5
-            per_edge_scores.append(score)
-
-        generalization = np.mean(per_edge_scores)
-
-        return max(0.0, min(1.0, round(generalization, 6)))
-
-    except Exception as e:
-        print(f"⚠ Generalization calculation warning: {e}")
-        return 0.5
-
-
-def evaluate_model(event_log_or_path: Union[str, pd.DataFrame],
+        print(f"⚠ Alignment executor setup failed: {e}")
+        return None
+# =============================================================================
+# MAIN EVALUATION FUNCTION
+# =============================================================================
+def evaluate_model(event_log_df: pd.DataFrame,
                    dfg: Dict[Tuple[str, str], int],
                    start_activities: Set[str],
                    end_activities: Set[str],
-                   pnml_path: str = None,
-                   split_gateways: dict = None,
-                   join_gateways: dict = None) -> dict:
+                   pnml_file: str,
+                   split_gateways: Dict[str, str],
+                   join_gateways: Dict[str, str]) -> Dict[str, float]:
     """
     Comprehensive evaluation of the discovered process model.
 
+    Uses alignment-based fitness (primary) with token-based replay fallback [1].
+    Passes DataFrame directly - no file reload after Step 1 [1].
+    Includes CFC and Structuredness metrics using gateway information [1].
+
     Args:
-        event_log_or_path: Path to XES file OR pre-loaded DataFrame
+        event_log_df: Pre-loaded DataFrame (NOT file path - avoids reloading)
         dfg: Discovered directly-follows graph
-        start_activities: Start activities
-        end_activities: End activities
-        pnml_path: Path to exported PNML file (for Petri net-based precision)
-        split_gateways: Dict of {activity: gateway_type} for CFC/structuredness
-        join_gateways: Dict of {activity: gateway_type} for structuredness
+        start_activities: Start activities set
+        end_activities: End activities set
+        pnml_file: Path to PNML file for Petri net loading [1]
+        split_gateways: Split gateway mapping for CFC/Structuredness [1]
+        join_gateways: Join gateway mapping for CFC/Structuredness [1]
+
+    Returns:
+        metrics: Dictionary with all evaluation metrics
     """
-    print("  Loading event log for evaluation...")
+    from SplitMiner.dfg_builder import add_source_sink_to_log
 
-    event_log_df = _ensure_dataframe(event_log_or_path)
-
-    if event_log_df.empty:
-        print("  ⚠ Warning: Empty event log, returning default metrics")
-        return {
-            'overall_score': 0.5,
-            'fitness_score': 0.5,
-            'precision_score': 0.5,
-            'simplicity_score': 0.5,
-            'generalization_score': 0.5,
-            'f_score': 0.5,
-            'cfc': 0.0,
-            'structuredness': 1.0,
-            'num_activities': 0,
-            'num_edges': len(dfg),
-            'model_stats': {
-                'start_activities': sorted(list(start_activities)),
-                'end_activities': sorted(list(end_activities)),
-                'activities': []
-            }
-        }
-
-    print(f"  Evaluating on {len(event_log_df)} events, {event_log_df['case:concept:name'].nunique()} cases...")
-
+    # Get unique activities from DFG
     activities = set()
     for (src, tgt) in dfg.keys():
         activities.add(src)
@@ -346,74 +139,229 @@ def evaluate_model(event_log_or_path: Union[str, pd.DataFrame],
 
     num_activities = len(activities)
 
-    print("  Calculating fitness...")
-    fitness = calculate_replay_fitness(
-        event_log_df, dfg, start_activities, end_activities
-    )
-    print(f"    Fitness: {fitness:.4f}")
+    # Load Petri net from PNML file [1]
+    try:
+        net, initial_marking, final_marking = pm4py.read_pnml(pnml_file)
+        net_loaded = True
+    except Exception as e:
+        print(f"⚠ Warning: Could not load Petri net from PNML: {e}")
+        net_loaded = False
+        net = None
+        initial_marking = None
+        final_marking = None
 
-    print("  Calculating precision (Petri net conformance)...")
-    if pnml_path:
-        precision = calculate_precision_petri_net(event_log_df, pnml_path)
+    # CRITICAL: Add synthetic >> and << events BEFORE any conformance checking
+    # The PNML uses >> and << as start/end markers, so the log must have them too [1]
+    log_with_ss = add_source_sink_to_log(event_log_df)
+
+    # ================================================================
+    # FITNESS: Alignment-based (primary) → Token-based (fallback)
+    # ================================================================
+    fitness_score = None
+
+    if net_loaded and initial_marking is not None and final_marking is not None:
+        # Try alignment-based fitness first (preferred method)
+        fitness_score = _run_alignments(
+            event_log_df=log_with_ss,  # Use log WITH synthetic events
+            net=net,
+            initial_marking=initial_marking,
+            final_marking=final_marking
+        )
+
+    # Fallback to token-based replay if alignment failed
+    if fitness_score is None and net_loaded:
+        try:
+            result = pm4py.fitness_token_based_replay(
+                log_with_ss,  # Use log WITH synthetic events
+                net,
+                initial_marking,
+                final_marking
+            )
+            # FIX Bug 1: Use log_fitness or average_trace_fitness (0-1 scale)
+            # NOT perc_fit_traces which is 0-100 percentage [1]
+            fitness_score = result.get('log_fitness', result.get('average_trace_fitness', 0.5))
+        except Exception as e:
+            print(f"⚠ Token-based replay also failed: {e}")
+            fitness_score = 0.5
+
+    if fitness_score is None:
+        fitness_score = 0.5
+
+    # Ensure fitness is in valid range [0, 1]
+    fitness_score = max(0.0, min(1.0, float(fitness_score)))
+
+    # ================================================================
+    # PRECISION: ETC (escaping edges) → Token-based fallback
+    # ================================================================
+    precision_score = 0.75  # Default estimate
+
+    if net_loaded:
+        try:
+            # Try ETC precision first (more accurate)
+            from pm4py.algo.evaluation.precision import algorithm as prec_algo
+            from pm4py.algo.evaluation.precision.variants import etconformance_token as etc_variant
+
+            precision_result = prec_algo.apply(
+                log_with_ss,  # Use log WITH synthetic events
+                net,
+                initial_marking,
+                final_marking,
+                variant=etc_variant
+            )
+            precision_score = float(precision_result)
+        except Exception as e:
+            print(f"⚠ ETC precision failed, falling back to token-based: {e}")
+            try:
+                # Fallback to token-based precision
+                precision_result = pm4py.precision_token_based_replay(
+                    log_with_ss,  # Use log WITH synthetic events
+                    net,
+                    initial_marking,
+                    final_marking
+                )
+                precision_score = float(precision_result)
+            except Exception as e2:
+                print(f"⚠ Token-based precision also failed: {e2}")
+                precision_score = 0.75
+
+    # Ensure precision is in valid range [0, 1]
+    precision_score = max(0.0, min(1.0, float(precision_score)))
+
+    # ================================================================
+    # GENERALIZATION: Token-based replay
+    # ================================================================
+    generalization_score = 0.5
+    if net_loaded:
+        try:
+            # Convert DataFrame to EventLog for generalization
+            event_log_obj = pm4py.convert_to_event_log(log_with_ss)
+
+            # FIX: Use correct low-level import - pm4py.generalization_token_based_replay doesn't exist
+            from pm4py.algo.evaluation.generalization import algorithm as gen_algo
+
+            generalization_result = gen_algo.apply(
+                event_log_obj,  # Requires EventLog object, not DataFrame
+                net,
+                initial_marking,
+                final_marking
+            )
+            generalization_score = float(generalization_result)
+
+        except Exception as e:
+            # Print the actual error for debugging
+            print(f"⚠ Generalization failed: {e}")
+            print(f"  Falling back to estimate from fitness+precision")
+
+            # Estimate from fitness/precision (both now in correct 0-1 range)
+            generalization_score = 0.5 * (fitness_score + precision_score)
+    # Ensure generalization is in valid range [0, 1]
+    generalization_score = max(0.0, min(1.0, float(generalization_score)))
+
+    # ================================================================
+    # SIMPLICITY: Based on Petri net structure
+    # ================================================================
+    simplicity_score = 0.5
+
+    if net_loaded:
+        try:
+            num_places = len(net.places)
+            num_transitions = len(net.transitions)
+            num_arcs = len(net.arcs)
+
+            # Simplicity = 1 - (complexity / max_complexity)
+            complexity = num_places + num_transitions + num_arcs
+            max_complexity = 1000.0  # Normalize to reasonable scale
+            simplicity_score = max(0.0, min(1.0, 1.0 - (complexity / max_complexity)))
+        except Exception as e:
+            print(f"⚠ Simplicity calculation failed: {e}")
+            simplicity_score = 0.5
+
+    # ================================================================
+    # CFC (Control Flow Complexity)
+    # Sum of (len(successors)-1) for each activity with multiple successors [1]
+    # ================================================================
+    from collections import defaultdict
+    successors = defaultdict(set)
+
+    # FIX: Use dfg.keys() not dfg.items() - items yields ((src,tgt), freq) pairs
+    for (src, tgt) in dfg.keys():
+        successors[src].add(tgt)
+
+    cfc = 0.0
+    for activity, succ_set in successors.items():
+        if len(succ_set) > 1:
+            cfc += len(succ_set) - 1
+
+    # ================================================================
+    # STRUCTUREDNESS: Fraction of gateways that are XOR (not AND) [1]
+    # ================================================================
+    total_gateways = len(split_gateways) + len(join_gateways)
+    xor_gateways = 0
+
+    if total_gateways > 0:
+        for gw_type in split_gateways.values():
+            if str(gw_type) in ('XOR', 'GatewayType.XOR'):
+                xor_gateways += 1
+
+        for gw_type in join_gateways.values():
+            if str(gw_type) in ('XOR', 'GatewayType.XOR'):
+                xor_gateways += 1
+
+        structuredness = xor_gateways / total_gateways
     else:
-        print("  ⚠ Warning: No PNML path provided, using fallback precision")
-        precision = 0.75
-    print(f"    Precision: {precision:.4f}")
+        structuredness = 1.0  # No gateways = fully structured
 
-    print("  Calculating simplicity...")
-    simplicity = calculate_simplicity(dfg, num_activities)
-    print(f"    Simplicity: {simplicity:.4f}")
+    # ================================================================
+    # COMPOSITE SCORES
+    # ================================================================
 
-    print("  Calculating generalization...")
-    generalization = calculate_generalization(event_log_df, dfg)
-    print(f"    Generalization: {generalization:.4f}")
+    # F-score: harmonic mean of fitness and precision
+    if fitness_score > 0 and precision_score > 0:
+        f_score = 2 * fitness_score * precision_score / (fitness_score + precision_score)
+    else:
+        f_score = 0.0
 
-    print("  Calculating CFC and structuredness...")
-    _split_gw = split_gateways or {}
-    _join_gw = join_gateways or {}
-    cfc = calculate_cfc(_split_gw, dfg)
-    structuredness = calculate_structuredness(_split_gw, _join_gw, num_activities)
-    print(f"    CFC: {cfc}")
-    print(f"    Structuredness: {structuredness:.4f}")
-
-    f_score = (fitness + precision) / 2
-
+    # Overall quality score (weighted average) [1]
     weights = {
         'fitness': 0.4,
         'precision': 0.3,
-        'simplicity': 0.15,
-        'generalization': 0.15
+        'generalization': 0.2,
+        'simplicity': 0.1
     }
 
     overall_score = (
-        weights['fitness'] * fitness +
-        weights['precision'] * precision +
-        weights['simplicity'] * simplicity +
-        weights['generalization'] * generalization
+        weights['fitness'] * fitness_score +
+        weights['precision'] * precision_score +
+        weights['generalization'] * generalization_score +
+        weights['simplicity'] * simplicity_score
     )
 
+    # ================================================================
+    # RETURN METRICS DICTIONARY
+    # ================================================================
     return {
-        'overall_score': round(overall_score, 6),
-        'fitness_score': round(fitness, 6),
-        'precision_score': round(precision, 6),
-        'simplicity_score': round(simplicity, 6),
-        'generalization_score': round(generalization, 6),
-        'f_score': round(f_score, 6),
-        'cfc': cfc,
-        'structuredness': structuredness,
+        'fitness_score': round(float(fitness_score), 6),
+        'precision_score': round(float(precision_score), 6),
+        'generalization_score': round(float(generalization_score), 6),
+        'simplicity_score': round(float(simplicity_score), 6),
+        'f_score': round(float(f_score), 6),
+        'overall_score': round(float(overall_score), 6),
+        'cfc': round(float(cfc), 6),
+        'structuredness': round(float(structuredness), 6),
         'num_activities': num_activities,
-        'num_edges': len(dfg),
-        'model_stats': {
-            'start_activities': sorted(list(start_activities)),
-            'end_activities': sorted(list(end_activities)),
-            'activities': sorted(list(activities))
-        }
+        'num_edges': len(dfg)
     }
-
-
+# =============================================================================
+# SAVE METRICS TO FILE
+# =============================================================================
 def save_metrics(metrics: dict, output_path: str):
-    """Save metrics to JSON file."""
-    import os
+    """
+    Save metrics to JSON file.
+
+    Args:
+        metrics: Dictionary containing evaluation metrics
+        output_path: Path to save JSON file [1]
+    """
     try:
         os.makedirs(os.path.dirname(output_path), exist_ok=True)
 

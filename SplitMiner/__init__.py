@@ -12,7 +12,10 @@ from .dfg_builder import (
     build_dfg_fast,
     filter_dfg,
     get_start_activities,
-    get_end_activities
+    get_end_activities,
+    add_source_sink_to_filtered_dfg,
+    add_source_sink_to_log,
+    filter_rare_variants
 )
 from .concurrency import (
     detect_concurrency,
@@ -29,12 +32,6 @@ from .gateway_discovery import (
 from .loop_discovery import detect_back_edges, detect_loops, get_loop_structures
 from .bpmn_exporter import export_model, BPMNExporter
 from .metrics import (
-    calculate_replay_fitness,
-    calculate_precision_petri_net,  # FIX Line 33: Renamed from calculate_precision
-    calculate_simplicity,
-    calculate_cfc,
-    calculate_structuredness,
-    calculate_generalization,
     evaluate_model,
     save_metrics
 )
@@ -49,6 +46,8 @@ __all__ = [
     'filter_dfg',
     'get_start_activities',
     'get_end_activities',
+    'add_source_sink_to_filtered_dfg',
+    'add_source_sink_to_log',
 
     # Concurrency
     'detect_concurrency',
@@ -72,12 +71,6 @@ __all__ = [
     'BPMNExporter',
 
     # Metrics
-    'calculate_replay_fitness',
-    'calculate_precision_petri_net',  # FIX Line 74: Renamed from calculate_precision
-    'calculate_simplicity',
-    'calculate_cfc',
-    'calculate_structuredness',
-    'calculate_generalization',
     'evaluate_model',
     'save_metrics'
 ]
