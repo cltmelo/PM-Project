@@ -104,37 +104,42 @@
     </transition>
     <transition id="t17">
       <name>
-        <text>W_Assess potential fraud</text>
+        <text>O_Sent (online only)</text>
       </name>
     </transition>
     <transition id="t18">
       <name>
-        <text>W_Call after offers</text>
+        <text>W_Assess potential fraud</text>
       </name>
     </transition>
     <transition id="t19">
       <name>
-        <text>W_Call incomplete files</text>
+        <text>W_Call after offers</text>
       </name>
     </transition>
     <transition id="t20">
       <name>
-        <text>W_Complete application</text>
+        <text>W_Call incomplete files</text>
       </name>
     </transition>
     <transition id="t21">
       <name>
-        <text>W_Handle leads</text>
+        <text>W_Complete application</text>
       </name>
     </transition>
     <transition id="t22">
       <name>
+        <text>W_Handle leads</text>
+      </name>
+    </transition>
+    <transition id="t23">
+      <name>
         <text>W_Validate application</text>
       </name>
     </transition>
-    <place id="p_A_Accepted_O_Create Offer">
+    <place id="p_split_XOR_A_Accepted">
       <name>
-        <text>A_Accepted_to_O_Create Offer</text>
+        <text>XOR_split_A_Accepted</text>
       </name>
     </place>
     <place id="p_A_Cancelled_O_Cancelled">
@@ -207,9 +212,9 @@
         <text>O_Refused_to_W_Validate application</text>
       </name>
     </place>
-    <place id="p_O_Returned_W_Validate application">
+    <place id="p_split_XOR_O_Returned">
       <name>
-        <text>O_Returned_to_W_Validate application</text>
+        <text>XOR_split_O_Returned</text>
       </name>
     </place>
     <place id="p_split_XOR_O_Sent (mail and online)">
@@ -248,77 +253,84 @@
       </name>
     </place>
     <arc id="arc_start_0" source="p_start" target="t4"/>
-    <arc id="arc_1" source="t0" target="p_A_Accepted_O_Create Offer"/>
-    <arc id="arc_2" source="p_A_Accepted_O_Create Offer" target="t12"/>
-    <arc id="arc_3" source="t1" target="p_A_Cancelled_O_Cancelled"/>
-    <arc id="arc_4" source="p_A_Cancelled_O_Cancelled" target="t11"/>
-    <arc id="arc_5" source="t2" target="p_A_Complete_W_Call after offers"/>
-    <arc id="arc_6" source="p_A_Complete_W_Call after offers" target="t18"/>
-    <arc id="arc_7" source="t3" target="p_split_XOR_A_Concept"/>
-    <arc id="arc_8" source="p_split_XOR_A_Concept" target="t0"/>
-    <arc id="arc_9" source="p_split_XOR_A_Concept" target="t20"/>
-    <arc id="arc_10" source="t4" target="p_split_XOR_A_Create Application"/>
-    <arc id="arc_11" source="p_split_XOR_A_Create Application" target="t3"/>
-    <arc id="arc_12" source="p_split_XOR_A_Create Application" target="t8"/>
-    <arc id="arc_13" source="p_split_XOR_A_Create Application" target="t20"/>
-    <arc id="arc_14" source="t5" target="p_A_Denied_O_Refused"/>
-    <arc id="arc_15" source="p_A_Denied_O_Refused" target="t14"/>
-    <arc id="arc_16" source="t6" target="p_A_Incomplete_W_Call incomplete files"/>
-    <arc id="arc_17" source="p_A_Incomplete_W_Call incomplete files" target="t19"/>
-    <arc id="arc_18" source="t7" target="p_split_XOR_A_Pending"/>
-    <arc id="arc_19" source="p_split_XOR_A_Pending" target="t19"/>
-    <arc id="arc_20" source="p_split_XOR_A_Pending" target="t22"/>
-    <arc id="arc_21" source="t8" target="p_A_Submitted_W_Handle leads"/>
-    <arc id="arc_22" source="p_A_Submitted_W_Handle leads" target="t21"/>
-    <arc id="arc_23" source="t9" target="p_split_XOR_A_Validating"/>
-    <arc id="arc_24" source="p_split_XOR_A_Validating" target="t15"/>
-    <arc id="arc_25" source="p_split_XOR_A_Validating" target="t22"/>
-    <arc id="arc_26" source="t10" target="p_O_Accepted_A_Pending"/>
-    <arc id="arc_27" source="p_O_Accepted_A_Pending" target="t7"/>
-    <arc id="arc_28" source="t11" target="p_split_AND_O_Cancelled"/>
-    <arc id="arc_29" source="p_split_AND_O_Cancelled" target="t11"/>
-    <arc id="arc_30" source="p_split_AND_O_Cancelled" target="t18"/>
-    <arc id="arc_31" source="t12" target="p_O_Create Offer_O_Created"/>
-    <arc id="arc_32" source="p_O_Create Offer_O_Created" target="t13"/>
-    <arc id="arc_33" source="t13" target="p_split_XOR_O_Created"/>
-    <arc id="arc_34" source="p_split_XOR_O_Created" target="t12"/>
-    <arc id="arc_35" source="p_split_XOR_O_Created" target="t16"/>
-    <arc id="arc_36" source="t14" target="p_O_Refused_W_Validate application"/>
-    <arc id="arc_37" source="p_O_Refused_W_Validate application" target="t22"/>
-    <arc id="arc_38" source="t15" target="p_O_Returned_W_Validate application"/>
-    <arc id="arc_39" source="p_O_Returned_W_Validate application" target="t22"/>
-    <arc id="arc_40" source="t16" target="p_split_XOR_O_Sent (mail and online)"/>
-    <arc id="arc_41" source="p_split_XOR_O_Sent (mail and online)" target="t16"/>
-    <arc id="arc_42" source="p_split_XOR_O_Sent (mail and online)" target="t18"/>
-    <arc id="arc_43" source="p_split_XOR_O_Sent (mail and online)" target="t20"/>
-    <arc id="arc_44" source="t17" target="p_W_Assess potential fraud_W_Assess potential fraud"/>
-    <arc id="arc_45" source="p_W_Assess potential fraud_W_Assess potential fraud" target="t17"/>
-    <arc id="arc_46" source="t18" target="p_split_XOR_W_Call after offers"/>
-    <arc id="arc_47" source="p_split_XOR_W_Call after offers" target="t1"/>
-    <arc id="arc_48" source="p_split_XOR_W_Call after offers" target="t2"/>
-    <arc id="arc_49" source="p_split_XOR_W_Call after offers" target="t12"/>
-    <arc id="arc_50" source="p_split_XOR_W_Call after offers" target="t18"/>
-    <arc id="arc_51" source="p_split_XOR_W_Call after offers" target="t22"/>
-    <arc id="arc_52" source="t19" target="p_split_XOR_W_Call incomplete files"/>
-    <arc id="arc_53" source="p_split_XOR_W_Call incomplete files" target="t6"/>
-    <arc id="arc_54" source="p_split_XOR_W_Call incomplete files" target="t10"/>
-    <arc id="arc_55" source="p_split_XOR_W_Call incomplete files" target="t19"/>
-    <arc id="arc_56" source="p_split_XOR_W_Call incomplete files" target="t22"/>
-    <arc id="arc_57" source="t20" target="p_split_XOR_W_Complete application"/>
-    <arc id="arc_58" source="p_split_XOR_W_Complete application" target="t0"/>
-    <arc id="arc_59" source="p_split_XOR_W_Complete application" target="t3"/>
-    <arc id="arc_60" source="p_split_XOR_W_Complete application" target="t18"/>
-    <arc id="arc_61" source="p_split_XOR_W_Complete application" target="t20"/>
-    <arc id="arc_62" source="t21" target="p_split_XOR_W_Handle leads"/>
-    <arc id="arc_63" source="p_split_XOR_W_Handle leads" target="t20"/>
-    <arc id="arc_64" source="p_split_XOR_W_Handle leads" target="t21"/>
-    <arc id="arc_65" source="t22" target="p_split_XOR_W_Validate application"/>
-    <arc id="arc_66" source="p_split_XOR_W_Validate application" target="t5"/>
-    <arc id="arc_67" source="p_split_XOR_W_Validate application" target="t9"/>
-    <arc id="arc_68" source="p_split_XOR_W_Validate application" target="t10"/>
-    <arc id="arc_69" source="p_split_XOR_W_Validate application" target="t11"/>
-    <arc id="arc_70" source="p_split_XOR_W_Validate application" target="t19"/>
-    <arc id="arc_71" source="p_split_XOR_W_Validate application" target="t22"/>
+    <arc id="arc_end_1" source="t17" target="p_end"/>
+    <arc id="arc_2" source="t0" target="p_split_XOR_A_Accepted"/>
+    <arc id="arc_3" source="p_split_XOR_A_Accepted" target="t12"/>
+    <arc id="arc_4" source="p_split_XOR_A_Accepted" target="t21"/>
+    <arc id="arc_5" source="t1" target="p_A_Cancelled_O_Cancelled"/>
+    <arc id="arc_6" source="p_A_Cancelled_O_Cancelled" target="t11"/>
+    <arc id="arc_7" source="t2" target="p_A_Complete_W_Call after offers"/>
+    <arc id="arc_8" source="p_A_Complete_W_Call after offers" target="t19"/>
+    <arc id="arc_9" source="t3" target="p_split_XOR_A_Concept"/>
+    <arc id="arc_10" source="p_split_XOR_A_Concept" target="t0"/>
+    <arc id="arc_11" source="p_split_XOR_A_Concept" target="t21"/>
+    <arc id="arc_12" source="t4" target="p_split_XOR_A_Create Application"/>
+    <arc id="arc_13" source="p_split_XOR_A_Create Application" target="t3"/>
+    <arc id="arc_14" source="p_split_XOR_A_Create Application" target="t8"/>
+    <arc id="arc_15" source="p_split_XOR_A_Create Application" target="t21"/>
+    <arc id="arc_16" source="t5" target="p_A_Denied_O_Refused"/>
+    <arc id="arc_17" source="p_A_Denied_O_Refused" target="t14"/>
+    <arc id="arc_18" source="t6" target="p_A_Incomplete_W_Call incomplete files"/>
+    <arc id="arc_19" source="p_A_Incomplete_W_Call incomplete files" target="t20"/>
+    <arc id="arc_20" source="t7" target="p_split_XOR_A_Pending"/>
+    <arc id="arc_21" source="p_split_XOR_A_Pending" target="t20"/>
+    <arc id="arc_22" source="p_split_XOR_A_Pending" target="t23"/>
+    <arc id="arc_23" source="t8" target="p_A_Submitted_W_Handle leads"/>
+    <arc id="arc_24" source="p_A_Submitted_W_Handle leads" target="t22"/>
+    <arc id="arc_25" source="t9" target="p_split_XOR_A_Validating"/>
+    <arc id="arc_26" source="p_split_XOR_A_Validating" target="t15"/>
+    <arc id="arc_27" source="p_split_XOR_A_Validating" target="t23"/>
+    <arc id="arc_28" source="t10" target="p_O_Accepted_A_Pending"/>
+    <arc id="arc_29" source="p_O_Accepted_A_Pending" target="t7"/>
+    <arc id="arc_30" source="t11" target="p_split_AND_O_Cancelled"/>
+    <arc id="arc_31" source="p_split_AND_O_Cancelled" target="t11"/>
+    <arc id="arc_32" source="p_split_AND_O_Cancelled" target="t19"/>
+    <arc id="arc_33" source="t12" target="p_O_Create Offer_O_Created"/>
+    <arc id="arc_34" source="p_O_Create Offer_O_Created" target="t13"/>
+    <arc id="arc_35" source="t13" target="p_split_XOR_O_Created"/>
+    <arc id="arc_36" source="p_split_XOR_O_Created" target="t12"/>
+    <arc id="arc_37" source="p_split_XOR_O_Created" target="t16"/>
+    <arc id="arc_38" source="p_split_XOR_O_Created" target="t17"/>
+    <arc id="arc_39" source="t14" target="p_O_Refused_W_Validate application"/>
+    <arc id="arc_40" source="p_O_Refused_W_Validate application" target="t23"/>
+    <arc id="arc_41" source="t15" target="p_split_XOR_O_Returned"/>
+    <arc id="arc_42" source="p_split_XOR_O_Returned" target="t20"/>
+    <arc id="arc_43" source="p_split_XOR_O_Returned" target="t23"/>
+    <arc id="arc_44" source="t16" target="p_split_XOR_O_Sent (mail and online)"/>
+    <arc id="arc_45" source="p_split_XOR_O_Sent (mail and online)" target="t16"/>
+    <arc id="arc_46" source="p_split_XOR_O_Sent (mail and online)" target="t19"/>
+    <arc id="arc_47" source="p_split_XOR_O_Sent (mail and online)" target="t21"/>
+    <arc id="arc_48" source="t18" target="p_W_Assess potential fraud_W_Assess potential fraud"/>
+    <arc id="arc_49" source="p_W_Assess potential fraud_W_Assess potential fraud" target="t18"/>
+    <arc id="arc_50" source="t19" target="p_split_XOR_W_Call after offers"/>
+    <arc id="arc_51" source="p_split_XOR_W_Call after offers" target="t1"/>
+    <arc id="arc_52" source="p_split_XOR_W_Call after offers" target="t2"/>
+    <arc id="arc_53" source="p_split_XOR_W_Call after offers" target="t12"/>
+    <arc id="arc_54" source="p_split_XOR_W_Call after offers" target="t19"/>
+    <arc id="arc_55" source="p_split_XOR_W_Call after offers" target="t23"/>
+    <arc id="arc_56" source="t20" target="p_split_XOR_W_Call incomplete files"/>
+    <arc id="arc_57" source="p_split_XOR_W_Call incomplete files" target="t6"/>
+    <arc id="arc_58" source="p_split_XOR_W_Call incomplete files" target="t10"/>
+    <arc id="arc_59" source="p_split_XOR_W_Call incomplete files" target="t11"/>
+    <arc id="arc_60" source="p_split_XOR_W_Call incomplete files" target="t12"/>
+    <arc id="arc_61" source="p_split_XOR_W_Call incomplete files" target="t20"/>
+    <arc id="arc_62" source="p_split_XOR_W_Call incomplete files" target="t23"/>
+    <arc id="arc_63" source="t21" target="p_split_XOR_W_Complete application"/>
+    <arc id="arc_64" source="p_split_XOR_W_Complete application" target="t0"/>
+    <arc id="arc_65" source="p_split_XOR_W_Complete application" target="t3"/>
+    <arc id="arc_66" source="p_split_XOR_W_Complete application" target="t12"/>
+    <arc id="arc_67" source="p_split_XOR_W_Complete application" target="t19"/>
+    <arc id="arc_68" source="p_split_XOR_W_Complete application" target="t21"/>
+    <arc id="arc_69" source="t22" target="p_split_XOR_W_Handle leads"/>
+    <arc id="arc_70" source="p_split_XOR_W_Handle leads" target="t21"/>
+    <arc id="arc_71" source="p_split_XOR_W_Handle leads" target="t22"/>
+    <arc id="arc_72" source="t23" target="p_split_XOR_W_Validate application"/>
+    <arc id="arc_73" source="p_split_XOR_W_Validate application" target="t5"/>
+    <arc id="arc_74" source="p_split_XOR_W_Validate application" target="t9"/>
+    <arc id="arc_75" source="p_split_XOR_W_Validate application" target="t10"/>
+    <arc id="arc_76" source="p_split_XOR_W_Validate application" target="t11"/>
+    <arc id="arc_77" source="p_split_XOR_W_Validate application" target="t20"/>
+    <arc id="arc_78" source="p_split_XOR_W_Validate application" target="t23"/>
     <finalmarkings>
       <marking>
         <place idref="p_end">
