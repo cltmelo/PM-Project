@@ -7,12 +7,12 @@ Algorithm               Fitness  Precision Simplicity    Overall    F-Score
 Genetic Miner            0.5549     0.1826     0.0058     0.2785     0.2748
 Alpha Miner              0.3826     0.0904     0.0179     0.1855     0.1462
 Inductive Miner          0.5014     0.0289     0.0130     0.2131     0.0547
-Split Miner              0.7919     1.0000     0.9022     0.8874     0.8838
+Split Miner              0.9880     0.4634     0.7730     0.7661     0.6309
 ------------------------------------------------------------------------------------------
 
 BEST PERFORMERS
 ----------------------------------------
-  Best Fitness: Split Miner (0.7919)
-  Best Precision: Split Miner (1.0000)
-  Best Simplicity: Split Miner (0.9022)
-  Best Overall: Split Miner (0.8874)
+  Best Fitness: Split Miner (0.9880)
+  Best Precision: Split Miner (0.4634)
+  Best Simplicity: Split Miner (0.7730)
+  Best Overall: Split Miner (0.7661)
