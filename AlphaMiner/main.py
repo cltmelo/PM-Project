@@ -35,6 +35,7 @@ from .output.json_exporter import JSONExporter
 from .output.txt_exporter import TXTExporter
 
 
+
 def run_pipeline(
     log_path: str = None,
     output_dir: str = None,
@@ -124,13 +125,14 @@ def run_pipeline(
         os.path.join(output_dir, "result_petri_net.pnml"),
     )
     
-    # Export PNG
+    # Export PNG (now passing the PNML path)
     png_exporter = PNGExporter()
     png_path = png_exporter.export(
         result.net,
         os.path.join(output_dir, "alpha_miner.png"),
         initial_marking=result.initial_marking,
         final_marking=result.final_marking,
+        pnml_path=pnml_path,  # Pass the PNML path here
         dpi=config.png_dpi
     )
     
