@@ -1,0 +1,300 @@
+ python3 -m main
+
+Loading event log from: /home/lucas/git/PM/GeneticMiner/../BPI Challenge 2017_1_all/BPI Challenge 2017.xes.gz
+
+/home/lucas/miniconda3/lib/python3.11/site-packages/pm4py/utils.py:1027: UserWarning: Install the optional requirement `r4pm` to import/export files faster. `rustxes` remains supported as a fallback.
+
+  warnings.warn(
+
+parsing log, completed traces :: 100%|█████████████████████████████████████████████████████████████| 31509/31509 [00:39<00:00, 790.78it/s]
+
+Loaded 31509 cases with 1202267 events
+
+
+Starting genetic process discovery...
+
+Population size: 20
+
+Generations: 30
+
+Mutation rate: 0.2
+
+Tournament size: 3
+
+Weights: fitness=0.7, simplicity=0.3
+
+Random seed: 42
+
+--------------------------------------------------
+
+Generation 1: Best overall_score = 0.351035
+
+Generation 2: Best overall_score = 0.351021
+
+Generation 3: Best overall_score = 0.359336
+
+Generation 4: Best overall_score = 0.359292
+
+Generation 5: Best overall_score = 0.359742
+
+Generation 6: Best overall_score = 0.363217
+
+Generation 7: Best overall_score = 0.363217
+
+Generation 8: Best overall_score = 0.363466
+
+Generation 9: Best overall_score = 0.363574
+
+Generation 10: Best overall_score = 0.363570
+
+Generation 11: Best overall_score = 0.365859
+
+Generation 12: Best overall_score = 0.376937
+
+Generation 13: Best overall_score = 0.377015
+
+Generation 14: Best overall_score = 0.377082
+
+Generation 15: Best overall_score = 0.377042
+
+Generation 16: Best overall_score = 0.378485
+
+Generation 17: Best overall_score = 0.378571
+
+Generation 18: Best overall_score = 0.381612
+
+Generation 19: Best overall_score = 0.381671
+
+Generation 20: Best overall_score = 0.381671
+
+Generation 21: Best overall_score = 0.381705
+
+Generation 22: Best overall_score = 0.381729
+
+Generation 23: Best overall_score = 0.381780
+
+Generation 24: Best overall_score = 0.381780
+
+Generation 25: Best overall_score = 0.381780
+
+Generation 26: Best overall_score = 0.381812
+
+Generation 27: Best overall_score = 0.381812
+
+Generation 28: Best overall_score = 0.381859
+
+Generation 29: Best overall_score = 0.381893
+
+Generation 30: Best overall_score = 0.381893
+
+--------------------------------------------------
+
+
+Final Results:
+
+  Overall score:   0.381907
+
+  Fitness score:   0.544089
+
+  Simplicity score: 0.003484
+
+
+Results saved to:
+
+  Petri net (PNML): /home/lucas/git/PM/GeneticMiner/output/result_petri_net.pnml
+
+  Scores (JSON):    /home/lucas/git/PM/GeneticMiner/output/result_scores.json
+
+
+Genetic process discovery completed successfully! 
+
+
+========================================================================================================================================
+
+
+python3 -m main
+Loading event log from: /home/lucas/git/PM/GeneticMiner/../BPI Challenge 2017_1_all/BPI Challenge 2017.xes.gz
+/home/lucas/miniconda3/lib/python3.11/site-packages/pm4py/utils.py:1027: UserWarning: Install the optional requirement `r4pm` to import/export files faster. `rustxes` remains supported as a fallback.
+  warnings.warn(
+parsing log, completed traces :: 100%|█████████████████████████████████████████████████████████████| 31509/31509 [00:38<00:00, 819.07it/s]
+Loaded 31509 cases with 1202267 events
+
+Starting OPTIMIZED genetic process discovery...
+Population size: 50
+Generations: 40
+Mutation rate: 0.25
+Tournament size: 5
+Weights: fitness=0.4, simplicity=0.6
+Max bindings per activity: 2
+Random seed: 42
+Early stopping: patience=8, min_improvement=0.001
+------------------------------------------------------------
+Generation 1: Best overall_score = 0.206741
+Generation 2: Best overall_score = 0.207859 (+0.001118)
+Generation 3: Best overall_score = 0.212400 (+0.004541)
+Generation 4: Best overall_score = 0.212714 (no improvement: 1/8)
+Generation 5: Best overall_score = 0.212714 (no improvement: 2/8)
+Generation 6: Best overall_score = 0.212714 (no improvement: 3/8)
+Generation 7: Best overall_score = 0.217837 (+0.005124)
+Generation 8: Best overall_score = 0.217877 (no improvement: 1/8)
+Generation 9: Best overall_score = 0.218059 (no improvement: 2/8)
+Generation 10: Best overall_score = 0.218106 (no improvement: 3/8)
+Generation 11: Best overall_score = 0.218106 (no improvement: 4/8)
+Generation 12: Best overall_score = 0.218154 (no improvement: 5/8)
+Generation 13: Best overall_score = 0.218154 (no improvement: 6/8)
+Generation 14: Best overall_score = 0.218440 (no improvement: 7/8)
+Generation 15: Best overall_score = 0.218440 (no improvement: 8/8)
+
+Early stopping triggered at generation 15 (no improvement for 8 generations)
+------------------------------------------------------------
+
+Evolution completed after 15 generations
+
+Final Results:
+  Overall score:    0.218440
+  Fitness score:    0.539312
+  Simplicity score: 0.004525
+
+Results saved to:
+  Petri net (PNML): /home/lucas/git/PM/GeneticMiner/output/result_petri_net.pnml
+  Scores (JSON):    /home/lucas/git/PM/GeneticMiner/output/result_scores.json
+
+Genetic process discovery completed successfully!
+
+
+
+
+========================================================================================================================================
+
+python3 -m main
+Loading event log from: /home/lucas/git/PM/GeneticMiner/../BPI Challenge 2017_1_all/BPI Challenge 2017.xes.gz
+/home/lucas/miniconda3/lib/python3.11/site-packages/pm4py/utils.py:1027: UserWarning: Install the optional requirement `r4pm` to import/export files faster. `rustxes` remains supported as a fallback.
+  warnings.warn(
+parsing log, completed traces :: 100%|█████████████████████████████████████████████████████████████| 31509/31509 [00:41<00:00, 767.52it/s]
+Loaded 31509 cases with 1202267 events
+
+Starting OPTIMIZED genetic process discovery...
+Population size: 50
+Generations: 50
+Mutation rate: 0.2
+Tournament size: 3
+Weights: fitness=0.7, simplicity=0.3
+Max bindings per activity: 2
+Random seed: 42
+Early stopping: patience=12, min_improvement=0.0001
+------------------------------------------------------------
+Generation 1: Best overall_score = 0.360318
+Generation 2: Best overall_score = 0.360318 (no improvement: 1/12)
+Generation 3: Best overall_score = 0.360318 (no improvement: 2/12)
+Generation 4: Best overall_score = 0.360359 (no improvement: 3/12)
+Generation 5: Best overall_score = 0.360359 (no improvement: 4/12)
+Generation 6: Best overall_score = 0.360378 (no improvement: 5/12)
+Generation 7: Best overall_score = 0.360466 (no improvement: 6/12)
+Generation 8: Best overall_score = 0.360466 (no improvement: 7/12)
+Generation 9: Best overall_score = 0.360512 (no improvement: 8/12)
+Generation 10: Best overall_score = 0.360518 (no improvement: 9/12)
+Generation 11: Best overall_score = 0.360536 (no improvement: 10/12)
+Generation 12: Best overall_score = 0.360636 (no improvement: 11/12)
+Generation 13: Best overall_score = 0.360636 (no improvement: 12/12)
+
+Early stopping triggered at generation 13 (no improvement for 12 generations)
+------------------------------------------------------------
+
+Evolution completed after 13 generations
+
+Final Results:
+  Overall score:    0.360636
+  Fitness score:    0.513104
+  Simplicity score: 0.004878
+
+Results saved to:
+  Petri net (PNML): /home/lucas/git/PM/GeneticMiner/output/result_petri_net.pnml
+  Scores (JSON):    /home/lucas/git/PM/GeneticMiner/output/result_scores.json
+
+Genetic process discovery completed successfully!
+
+
+========================================================================================================================================
+
+
+python3 -m main
+Loading event log from: /home/lucas/git/PM/GeneticMiner/../BPI Challenge 2017_1_all/BPI Challenge 2017.xes.gz
+/home/lucas/miniconda3/lib/python3.11/site-packages/pm4py/utils.py:1027: UserWarning: Install the optional requirement `r4pm` to import/export files faster. `rustxes` remains supported as a fallback.
+  warnings.warn(
+parsing log, completed traces :: 100%|█████████████████████████████████████████████████████████████| 31509/31509 [00:37<00:00, 830.50it/s]
+Loaded 31509 cases with 1202267 events
+
+Starting OPTIMIZED genetic process discovery...
+Population size: 50
+Generations: 50
+Mutation rate: 0.2
+Tournament size: 3
+Weights: fitness=0.7, simplicity=0.3
+Max bindings per activity: 3
+Random seed: 42
+Early stopping: DISABLED (will run all 50 generations)
+------------------------------------------------------------
+Generation 1: Best overall_score = 0.355356
+Generation 2: Best overall_score = 0.355404
+Generation 3: Best overall_score = 0.355455
+Generation 4: Best overall_score = 0.357678
+Generation 5: Best overall_score = 0.364321
+Generation 6: Best overall_score = 0.369097
+Generation 7: Best overall_score = 0.373779
+Generation 8: Best overall_score = 0.373794
+Generation 9: Best overall_score = 0.373822
+Generation 10: Best overall_score = 0.378221
+Generation 11: Best overall_score = 0.382883
+Generation 12: Best overall_score = 0.382872
+Generation 13: Best overall_score = 0.382991
+Generation 14: Best overall_score = 0.387536
+Generation 15: Best overall_score = 0.387536
+Generation 16: Best overall_score = 0.387600
+Generation 17: Best overall_score = 0.387600
+Generation 18: Best overall_score = 0.387665
+Generation 19: Best overall_score = 0.387672
+Generation 20: Best overall_score = 0.387672
+Generation 21: Best overall_score = 0.387685
+Generation 22: Best overall_score = 0.387865
+Generation 23: Best overall_score = 0.387902
+Generation 24: Best overall_score = 0.387886
+Generation 25: Best overall_score = 0.387874
+Generation 26: Best overall_score = 0.387878
+Generation 27: Best overall_score = 0.389437
+Generation 28: Best overall_score = 0.389440
+Generation 29: Best overall_score = 0.389447
+Generation 30: Best overall_score = 0.389541
+Generation 31: Best overall_score = 0.389586
+Generation 32: Best overall_score = 0.389645
+Generation 33: Best overall_score = 0.389675
+Generation 34: Best overall_score = 0.389778
+Generation 35: Best overall_score = 0.389778
+Generation 36: Best overall_score = 0.389778
+Generation 37: Best overall_score = 0.389778
+Generation 38: Best overall_score = 0.389852
+Generation 39: Best overall_score = 0.389852
+Generation 40: Best overall_score = 0.389852
+Generation 41: Best overall_score = 0.389886
+Generation 42: Best overall_score = 0.389906
+Generation 43: Best overall_score = 0.389943
+Generation 44: Best overall_score = 0.389943
+Generation 45: Best overall_score = 0.390046
+Generation 46: Best overall_score = 0.390046
+Generation 47: Best overall_score = 0.390089
+Generation 48: Best overall_score = 0.390089
+Generation 49: Best overall_score = 0.390108
+Generation 50: Best overall_score = 0.390108
+------------------------------------------------------------
+
+Evolution completed after 50 generations
+
+Final Results:
+  Overall score:    0.390194
+  Fitness score:    0.554929
+  Simplicity score: 0.005814
+
+Results saved to:
+  Petri net (PNML): /home/lucas/git/PM/GeneticMiner/output/result_petri_net.pnml
+  Scores (JSON):    /home/lucas/git/PM/GeneticMiner/output/result_scores.json
+
+Genetic process discovery completed successfully!

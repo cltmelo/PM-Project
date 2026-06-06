@@ -1,0 +1,672 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<pnml>
+  <net id="GeneticMinerResult" type="http://www.pnml.org/version-2009/grammar/pnmlcoremodel">
+    <name>
+      <text>GeneticMinerResult</text>
+    </name>
+    <page id="n0">
+      <place id="p_O_Cancelled_W_Call incomplete files">
+        <name>
+          <text>p_O_Cancelled_W_Call incomplete files</text>
+        </name>
+      </place>
+      <place id="p_O_Accepted_A_Pending">
+        <name>
+          <text>p_O_Accepted_A_Pending</text>
+        </name>
+      </place>
+      <place id="p_W_Validate application_W_Validate application">
+        <name>
+          <text>p_W_Validate application_W_Validate application</text>
+        </name>
+      </place>
+      <place id="p_W_Validate application_W_Assess potential fraud">
+        <name>
+          <text>p_W_Validate application_W_Assess potential fraud</text>
+        </name>
+      </place>
+      <place id="p_W_Shortened completion _A_Accepted">
+        <name>
+          <text>p_W_Shortened completion _A_Accepted</text>
+        </name>
+      </place>
+      <place id="p_W_Call after offers_W_Call after offers">
+        <name>
+          <text>p_W_Call after offers_W_Call after offers</text>
+        </name>
+      </place>
+      <place id="sink">
+        <name>
+          <text>sink</text>
+        </name>
+      </place>
+      <place id="p_W_Validate application_O_Create Offer">
+        <name>
+          <text>p_W_Validate application_O_Create Offer</text>
+        </name>
+      </place>
+      <place id="p_A_Create Application_W_Complete application">
+        <name>
+          <text>p_A_Create Application_W_Complete application</text>
+        </name>
+      </place>
+      <place id="p_A_Incomplete_O_Create Offer">
+        <name>
+          <text>p_A_Incomplete_O_Create Offer</text>
+        </name>
+      </place>
+      <place id="p_A_Create Application_A_Concept">
+        <name>
+          <text>p_A_Create Application_A_Concept</text>
+        </name>
+      </place>
+      <place id="p_A_Denied_W_Call incomplete files">
+        <name>
+          <text>p_A_Denied_W_Call incomplete files</text>
+        </name>
+      </place>
+      <place id="p_A_Accepted_W_Shortened completion ">
+        <name>
+          <text>p_A_Accepted_W_Shortened completion </text>
+        </name>
+      </place>
+      <place id="p_A_Cancelled_W_Complete application">
+        <name>
+          <text>p_A_Cancelled_W_Complete application</text>
+        </name>
+      </place>
+      <place id="p_A_Cancelled_O_Cancelled">
+        <name>
+          <text>p_A_Cancelled_O_Cancelled</text>
+        </name>
+      </place>
+      <place id="p_A_Complete_O_Create Offer">
+        <name>
+          <text>p_A_Complete_O_Create Offer</text>
+        </name>
+      </place>
+      <place id="p_A_Concept_W_Complete application">
+        <name>
+          <text>p_A_Concept_W_Complete application</text>
+        </name>
+      </place>
+      <place id="p_A_Concept_W_Shortened completion ">
+        <name>
+          <text>p_A_Concept_W_Shortened completion </text>
+        </name>
+      </place>
+      <place id="p_O_Cancelled_A_Cancelled">
+        <name>
+          <text>p_O_Cancelled_A_Cancelled</text>
+        </name>
+      </place>
+      <place id="p_O_Refused_W_Validate application">
+        <name>
+          <text>p_O_Refused_W_Validate application</text>
+        </name>
+      </place>
+      <place id="p_W_Call after offers_O_Sent (mail and online)">
+        <name>
+          <text>p_W_Call after offers_O_Sent (mail and online)</text>
+        </name>
+      </place>
+      <place id="p_O_Refused_O_Refused">
+        <name>
+          <text>p_O_Refused_O_Refused</text>
+        </name>
+      </place>
+      <place id="p_O_Sent (mail and online)_O_Create Offer">
+        <name>
+          <text>p_O_Sent (mail and online)_O_Create Offer</text>
+        </name>
+      </place>
+      <place id="p_A_Submitted_W_Handle leads">
+        <name>
+          <text>p_A_Submitted_W_Handle leads</text>
+        </name>
+      </place>
+      <place id="p_A_Validating_O_Returned">
+        <name>
+          <text>p_A_Validating_O_Returned</text>
+        </name>
+      </place>
+      <place id="p_W_Validate application_W_Shortened completion ">
+        <name>
+          <text>p_W_Validate application_W_Shortened completion </text>
+        </name>
+      </place>
+      <place id="p_O_Refused_W_Call incomplete files">
+        <name>
+          <text>p_O_Refused_W_Call incomplete files</text>
+        </name>
+      </place>
+      <place id="p_W_Call incomplete files_O_Accepted">
+        <name>
+          <text>p_W_Call incomplete files_O_Accepted</text>
+        </name>
+      </place>
+      <place id="source">
+        <name>
+          <text>source</text>
+        </name>
+        <initialMarking>
+          <text>1</text>
+        </initialMarking>
+      </place>
+      <place id="p_W_Handle leads_W_Complete application">
+        <name>
+          <text>p_W_Handle leads_W_Complete application</text>
+        </name>
+      </place>
+      <place id="p_A_Validating_W_Validate application">
+        <name>
+          <text>p_A_Validating_W_Validate application</text>
+        </name>
+      </place>
+      <place id="p_W_Shortened completion _W_Validate application">
+        <name>
+          <text>p_W_Shortened completion _W_Validate application</text>
+        </name>
+      </place>
+      <place id="p_W_Assess potential fraud_W_Call after offers">
+        <name>
+          <text>p_W_Assess potential fraud_W_Call after offers</text>
+        </name>
+      </place>
+      <place id="p_W_Handle leads_W_Assess potential fraud">
+        <name>
+          <text>p_W_Handle leads_W_Assess potential fraud</text>
+        </name>
+      </place>
+      <place id="p_W_Personal Loan collection_W_Validate application">
+        <name>
+          <text>p_W_Personal Loan collection_W_Validate application</text>
+        </name>
+      </place>
+      <place id="p_O_Created_W_Call incomplete files">
+        <name>
+          <text>p_O_Created_W_Call incomplete files</text>
+        </name>
+      </place>
+      <place id="p_O_Returned_A_Denied">
+        <name>
+          <text>p_O_Returned_A_Denied</text>
+        </name>
+      </place>
+      <place id="p_O_Created_W_Validate application">
+        <name>
+          <text>p_O_Created_W_Validate application</text>
+        </name>
+      </place>
+      <place id="p_W_Shortened completion _W_Call incomplete files">
+        <name>
+          <text>p_W_Shortened completion _W_Call incomplete files</text>
+        </name>
+      </place>
+      <place id="p_A_Validating_O_Create Offer">
+        <name>
+          <text>p_A_Validating_O_Create Offer</text>
+        </name>
+      </place>
+      <place id="p_O_Created_W_Call after offers">
+        <name>
+          <text>p_O_Created_W_Call after offers</text>
+        </name>
+      </place>
+      <place id="p_W_Call incomplete files_O_Create Offer">
+        <name>
+          <text>p_W_Call incomplete files_O_Create Offer</text>
+        </name>
+      </place>
+      <place id="p_A_Validating_A_Denied">
+        <name>
+          <text>p_A_Validating_A_Denied</text>
+        </name>
+      </place>
+      <place id="p_A_Incomplete_A_Denied">
+        <name>
+          <text>p_A_Incomplete_A_Denied</text>
+        </name>
+      </place>
+      <place id="p_A_Denied_O_Refused">
+        <name>
+          <text>p_A_Denied_O_Refused</text>
+        </name>
+      </place>
+      <place id="p_A_Incomplete_O_Returned">
+        <name>
+          <text>p_A_Incomplete_O_Returned</text>
+        </name>
+      </place>
+      <place id="p_A_Denied_W_Complete application">
+        <name>
+          <text>p_A_Denied_W_Complete application</text>
+        </name>
+      </place>
+      <place id="p_A_Cancelled_W_Call incomplete files">
+        <name>
+          <text>p_A_Cancelled_W_Call incomplete files</text>
+        </name>
+      </place>
+      <place id="p_A_Cancelled_W_Validate application">
+        <name>
+          <text>p_A_Cancelled_W_Validate application</text>
+        </name>
+      </place>
+      <place id="p_A_Complete_W_Call after offers">
+        <name>
+          <text>p_A_Complete_W_Call after offers</text>
+        </name>
+      </place>
+      <place id="p_A_Complete_O_Sent (mail and online)">
+        <name>
+          <text>p_A_Complete_O_Sent (mail and online)</text>
+        </name>
+      </place>
+      <place id="p_A_Incomplete_W_Shortened completion ">
+        <name>
+          <text>p_A_Incomplete_W_Shortened completion </text>
+        </name>
+      </place>
+      <place id="p_A_Pending_W_Validate application">
+        <name>
+          <text>p_A_Pending_W_Validate application</text>
+        </name>
+      </place>
+      <place id="p_O_Created_A_Denied">
+        <name>
+          <text>p_O_Created_A_Denied</text>
+        </name>
+      </place>
+      <place id="p_O_Refused_W_Call after offers">
+        <name>
+          <text>p_O_Refused_W_Call after offers</text>
+        </name>
+      </place>
+      <place id="p_O_Returned_O_Returned">
+        <name>
+          <text>p_O_Returned_O_Returned</text>
+        </name>
+      </place>
+      <place id="p_A_Validating_A_Cancelled">
+        <name>
+          <text>p_A_Validating_A_Cancelled</text>
+        </name>
+      </place>
+      <place id="p_W_Validate application_O_Returned">
+        <name>
+          <text>p_W_Validate application_O_Returned</text>
+        </name>
+      </place>
+      <place id="p_W_Validate application_W_Personal Loan collection">
+        <name>
+          <text>p_W_Validate application_W_Personal Loan collection</text>
+        </name>
+      </place>
+      <place id="p_W_Personal Loan collection_W_Personal Loan collection">
+        <name>
+          <text>p_W_Personal Loan collection_W_Personal Loan collection</text>
+        </name>
+      </place>
+      <place id="p_O_Cancelled_A_Denied">
+        <name>
+          <text>p_O_Cancelled_A_Denied</text>
+        </name>
+      </place>
+      <place id="p_A_Incomplete_O_Accepted">
+        <name>
+          <text>p_A_Incomplete_O_Accepted</text>
+        </name>
+      </place>
+      <place id="p_O_Sent (online only)_W_Validate application">
+        <name>
+          <text>p_O_Sent (online only)_W_Validate application</text>
+        </name>
+      </place>
+      <place id="p_A_Pending_W_Call incomplete files">
+        <name>
+          <text>p_A_Pending_W_Call incomplete files</text>
+        </name>
+      </place>
+      <place id="p_W_Complete application_W_Shortened completion ">
+        <name>
+          <text>p_W_Complete application_W_Shortened completion </text>
+        </name>
+      </place>
+      <place id="p_W_Call incomplete files_A_Cancelled">
+        <name>
+          <text>p_W_Call incomplete files_A_Cancelled</text>
+        </name>
+      </place>
+      <place id="p_O_Refused_W_Complete application">
+        <name>
+          <text>p_O_Refused_W_Complete application</text>
+        </name>
+      </place>
+      <place id="p_A_Incomplete_W_Call incomplete files">
+        <name>
+          <text>p_A_Incomplete_W_Call incomplete files</text>
+        </name>
+      </place>
+      <place id="p_O_Create Offer_O_Created">
+        <name>
+          <text>p_O_Create Offer_O_Created</text>
+        </name>
+      </place>
+      <place id="p_W_Handle leads_W_Handle leads">
+        <name>
+          <text>p_W_Handle leads_W_Handle leads</text>
+        </name>
+      </place>
+      <place id="p_W_Shortened completion _O_Create Offer">
+        <name>
+          <text>p_W_Shortened completion _O_Create Offer</text>
+        </name>
+      </place>
+      <place id="p_W_Validate application_A_Cancelled">
+        <name>
+          <text>p_W_Validate application_A_Cancelled</text>
+        </name>
+      </place>
+      <place id="p_W_Call after offers_W_Shortened completion ">
+        <name>
+          <text>p_W_Call after offers_W_Shortened completion </text>
+        </name>
+      </place>
+      <place id="p_A_Denied_W_Call after offers">
+        <name>
+          <text>p_A_Denied_W_Call after offers</text>
+        </name>
+      </place>
+      <place id="p_W_Call after offers_O_Accepted">
+        <name>
+          <text>p_W_Call after offers_O_Accepted</text>
+        </name>
+      </place>
+      <transition id="W_Shortened completion ">
+        <name>
+          <text>W_Shortened completion </text>
+        </name>
+      </transition>
+      <transition id="W_Call after offers">
+        <name>
+          <text>W_Call after offers</text>
+        </name>
+      </transition>
+      <transition id="O_Sent (online only)">
+        <name>
+          <text>O_Sent (online only)</text>
+        </name>
+      </transition>
+      <transition id="W_Assess potential fraud">
+        <name>
+          <text>W_Assess potential fraud</text>
+        </name>
+      </transition>
+      <transition id="O_Returned">
+        <name>
+          <text>O_Returned</text>
+        </name>
+      </transition>
+      <transition id="O_Create Offer">
+        <name>
+          <text>O_Create Offer</text>
+        </name>
+      </transition>
+      <transition id="A_Accepted">
+        <name>
+          <text>A_Accepted</text>
+        </name>
+      </transition>
+      <transition id="A_Create Application">
+        <name>
+          <text>A_Create Application</text>
+        </name>
+      </transition>
+      <transition id="A_Pending">
+        <name>
+          <text>A_Pending</text>
+        </name>
+      </transition>
+      <transition id="A_Submitted">
+        <name>
+          <text>A_Submitted</text>
+        </name>
+      </transition>
+      <transition id="A_Validating">
+        <name>
+          <text>A_Validating</text>
+        </name>
+      </transition>
+      <transition id="O_Created">
+        <name>
+          <text>O_Created</text>
+        </name>
+      </transition>
+      <transition id="W_Handle leads">
+        <name>
+          <text>W_Handle leads</text>
+        </name>
+      </transition>
+      <transition id="O_Cancelled">
+        <name>
+          <text>O_Cancelled</text>
+        </name>
+      </transition>
+      <transition id="O_Refused">
+        <name>
+          <text>O_Refused</text>
+        </name>
+      </transition>
+      <transition id="A_Complete">
+        <name>
+          <text>A_Complete</text>
+        </name>
+      </transition>
+      <transition id="A_Cancelled">
+        <name>
+          <text>A_Cancelled</text>
+        </name>
+      </transition>
+      <transition id="A_Concept">
+        <name>
+          <text>A_Concept</text>
+        </name>
+      </transition>
+      <transition id="A_Denied">
+        <name>
+          <text>A_Denied</text>
+        </name>
+      </transition>
+      <transition id="A_Incomplete">
+        <name>
+          <text>A_Incomplete</text>
+        </name>
+      </transition>
+      <transition id="O_Accepted">
+        <name>
+          <text>O_Accepted</text>
+        </name>
+      </transition>
+      <transition id="O_Sent (mail and online)">
+        <name>
+          <text>O_Sent (mail and online)</text>
+        </name>
+      </transition>
+      <transition id="W_Complete application">
+        <name>
+          <text>W_Complete application</text>
+        </name>
+      </transition>
+      <transition id="W_Personal Loan collection">
+        <name>
+          <text>W_Personal Loan collection</text>
+        </name>
+      </transition>
+      <transition id="W_Validate application">
+        <name>
+          <text>W_Validate application</text>
+        </name>
+      </transition>
+      <transition id="W_Call incomplete files">
+        <name>
+          <text>W_Call incomplete files</text>
+        </name>
+      </transition>
+      <arc id="139165052704528" source="W_Call after offers" target="p_W_Call after offers_W_Shortened completion "/>
+      <arc id="139165052362256" source="p_A_Complete_O_Create Offer" target="O_Create Offer"/>
+      <arc id="139165052358672" source="p_A_Complete_O_Sent (mail and online)" target="O_Sent (mail and online)"/>
+      <arc id="139165052357648" source="A_Accepted" target="p_A_Accepted_W_Shortened completion "/>
+      <arc id="139165052361744" source="p_A_Incomplete_O_Create Offer" target="O_Create Offer"/>
+      <arc id="139165080247312" source="A_Validating" target="p_A_Validating_O_Returned"/>
+      <arc id="139165052370448" source="A_Create Application" target="p_A_Create Application_A_Concept"/>
+      <arc id="139165079420432" source="O_Accepted" target="p_O_Accepted_A_Pending"/>
+      <arc id="139165052702224" source="O_Cancelled" target="p_O_Cancelled_W_Call incomplete files"/>
+      <arc id="139165052358736" source="p_A_Create Application_W_Complete application" target="W_Complete application"/>
+      <arc id="139165052362768" source="p_A_Create Application_A_Concept" target="A_Concept"/>
+      <arc id="139165052712976" source="p_O_Cancelled_A_Cancelled" target="A_Cancelled"/>
+      <arc id="139165050902800" source="p_W_Handle leads_W_Assess potential fraud" target="W_Assess potential fraud"/>
+      <arc id="139165052713488" source="p_W_Call incomplete files_O_Create Offer" target="O_Create Offer"/>
+      <arc id="139165050907280" source="p_W_Handle leads_W_Complete application" target="W_Complete application"/>
+      <arc id="139165052358224" source="A_Incomplete" target="p_A_Incomplete_A_Denied"/>
+      <arc id="139165052702288" source="O_Create Offer" target="p_O_Create Offer_O_Created"/>
+      <arc id="139165052354640" source="A_Incomplete" target="p_A_Incomplete_O_Create Offer"/>
+      <arc id="139165081000016" source="A_Validating" target="p_A_Validating_A_Denied"/>
+      <arc id="139165079454288" source="p_A_Pending_W_Call incomplete files" target="W_Call incomplete files"/>
+      <arc id="139165091438672" source="p_A_Validating_O_Returned" target="O_Returned"/>
+      <arc id="139165052365392" source="A_Cancelled" target="p_A_Cancelled_W_Complete application"/>
+      <arc id="139165052357712" source="A_Cancelled" target="p_A_Cancelled_O_Cancelled"/>
+      <arc id="139165052361296" source="A_Cancelled" target="p_A_Cancelled_W_Call incomplete files"/>
+      <arc id="139165052370512" source="p_A_Cancelled_W_Call incomplete files" target="W_Call incomplete files"/>
+      <arc id="139165052360784" source="A_Incomplete" target="p_A_Incomplete_O_Returned"/>
+      <arc id="139165078329424" source="A_Validating" target="p_A_Validating_A_Cancelled"/>
+      <arc id="139165050908816" source="W_Validate application" target="p_W_Validate application_W_Assess potential fraud"/>
+      <arc id="139165050900880" source="p_W_Handle leads_W_Handle leads" target="W_Handle leads"/>
+      <arc id="139165050903120" source="p_W_Validate application_W_Assess potential fraud" target="W_Assess potential fraud"/>
+      <arc id="139165050899152" source="W_Shortened completion " target="p_W_Shortened completion _A_Accepted"/>
+      <arc id="139165050903632" source="W_Validate application" target="p_W_Validate application_O_Returned"/>
+      <arc id="139165052701904" source="O_Returned" target="p_O_Returned_O_Returned"/>
+      <arc id="139165080246416" source="p_A_Validating_A_Denied" target="A_Denied"/>
+      <arc id="139165052368528" source="p_A_Denied_W_Complete application" target="W_Complete application"/>
+      <arc id="139165052366480" source="p_A_Complete_W_Call after offers" target="W_Call after offers"/>
+      <arc id="139165052363408" source="A_Concept" target="p_A_Concept_W_Shortened completion "/>
+      <arc id="139165052356752" source="p_A_Incomplete_W_Call incomplete files" target="W_Call incomplete files"/>
+      <arc id="139165052709520" source="O_Cancelled" target="p_O_Cancelled_A_Cancelled"/>
+      <arc id="139165052705424" source="p_O_Created_A_Denied" target="A_Denied"/>
+      <arc id="139165052357776" source="A_Concept" target="p_A_Concept_W_Complete application"/>
+      <arc id="139165052358800" source="A_Denied" target="p_A_Denied_W_Call after offers"/>
+      <arc id="139165052699280" source="O_Cancelled" target="p_O_Cancelled_A_Denied"/>
+      <arc id="139165052713104" source="O_Refused" target="p_O_Refused_W_Validate application"/>
+      <arc id="139165050906896" source="W_Validate application" target="p_W_Validate application_W_Personal Loan collection"/>
+      <arc id="139165050905168" source="p_W_Personal Loan collection_W_Personal Loan collection" target="W_Personal Loan collection"/>
+      <arc id="139165050907408" source="p_W_Validate application_O_Returned" target="O_Returned"/>
+      <arc id="139165052714128" source="p_O_Refused_W_Call incomplete files" target="W_Call incomplete files"/>
+      <arc id="139165050897744" source="p_W_Shortened completion _W_Call incomplete files" target="W_Call incomplete files"/>
+      <arc id="139165052712400" source="W_Call incomplete files" target="p_W_Call incomplete files_O_Create Offer"/>
+      <arc id="139165050899984" source="W_Shortened completion " target="p_W_Shortened completion _W_Validate application"/>
+      <arc id="139165052708432" source="p_O_Returned_O_Returned" target="O_Returned"/>
+      <arc id="139165052712912" source="O_Returned" target="p_O_Returned_A_Denied"/>
+      <arc id="139165052354768" source="A_Denied" target="p_A_Denied_W_Complete application"/>
+      <arc id="139165052358864" source="A_Incomplete" target="p_A_Incomplete_O_Accepted"/>
+      <arc id="139165052359888" source="A_Denied" target="p_A_Denied_O_Refused"/>
+      <arc id="139165052368592" source="A_Incomplete" target="p_A_Incomplete_W_Shortened completion "/>
+      <arc id="139165247129296" source="A_Validating" target="p_A_Validating_O_Create Offer"/>
+      <arc id="139165052360912" source="p_A_Cancelled_W_Validate application" target="W_Validate application"/>
+      <arc id="139165052365520" source="A_Create Application" target="p_A_Create Application_W_Complete application"/>
+      <arc id="139165052365008" source="p_A_Denied_W_Call after offers" target="W_Call after offers"/>
+      <arc id="139165052357840" source="p_A_Incomplete_O_Returned" target="O_Returned"/>
+      <arc id="139165052711632" source="p_O_Created_W_Call incomplete files" target="W_Call incomplete files"/>
+      <arc id="139165052708944" source="W_Call after offers" target="p_W_Call after offers_O_Accepted"/>
+      <arc id="139165050902736" source="p_W_Personal Loan collection_W_Validate application" target="W_Validate application"/>
+      <arc id="139165050904976" source="W_Shortened completion " target="p_W_Shortened completion _W_Call incomplete files"/>
+      <arc id="139165052703248" source="p_W_Call incomplete files_A_Cancelled" target="A_Cancelled"/>
+      <arc id="139165050901008" source="W_Validate application" target="p_W_Validate application_O_Create Offer"/>
+      <arc id="139165052705488" source="p_W_Call after offers_O_Accepted" target="O_Accepted"/>
+      <arc id="139165050905488" source="W_Personal Loan collection" target="p_W_Personal Loan collection_W_Validate application"/>
+      <arc id="139165050911696" source="p_W_Validate application_W_Shortened completion " target="W_Shortened completion "/>
+      <arc id="139165052365904" source="A_Pending" target="p_A_Pending_W_Validate application"/>
+      <arc id="139165052368144" source="p_A_Concept_W_Shortened completion " target="W_Shortened completion "/>
+      <arc id="139165052712208" source="p_W_Call after offers_W_Shortened completion " target="W_Shortened completion "/>
+      <arc id="139165050909968" source="p_W_Validate application_W_Validate application" target="W_Validate application"/>
+      <arc id="139165050906000" source="p_W_Shortened completion _A_Accepted" target="A_Accepted"/>
+      <arc id="139165052704272" source="W_Call after offers" target="p_W_Call after offers_O_Sent (mail and online)"/>
+      <arc id="139165052706512" source="p_W_Assess potential fraud_W_Call after offers" target="W_Call after offers"/>
+      <arc id="139165052356368" source="p_A_Incomplete_O_Accepted" target="O_Accepted"/>
+      <arc id="139165079455504" source="A_Pending" target="p_A_Pending_W_Call incomplete files"/>
+      <arc id="139165078325008" source="p_A_Validating_A_Cancelled" target="A_Cancelled"/>
+      <arc id="139165052366096" source="p_A_Concept_W_Complete application" target="W_Complete application"/>
+      <arc id="139165052364560" source="A_Complete" target="p_A_Complete_O_Sent (mail and online)"/>
+      <arc id="139165052369680" source="p_A_Accepted_W_Shortened completion " target="W_Shortened completion "/>
+      <arc id="139165052368656" source="A_Cancelled" target="p_A_Cancelled_W_Validate application"/>
+      <arc id="139165079420688" source="p_A_Validating_W_Validate application" target="W_Validate application"/>
+      <arc id="139165052698896" source="O_Created" target="p_O_Created_W_Call after offers"/>
+      <arc id="139165080261392" source="p_A_Submitted_W_Handle leads" target="W_Handle leads"/>
+      <arc id="139165052699088" source="p_O_Returned_A_Denied" target="A_Denied"/>
+      <arc id="139165050903056" source="p_W_Validate application_O_Create Offer" target="O_Create Offer"/>
+      <arc id="139165050901328" source="source" target="A_Create Application"/>
+      <arc id="139165052705808" source="O_Refused" target="p_O_Refused_W_Call incomplete files"/>
+      <arc id="139165050910672" source="W_Handle leads" target="p_W_Handle leads_W_Assess potential fraud"/>
+      <arc id="139165052712528" source="O_Sent (online only)" target="p_O_Sent (online only)_W_Validate application"/>
+      <arc id="139165052708560" source="W_Assess potential fraud" target="p_W_Assess potential fraud_W_Call after offers"/>
+      <arc id="139165052362576" source="p_A_Incomplete_A_Denied" target="A_Denied"/>
+      <arc id="139165080236368" source="p_A_Validating_O_Create Offer" target="O_Create Offer"/>
+      <arc id="139165079454544" source="p_A_Pending_W_Validate application" target="W_Validate application"/>
+      <arc id="139165052364112" source="p_A_Denied_O_Refused" target="O_Refused"/>
+      <arc id="139165052704080" source="O_Created" target="p_O_Created_W_Call incomplete files"/>
+      <arc id="139165052702032" source="p_O_Create Offer_O_Created" target="O_Created"/>
+      <arc id="139165052706640" source="p_O_Refused_W_Complete application" target="W_Complete application"/>
+      <arc id="139165052702544" source="p_O_Refused_O_Refused" target="O_Refused"/>
+      <arc id="139165052713296" source="W_Call incomplete files" target="p_W_Call incomplete files_O_Accepted"/>
+      <arc id="139165052711760" source="W_Complete application" target="p_W_Complete application_W_Shortened completion "/>
+      <arc id="139165050906832" source="W_Handle leads" target="p_W_Handle leads_W_Complete application"/>
+      <arc id="139165052701136" source="p_O_Sent (online only)_W_Validate application" target="W_Validate application"/>
+      <arc id="139165050898896" source="p_W_Shortened completion _O_Create Offer" target="O_Create Offer"/>
+      <arc id="139165052707344" source="O_Refused" target="p_O_Refused_W_Complete application"/>
+      <arc id="139165052709584" source="O_Sent (mail and online)" target="p_O_Sent (mail and online)_O_Create Offer"/>
+      <arc id="139165050909584" source="p_W_Validate application_W_Personal Loan collection" target="W_Personal Loan collection"/>
+      <arc id="139165052707856" source="p_W_Complete application_W_Shortened completion " target="W_Shortened completion "/>
+      <arc id="139165050905616" source="p_W_Shortened completion _W_Validate application" target="W_Validate application"/>
+      <arc id="139165052359824" source="A_Complete" target="p_A_Complete_W_Call after offers"/>
+      <arc id="139165050901648" source="W_Validate application" target="p_W_Validate application_A_Cancelled"/>
+      <arc id="139165050910736" source="W_Validate application" target="p_W_Validate application_W_Shortened completion "/>
+      <arc id="139165052356496" source="A_Complete" target="p_A_Complete_O_Create Offer"/>
+      <arc id="139165052362128" source="p_A_Denied_W_Call incomplete files" target="W_Call incomplete files"/>
+      <arc id="139165052710288" source="p_O_Created_W_Call after offers" target="W_Call after offers"/>
+      <arc id="139165052707216" source="p_O_Cancelled_A_Denied" target="A_Denied"/>
+      <arc id="139165052355472" source="A_Incomplete" target="p_A_Incomplete_W_Call incomplete files"/>
+      <arc id="139165052699536" source="p_O_Created_W_Validate application" target="W_Validate application"/>
+      <arc id="139165052708880" source="p_O_Sent (mail and online)_O_Create Offer" target="O_Create Offer"/>
+      <arc id="139165052711120" source="p_W_Call after offers_W_Call after offers" target="W_Call after offers"/>
+      <arc id="139165052700560" source="W_Call incomplete files" target="p_W_Call incomplete files_A_Cancelled"/>
+      <arc id="139165052700944" source="p_O_Refused_W_Call after offers" target="W_Call after offers"/>
+      <arc id="139165050908880" source="W_Shortened completion " target="p_W_Shortened completion _O_Create Offer"/>
+      <arc id="139165050898704" source="p_W_Validate application_A_Cancelled" target="A_Cancelled"/>
+      <arc id="139165052699216" source="p_W_Call incomplete files_O_Accepted" target="O_Accepted"/>
+      <arc id="139165050905424" source="W_Validate application" target="p_W_Validate application_W_Validate application"/>
+      <arc id="139165052709904" source="O_Refused" target="p_O_Refused_W_Call after offers"/>
+      <arc id="139165050897488" source="W_Personal Loan collection" target="p_W_Personal Loan collection_W_Personal Loan collection"/>
+      <arc id="139165050900240" source="W_Handle leads" target="p_W_Handle leads_W_Handle leads"/>
+      <arc id="139165052706768" source="O_Created" target="p_O_Created_W_Validate application"/>
+      <arc id="139165080703952" source="A_Submitted" target="p_A_Submitted_W_Handle leads"/>
+      <arc id="139165052703696" source="p_O_Cancelled_W_Call incomplete files" target="W_Call incomplete files"/>
+      <arc id="139165052356048" source="A_Denied" target="p_A_Denied_W_Call incomplete files"/>
+      <arc id="139165052369360" source="p_A_Cancelled_O_Cancelled" target="O_Cancelled"/>
+      <arc id="139165052365264" source="p_A_Cancelled_W_Complete application" target="W_Complete application"/>
+      <arc id="139165052361168" source="p_A_Incomplete_W_Shortened completion " target="W_Shortened completion "/>
+      <arc id="139165079419344" source="p_O_Accepted_A_Pending" target="A_Pending"/>
+      <arc id="139165079419856" source="A_Validating" target="p_A_Validating_W_Validate application"/>
+      <arc id="139165052703184" source="p_O_Refused_W_Validate application" target="W_Validate application"/>
+      <arc id="139165052702992" source="O_Refused" target="p_O_Refused_O_Refused"/>
+      <arc id="139165052705232" source="W_Call after offers" target="p_W_Call after offers_W_Call after offers"/>
+      <arc id="139165052711440" source="O_Created" target="p_O_Created_A_Denied"/>
+      <arc id="139165052706256" source="p_W_Call after offers_O_Sent (mail and online)" target="O_Sent (mail and online)"/>
+    </page>
+    <finalmarkings>
+      <marking>
+        <place idref="sink">
+          <text>1</text>
+        </place>
+      </marking>
+    </finalmarkings>
+  </net>
+</pnml>
