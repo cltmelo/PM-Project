@@ -115,7 +115,7 @@ class ComparisonCharts:
         fig, ax = plt.subplots(figsize=(12, 7))
         
         # PRIMARY METRICS TO COMPARE
-        metrics = ['fitness', 'precision', 'simplicity', 'overall_score']
+        metrics = ['fitness', 'precision', 'simplicity', 'generalization', 'overall_score']  # ADD 'generalization'
         available_metrics = [m for m in metrics if m in df.columns and df[m].sum() > 0]
         
         if not available_metrics:

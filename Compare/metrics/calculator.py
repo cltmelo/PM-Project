@@ -178,6 +178,7 @@ class MetricsCalculator:
                 row["fitness"] = result.metrics.fitness
                 row["precision"] = result.metrics.precision
                 row["simplicity"] = result.metrics.simplicity
+                row["generalization"] = result.metrics.generalization  # ADD THIS LINE
                 row["overall_score"] = result.metrics.overall_score
                 row["f_score"] = result.metrics.f_score
                 row["num_cases"] = result.metrics.num_cases
