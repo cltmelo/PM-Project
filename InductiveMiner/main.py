@@ -7,7 +7,6 @@ from cut_detection import (
 )
 from discovery import discover_process_tree, print_process_tree, MAX_RECURSION_DEPTH
 from petri_converter import dict_to_pm4py_tree
-from metrics import collect_metrics, save_metrics
 
 import json
 import pm4py
@@ -67,19 +66,38 @@ print("\n" + "=" * 80)
 print("CONVERTING PROCESS TREE TO PETRI NET...")
 print("=" * 80)
 
-# Convert custom tree to pm4py ProcessTree
 pm4py_tree = dict_to_pm4py_tree(process_tree)
 
-# Convert ProcessTree to Petri Net
 net, initial_marking, final_marking = pm4py.convert_to_petri_net(pm4py_tree)
 
-# Assign internal name to the Petri net
 net.name = 'InductiveMinerResult'
 
 print(f"\n✓ Petri Net Created:")
 print(f"  Places: {len(net.places)}")
 print(f"  Transitions: {len(net.transitions)}")
 print(f"  Arcs: {len(net.arcs)}")
+
+
+# ============================================================================
+# CALCULATE AND EXPORT METRICS
+# ============================================================================
+
+from metrics import collect_metrics, save_metrics
+
+print("\n" + "=" * 80)
+print("CALCULATING QUALITY METRICS...")
+print("=" * 80)
+
+metrics_data = collect_metrics(df_sample, net, initial_marking, final_marking)
+
+print(f"\nFitness: {metrics_data['fitness_score']:.4f}")
+print(f"Precision: {metrics_data['quality_metrics']['precision_details']['precision']:.4f}")
+print(f"Simplicity: {metrics_data['simplicity_score']:.4f}")
+print(f"Overall: {metrics_data['overall_score']:.4f}")
+
+print("\nSaving metrics to JSON...")
+save_metrics(metrics_data)
+print(f"✓ Metrics saved to: output/result_scores.json")
 
 
 # ============================================================================
@@ -90,14 +108,13 @@ print("\n" + "=" * 80)
 print("EXPORTING PROCESS MODEL...")
 print("=" * 80)
 
-# Ensure output directory exists
 import os
 output_dir = "output"
 if not os.path.exists(output_dir):
     os.makedirs(output_dir)
 
 # -----------------------------------------------------------
-# Export 1: PNML File (Petri Net Markup Language)
+# Export 1: PNML File
 # -----------------------------------------------------------
 pnml_path = "output/petrinet_inductiveminer.pnml"
 pm4py.write_pnml(net, initial_marking, final_marking, pnml_path)
@@ -111,23 +128,6 @@ pm4py.save_vis_petri_net(net, initial_marking, final_marking, png_path)
 print(f"✓ PNG visualization exported: {png_path}")
 
 # -----------------------------------------------------------
-# Export 3: JSON Metrics
-# -----------------------------------------------------------
-
-from metrics import collect_metrics, save_metrics
-
-print("\n" + "=" * 80)
-print("EXPORTING METRICS TO JSON...")
-print("=" * 80)
-
-json_path = "output/result_scores.json"
-
-metrics_data = collect_metrics(df_sample, net, initial_marking, final_marking)
-save_metrics(metrics_data)
-
-print(f"\n✓ JSON metrics saved: {json_path}")
-
-# -----------------------------------------------------------
 # Summary
 # -----------------------------------------------------------
 print(f"\n" + "=" * 80)
@@ -136,14 +136,8 @@ print("=" * 80)
 print(f"\nAll exports completed successfully!")
 print(f"\nGenerated Files:")
 print(f"  1. {pnml_path}")
-print(f"     - Format: PNML (Petri Net Markup Language)")
-print(f"     - Use: Import into ProM, Celonis, PM4Py")
-print(f"\n  2. {png_path}")
-print(f"     - Format: PNG Image")
-print(f"     - Use: Visual inspection, reports, presentations")
-print(f"\n  3. {json_path}")
-print(f"     - Format: JSON")
-print(f"     - Use: Quality metrics for evaluation")
+print(f"  2. {png_path}")
+print(f"  3. output/result_scores.json")
 
 print("\n" + "=" * 80)
 print("PROCESS DISCOVERY COMPLETE")

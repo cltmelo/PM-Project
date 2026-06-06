@@ -1,5 +1,5 @@
 {
-  "overall_score": 0.5044420724704721,
+  "overall_score": 0.21312342195440542,
   "fitness_score": 0.5013649214359206,
   "simplicity_score": 0.012987012987012988,
   "activities": [
@@ -31,7 +31,7 @@
     "W_Validate application"
   ],
   "algorithm": "inductive miner",
-  "timestamp": "2026-06-06T00:51:13.573935",
+  "timestamp": "2026-06-06T18:54:12.915460",
   "event_log": {
     "num_cases": 31509,
     "num_events": 1202267,
@@ -51,8 +51,11 @@
       "total_remaining_tokens": 31509
     },
     "precision_details": {
-      "precision": 1.0
+      "precision": 0.02893783161311092,
+      "total_enabled": 1202267,
+      "total_escaping": 1167476,
+      "total_activities": 1202267
     },
-    "f_score": 0.6678788271626995
+    "f_score": 0.054717474460826775
   }
 }

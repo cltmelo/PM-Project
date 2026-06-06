@@ -4,34 +4,40 @@ from collections import defaultdict
 
 
 # ============================================================================
-# HIGH-PERFORMANCE DATA EXTRACTION
+# HIGH-PERFORMANCE DATA EXTRACTION (DETERMINISTIC - FIXED)
 # ============================================================================
 
 def extract_net_structure_fast(net):
     """
     Extract Petri net into pre-indexed Python structures for O(1) lookups.
     
-    Creates:
-    - input_arcs: dict mapping transition_index -> list of input place indices
-    - output_arcs: dict mapping transition_index -> list of output place indices
-    - place_to_trans: dict mapping place_index -> list of output transition indices
-    - label_to_trans: dict mapping label (str) -> list of transition indices
-    - silent_trans: set of transition indices with label None
-    - all_places: list of place objects by index
-    - all_trans: list of transition objects by index
-    - all_places_set: set of all place objects
-    """
-    num_trans = len(net.transitions)
-    num_places = len(net.places)
+    FIXED: All iterations sorted by name attribute for deterministic results.
     
-    # Map objects to indices for fast lookup
-    trans_to_idx = {t: i for i, t in enumerate(net.transitions)}
-    place_to_idx = {p: i for i, p in enumerate(net.places)}
+    Creates:
+    - input_arcs: list of lists (indexed by transition index)
+    - output_arcs: list of lists (indexed by transition index)
+    - place_to_trans: list of lists (indexed by place index)
+    - label_to_trans: dict mapping label -> list of transition indices
+    - silent_trans: set of transition indices with label None
+    - all_places: list of place objects (sorted by name)
+    - all_trans: list of transition objects (sorted by name)
+    """
+    # Sort transitions by name for deterministic indexing
+    sorted_trans = sorted(net.transitions, key=lambda t: t.name if t.name else '')
+    num_trans = len(sorted_trans)
+    
+    # Sort places by name for deterministic indexing
+    sorted_places = sorted(net.places, key=lambda p: p.name if p.name else '')
+    num_places = len(sorted_places)
+    
+    # Map objects to indices
+    trans_to_idx = {t: i for i, t in enumerate(sorted_trans)}
+    place_to_idx = {p: i for i, p in enumerate(sorted_places)}
     
     # Initialize arc lists
-    input_arcs = [[] for _ in range(num_trans)]  # list of input place indices per trans
-    output_arcs = [[] for _ in range(num_trans)]  # list of output place indices per trans
-    place_to_trans = [[] for _ in range(num_places)]  # list of output trans per place
+    input_arcs = [[] for _ in range(num_trans)]
+    output_arcs = [[] for _ in range(num_trans)]
+    place_to_trans = [[] for _ in range(num_places)]
     
     # Build arc structures
     for arc in net.arcs:
@@ -43,11 +49,9 @@ def extract_net_structure_fast(net):
         tgt_pidx = place_to_idx.get(tgt)
         
         if src_idx is not None and tgt_pidx is not None:
-            # Transition -> Place (output arc for transition)
             output_arcs[src_idx].append(tgt_pidx)
         
         if tgt_idx is not None and src_pidx is not None:
-            # Place -> Transition (input arc for transition)
             input_arcs[tgt_idx].append(src_pidx)
             place_to_trans[src_pidx].append(tgt_idx)
     
@@ -55,7 +59,7 @@ def extract_net_structure_fast(net):
     label_to_trans = defaultdict(list)
     silent_trans = set()
     
-    for i, trans in enumerate(net.transitions):
+    for i, trans in enumerate(sorted_trans):
         label = trans.label
         if label is None:
             silent_trans.add(i)
@@ -68,8 +72,8 @@ def extract_net_structure_fast(net):
         'place_to_trans': place_to_trans,
         'label_to_trans': dict(label_to_trans),
         'silent_trans': silent_trans,
-        'all_places': list(net.places),
-        'all_trans': list(net.transitions),
+        'all_places': sorted_places,
+        'all_trans': sorted_trans,
         'num_trans': num_trans,
         'num_places': num_places
     }
@@ -82,19 +86,13 @@ def extract_net_structure_fast(net):
 def preprocess_log_fast(df):
     """
     Pre-process log once: group by case, extract traces.
-    
-    Returns:
-    - traces: list of activity name lists (one per case)
-    - case_info: dict with aggregated statistics
     """
     case_col = 'case:concept:name'
     activity_col = 'concept:name'
     
-    # Group by case once using groupby
     grouped = df.groupby(case_col)[activity_col].apply(list)
     traces = grouped.tolist()
     
-    # Get statistics
     all_activities = set()
     for trace in traces:
         all_activities.update(trace)
@@ -111,41 +109,24 @@ def preprocess_log_fast(df):
 
 
 # ============================================================================
-# OPTIMIZED TOKEN-BASED REPLAY
+# OPTIMIZED TOKEN-BASED REPLAY (FITNESS)
 # ============================================================================
 
-def replay_trace_fast(trace, net_struct, init_marking_list):
+def fire_silent_transitions(marking, net_struct):
     """
-    Optimized trace replay with in-place state updates.
-    
-    Parameters:
-    - trace: list of activity names
-    - net_struct: pre-indexed net structure
-    - init_marking_list: list of token counts (mutated in place)
-    
-    Returns:
-    - missing: count of missing tokens
-    - remaining: sum of tokens after replay
+    Fire all possible silent transitions until no more can fire.
+    Uses changed flag for efficient iteration.
     """
     input_arcs = net_struct['input_arcs']
     output_arcs = net_struct['output_arcs']
-    label_to_trans = net_struct['label_to_trans']
     silent_trans = net_struct['silent_trans']
     num_trans = net_struct['num_trans']
     
-    missing = 0
-    num_places = net_struct['num_places']
-    
-    # Marking as list (index = place index)
-    marking = init_marking_list.copy()
-    
-    # Fire initial silent transitions
     changed = True
     while changed:
         changed = False
         for tidx in range(num_trans):
             if tidx in silent_trans:
-                # Check if enabled
                 enabled = True
                 for pidx in input_arcs[tidx]:
                     if marking[pidx] < 1:
@@ -159,8 +140,25 @@ def replay_trace_fast(trace, net_struct, init_marking_list):
                         marking[pidx] += 1
                     changed = True
                     break
+
+
+def replay_trace_fast(trace, net_struct, init_marking_list):
+    """
+    Optimized trace replay with in-place state updates.
+    """
+    input_arcs = net_struct['input_arcs']
+    output_arcs = net_struct['output_arcs']
+    label_to_trans = net_struct['label_to_trans']
+    silent_trans = net_struct['silent_trans']
+    num_trans = net_struct['num_trans']
     
-    # Process activities
+    marking = init_marking_list.copy()
+    
+    # Fire initial silent transitions
+    fire_silent_transitions(marking, net_struct)
+    
+    missing = 0
+    
     for activity in trace:
         trans_list = label_to_trans.get(activity)
         
@@ -168,7 +166,6 @@ def replay_trace_fast(trace, net_struct, init_marking_list):
             missing += 1
             continue
         
-        # Find enabled transition
         fired = False
         for tidx in trans_list:
             enabled = True
@@ -178,7 +175,6 @@ def replay_trace_fast(trace, net_struct, init_marking_list):
                     break
             
             if enabled:
-                # Fire it
                 for pidx in input_arcs[tidx]:
                     marking[pidx] -= 1
                 for pidx in output_arcs[tidx]:
@@ -189,27 +185,8 @@ def replay_trace_fast(trace, net_struct, init_marking_list):
         if not fired:
             missing += 1
         
-        # Fire silent transitions after each activity
-        changed = True
-        while changed:
-            changed = False
-            for tidx in range(num_trans):
-                if tidx in silent_trans:
-                    enabled = True
-                    for pidx in input_arcs[tidx]:
-                        if marking[pidx] < 1:
-                            enabled = False
-                            break
-                    
-                    if enabled:
-                        for pidx in input_arcs[tidx]:
-                            marking[pidx] -= 1
-                        for pidx in output_arcs[tidx]:
-                            marking[pidx] += 1
-                        changed = True
-                        break
+        fire_silent_transitions(marking, net_struct)
     
-    # Count remaining tokens
     remaining = sum(marking)
     
     return missing, remaining
@@ -217,29 +194,18 @@ def replay_trace_fast(trace, net_struct, init_marking_list):
 
 def calculate_fitness_fast(traces, net_struct, init_marking_list):
     """
-    Calculate fitness for all traces efficiently.
-    
-    Parameters:
-    - traces: list of activity name lists
-    - net_struct: pre-indexed net structure
-    - init_marking_list: initial marking as list
-    
-    Returns:
-    - fitness: float [0, 1]
-    - details: dict with breakdown
+    Calculate fitness for all traces.
     """
     total_missing = 0
     total_remaining = 0
     total_activities = 0
     
-    # Process all traces
     for trace in traces:
         missing, remaining = replay_trace_fast(trace, net_struct, init_marking_list)
         total_missing += missing
         total_remaining += remaining
         total_activities += len(trace)
     
-    # Calculate fitness
     if total_activities == 0:
         fitness = 1.0
     else:
@@ -247,16 +213,139 @@ def calculate_fitness_fast(traces, net_struct, init_marking_list):
     
     fitness = max(0.0, min(1.0, fitness))
     
-    details = {
+    return {
         'fitness': fitness,
         'total_traces': len(traces),
         'total_activities': total_activities,
         'total_missing_tokens': total_missing,
         'total_remaining_tokens': total_remaining
     }
-    
-    return details
 
+
+# ============================================================================
+# ETC PRECISION (IMPLEMENTED - FIXED)
+# ============================================================================
+
+def get_enabled_activity_labels(marking, net_struct):
+    """
+    Get set of activity labels for all enabled transitions.
+    Excludes silent transitions (label is None).
+    """
+    input_arcs = net_struct['input_arcs']
+    label_to_trans = net_struct['label_to_trans']
+    silent_trans = net_struct['silent_trans']
+    num_trans = net_struct['num_trans']
+    
+    enabled_labels = set()
+    
+    for tidx in range(num_trans):
+        if tidx in silent_trans:
+            continue
+        
+        enabled = True
+        for pidx in input_arcs[tidx]:
+            if marking[pidx] < 1:
+                enabled = False
+                break
+        
+        if enabled:
+            # Find the label for this transition
+            for label, trans_list in label_to_trans.items():
+                if tidx in trans_list:
+                    enabled_labels.add(label)
+                    break
+    
+    return enabled_labels
+
+
+def fire_transition_by_label(marking, net_struct, label):
+    """
+    Fire a transition by its activity label.
+    Returns True if fired, False if not enabled.
+    """
+    input_arcs = net_struct['input_arcs']
+    output_arcs = net_struct['output_arcs']
+    label_to_trans = net_struct['label_to_trans']
+    
+    trans_list = label_to_trans.get(label)
+    if not trans_list:
+        return False
+    
+    for tidx in trans_list:
+        enabled = True
+        for pidx in input_arcs[tidx]:
+            if marking[pidx] < 1:
+                enabled = False
+                break
+        
+        if enabled:
+            for pidx in input_arcs[tidx]:
+                marking[pidx] -= 1
+            for pidx in output_arcs[tidx]:
+                marking[pidx] += 1
+            return True
+    
+    return False
+
+
+def calculate_etc_precision(traces, net_struct, init_marking_list):
+    """
+    Calculate Escaping Edges Precision (ETC).
+    
+    For each activity in each trace:
+    1. Collect enabled activity labels (excluding silent)
+    2. Count escaping edges = enabled labels that are NOT the current activity
+    3. Add to total_enabled and total_escaping
+    4. Fire the matching transition if enabled
+    5. Fire silent transitions
+    
+    Precision = 1 - (total_escaping / total_enabled)
+    If total_enabled is 0, return 1.0
+    """
+    total_enabled = 0
+    total_escaping = 0
+    
+    for trace in traces:
+        marking = init_marking_list.copy()
+        
+        # Fire initial silent transitions
+        fire_silent_transitions(marking, net_struct)
+        
+        for activity in trace:
+            # Get enabled activity labels before firing
+            enabled_labels = get_enabled_activity_labels(marking, net_struct)
+            
+            # Count escaping edges (enabled but not current activity)
+            escaping = len(enabled_labels) - (1 if activity in enabled_labels else 0)
+            
+            total_enabled += len(enabled_labels)
+            total_escaping += escaping
+            
+            # Fire the matching transition if enabled, else skip
+            fired = fire_transition_by_label(marking, net_struct, activity)
+            
+            # Fire silent transitions
+            fire_silent_transitions(marking, net_struct)
+    
+    # Calculate precision
+    if total_enabled == 0:
+        precision = 1.0
+    else:
+        precision = 1.0 - (float(total_escaping) / float(total_enabled))
+    
+    precision = max(0.0, min(1.0, precision))
+    
+    return {
+        'precision': precision,
+        'total_enabled': total_enabled,
+        'total_escaping': total_escaping,
+        'total_activities': sum(len(t) for t in traces)
+    }
+
+
+# ============================================================================
+# SIMPLICITY
+# ============================================================================
 
 def calculate_simplicity_fast(net):
     """Calculate simplicity: 1 / (1 + num_arcs)."""
@@ -271,7 +360,6 @@ def calculate_simplicity_fast(net):
 def collect_metrics(df, net, initial_marking, final_marking):
     """
     Collect all metrics and return as a dictionary.
-    Main entry point for the external framework.
     """
     # Pre-process log once
     traces, case_info = preprocess_log_fast(df)
@@ -291,11 +379,12 @@ def collect_metrics(df, net, initial_marking, final_marking):
     fitness_details = calculate_fitness_fast(traces, net_struct, init_marking_list)
     fitness_score = fitness_details['fitness']
     
+    # Calculate ETC precision (FIXED)
+    precision_details = calculate_etc_precision(traces, net_struct, init_marking_list)
+    precision_score = precision_details['precision']
+    
     # Calculate simplicity
     simplicity_score = calculate_simplicity_fast(net)
-    
-    # Precision (placeholder until implemented)
-    precision_score = 1.0
     
     # Overall score
     overall_score = 0.4 * fitness_score + 0.3 * precision_score + 0.3 * simplicity_score
@@ -306,7 +395,7 @@ def collect_metrics(df, net, initial_marking, final_marking):
     else:
         f_score = 0.0
     
-    # Build JSON structure (exact same format as before)
+    # Build JSON structure
     metrics = {
         'overall_score': overall_score,
         'fitness_score': fitness_score,
@@ -326,9 +415,7 @@ def collect_metrics(df, net, initial_marking, final_marking):
         },
         'quality_metrics': {
             'fitness_details': fitness_details,
-            'precision_details': {
-                'precision': precision_score
-            },
+            'precision_details': precision_details,
             'f_score': f_score
         }
     }
