@@ -7,7 +7,7 @@ Detects which algorithms have completed output available.
 import os
 from pathlib import Path
 from typing import Dict, List, Tuple
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from enum import Enum
 
 from ..config import AlgorithmConfig, AlgorithmType

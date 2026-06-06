@@ -21,16 +21,16 @@ from pathlib import Path
 # Add parent directory to path
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
-from config import get_enabled_algorithms, get_compare_config
-from utils.file_utils import ensure_dir
-from utils.logging_utils import print_header, print_info, print_success
+from .config import get_enabled_algorithms, get_compare_config
+from .utils.file_utils import ensure_dir
+from .utils.logging_utils import print_header, print_info, print_success
 
-from runner.detector import OutputDetector
-from runner.executor import AlgorithmExecutor
-from metrics.calculator import MetricsCalculator
-from visualization.charts import ComparisonCharts
-from visualization.table import ComparisonTable
-from report.generator import ReportGenerator
+from .runner.detector import OutputDetector
+from .runner.executor import AlgorithmExecutor
+from .metrics.calculator import MetricsCalculator
+from .visualization.charts import ComparisonCharts
+from .visualization.table import ComparisonTable
+from .report.generator import ReportGenerator
 
 
 def run_comparison(

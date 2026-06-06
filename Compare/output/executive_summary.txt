@@ -1,0 +1,15 @@
+======================================================================
+               EXECUTIVE SUMMARY - ALGORITHM COMPARISON               
+======================================================================
+Generated: 2026-06-06 10:30:02
+
+Algorithms compared: 4
+
+BEST PERFORMERS
+----------------------------------------
+Best Fitness: Split Miner (0.7877)
+Best Precision: Split Miner (1.0000)
+Best F-Score: Split Miner (0.8741)
+Simplest Model: Genetic Miner (0 places)
+
+======================================================================

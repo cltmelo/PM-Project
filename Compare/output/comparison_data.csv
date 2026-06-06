@@ -1,0 +1,5 @@
+name,num_places,num_transitions,num_arcs,complexity,fitness,precision,f_score,num_cases,num_events
+Genetic Miner,0,0,0,0.0,0.5262079887412696,0.0,0.36922535751478314,0,0
+Alpha Miner,0,0,0,0.0,0.3826,0.0904,0.1462,31509,1202267
+Inductive Miner,0,0,0,0.0,0.0,0.0,0.0,0,0
+Split Miner,0,0,0,0.0,0.787651,1.0,0.874111,0,0

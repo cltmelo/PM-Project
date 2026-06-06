@@ -5,6 +5,7 @@ Parses metrics JSON files to extract algorithm performance data.
 """
 
 import json
+import os
 from typing import Dict, List, Optional, Any
 from dataclasses import dataclass, field
 from datetime import datetime
@@ -175,6 +176,3 @@ class JSONMetricsParser:
         metrics.timestamp = data.get("timestamp", datetime.now().isoformat())
         
         return metrics
-
-
-import os

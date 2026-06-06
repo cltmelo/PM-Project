@@ -124,7 +124,8 @@ class ComparisonTable:
         html.append('tr:nth-child(even) { background-color: #f2f2f2; }')
         html.append('tr:hover { background-color: #ddd; }')
         html.append('</style>')
-        html.append('</head>', '<body>')
+        html.append('</head>')
+        html.append('<body>')
         html.append('<h1>Process Mining Algorithm Comparison</h1>')
         html.append('<table>')
         
@@ -145,7 +146,8 @@ class ComparisonTable:
             html.append('</tr>')
         
         html.append('</table>')
-        html.append('</body>', '</html>')
+        html.append('</body>')
+        html.append('</html>')
         
         path = os.path.join(self._output_dir, "comparison_table.html")
         with open(path, 'w') as f:

@@ -47,21 +47,21 @@ class ComparisonResult:
     @property
     def best_fitness(self) -> str:
         """Get algorithm with best fitness."""
-        if not self.dataframe is not None:
+        if self.dataframe is None:
             return ""
         return self.dataframe.loc[self.dataframe['fitness'].idxmax(), 'name']
     
     @property
     def best_precision(self) -> str:
         """Get algorithm with best precision."""
-        if not self.dataframe is not None:
+        if self.dataframe is None:
             return ""
         return self.dataframe.loc[self.dataframe['precision'].idxmax(), 'name']
     
     @property
     def simplest_model(self) -> str:
         """Get algorithm with simplest model."""
-        if not self.dataframe is not None:
+        if self.dataframe is None:
             return ""
         return self.dataframe.loc[self.dataframe['num_places'].idxmin(), 'name']
 
