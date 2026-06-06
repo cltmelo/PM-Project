@@ -104,7 +104,7 @@ def run_comparison(
     # Stage 3: Calculate Metrics
     # ==========================================================================
     calculator = MetricsCalculator()
-    comparison_result = calculator.calculate(outputs)
+    comparison_result = calculator.calculate(outputs, base_dir)
     
     # ==========================================================================
     # Stage 4: Generate Visualizations

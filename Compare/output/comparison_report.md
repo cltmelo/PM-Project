@@ -1,6 +1,6 @@
 # Process Mining Algorithm Comparison Report
 
-**Generated:** 2026-06-06 14:16:47
+**Generated:** 2026-06-06 15:04:17
 
 ## Executive Summary
 
@@ -11,10 +11,10 @@
 
 | Name | Fitness | Precision | F Score |
 |---|---|---|---|
-| Genetic Miner | 0.5262 | 0.0000 | 0.0000 |
+| Genetic Miner | 0.5262 | 0.2236 | 0.3138 |
 | Alpha Miner | 0.3826 | 0.0904 | 0.1462 |
 | Inductive Miner | 0.5014 | 1.0000 | 0.6679 |
-| Split Miner | 0.7919 | 1.0000 | 0.8959 |
+| Split Miner | 0.7919 | 1.0000 | 0.8838 |
 
 ## Model Structure
 
@@ -40,5 +40,5 @@
 |------|-----------|-----------|
 | 1 | Inductive Miner | 1.0000 |
 | 2 | Split Miner | 1.0000 |
-| 3 | Alpha Miner | 0.0904 |
-| 4 | Genetic Miner | 0.0000 |
+| 3 | Genetic Miner | 0.2236 |
+| 4 | Alpha Miner | 0.0904 |

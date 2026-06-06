@@ -54,6 +54,13 @@ class CompareConfig:
     min_fitness_threshold: float = 0.8
     min_precision_threshold: float = 0.6
 
+    # Post-hoc metric enrichment
+    compute_missing_metrics: bool = True
+    recompute_overall_score: bool = True
+    overall_fitness_weight: float = 0.4
+    overall_precision_weight: float = 0.3
+    overall_simplicity_weight: float = 0.3
+
 
 # Default algorithm configurations
 DEFAULT_ALGORITHMS = [

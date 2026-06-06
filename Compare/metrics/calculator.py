@@ -11,9 +11,11 @@ import numpy as np
 
 from ..parser.pnml_parser import PNMLParser, PetriNetStructure
 from ..parser.json_parser import JSONMetricsParser, AlgorithmMetrics
+from ..metrics.enricher import PostHocMetricEnricher
 from ..runner.detector import OutputDetector, AlgorithmOutput
 from ..utils.logging_utils import print_header, print_info, print_success, print_stage
 from ..utils.file_utils import ensure_dir
+from ..config import get_compare_config
 
 
 @dataclass
@@ -81,8 +83,10 @@ class MetricsCalculator:
     def __init__(self):
         """Initialize the metrics calculator."""
         self._result: Optional[ComparisonResult] = None
+        self._config = get_compare_config()
         self._pnml_parser = PNMLParser()
         self._json_parser = JSONMetricsParser()
+        self._enricher: Optional[PostHocMetricEnricher] = None
     
     @property
     def result(self) -> Optional[ComparisonResult]:
@@ -91,7 +95,8 @@ class MetricsCalculator:
     
     def calculate(
         self,
-        outputs: Dict[str, AlgorithmOutput]
+        outputs: Dict[str, AlgorithmOutput],
+        base_dir: str = ".",
     ) -> ComparisonResult:
         """
         Calculate metrics for all algorithms.
@@ -103,6 +108,7 @@ class MetricsCalculator:
             ComparisonResult with all aggregated data
         """
         print_stage(2, "CALCULATING METRICS")
+        self._enricher = PostHocMetricEnricher(self._config, base_dir)
         
         results = {}
         
@@ -147,6 +153,13 @@ class MetricsCalculator:
                 result.metrics = self._json_parser.parse(output.json_path, name)
             except Exception:
                 pass
+
+        if self._config.compute_missing_metrics and result.metrics:
+            result.metrics = self._enricher.enrich(
+                result.metrics,
+                result.structure,
+                output.pnml_path,
+            )
         
         return result
     
@@ -181,7 +194,26 @@ class MetricsCalculator:
             rows.append(row)
         
         df = pd.DataFrame(rows)
+        self._normalize_shared_event_log_stats(df)
         return df
+
+    def _normalize_shared_event_log_stats(self, df: pd.DataFrame) -> None:
+        """
+        Apply shared event-log counts across all compared algorithms.
+
+        The compared miners run on the same log, but not every output JSON
+        exports num_cases/num_events. Use the non-zero values that are present
+        so CSV/report rows stay comparable.
+        """
+        for column in ("num_cases", "num_events"):
+            if column not in df.columns:
+                continue
+
+            non_zero_values = df.loc[df[column] > 0, column]
+            if non_zero_values.empty:
+                continue
+
+            df[column] = int(non_zero_values.max())
     
     def _print_summary(self, df: pd.DataFrame) -> None:
         """Print a summary of the comparison."""

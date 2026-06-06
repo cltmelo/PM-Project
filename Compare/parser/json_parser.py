@@ -318,14 +318,12 @@ class JSONMetricsParser:
             fscore_data = qm.get("f_score", {})
             metrics.f_score = self._as_float(fscore_data)
         
-        # No simplicity score for Alpha Miner (set default)
-        metrics.simplicity = 0.5  # Default neutral value
+        # Alpha's metrics JSON does not include simplicity; Compare can enrich
+        # it from PNML structure after parsing.
+        metrics.simplicity = self._as_float(data.get("simplicity_score", 0.0))
         
         # Calculate overall from available metrics
-        if metrics.fitness > 0 and metrics.precision > 0:
-            metrics.overall_score = (metrics.fitness + metrics.precision + metrics.simplicity) / 3
-        elif metrics.fitness > 0:
-            metrics.overall_score = metrics.fitness
+        metrics.overall_score = self._as_float(data.get("overall_score", 0.0))
         
         # Event log
         if "event_log" in data:
@@ -392,7 +390,7 @@ class JSONMetricsParser:
         metrics.simplicity = self._as_float(
             data.get("simplicity") or
             data.get("simplicity_score") or
-            0.5  # Default
+            0.0
         )
         
         # Try to find any overall-related field
